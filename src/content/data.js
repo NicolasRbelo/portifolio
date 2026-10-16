@@ -19,7 +19,7 @@ export const contact = {
     label: '(11) 99467-3016',
     url: 'https://wa.me/5511994673016',
   },
-  cv: { label: 'Nicolas_Rabelo_Curriculo.pdf', url: '/cv/Nicolas_Rabelo_Curriculo.pdf' },
+  cv: { label: 'Nicolas_Rabelo_Curriculo.pdf', url: `${import.meta.env.BASE_URL}cv/Nicolas_Rabelo_Curriculo.pdf` },
 }
 
 export const skills = [

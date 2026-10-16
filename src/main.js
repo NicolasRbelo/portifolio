@@ -15,6 +15,9 @@ import { CRTComposer } from './shaders/crtComposer.js'
 import { HotspotLabels } from './ui/hotspots.js'
 import { buildPanelContent } from './ui/panels.js'
 import { runConnectSequence } from './ui/connectSequence.js'
+import { contact } from './content/data.js'
+
+document.getElementById('cv-corner-link').href = contact.cv.url
 
 const stage = document.getElementById('stage')
 const canvas = document.getElementById('scene-canvas')
