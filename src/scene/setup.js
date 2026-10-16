@@ -13,9 +13,9 @@ export function createRenderer(canvas) {
   return renderer
 }
 
-const BASE_VERTICAL_FOV = 46
-const MIN_HORIZONTAL_FOV = 82
-const MAX_VERTICAL_FOV = 88
+const BASE_VERTICAL_FOV = 34
+const MIN_HORIZONTAL_FOV = 72
+const MAX_VERTICAL_FOV = 72
 
 /** Keeps the room's horizontal extent visible even on tall/narrow viewports by
  * widening the vertical FOV until the implied horizontal FOV clears the floor. */
@@ -30,8 +30,8 @@ export function fovForAspect(aspect) {
 }
 
 export const CAMERA_WIDE = {
-  position: new THREE.Vector3(0.1, 2.15, 7.0),
-  target: new THREE.Vector3(0, 1.45, -1.2),
+  position: new THREE.Vector3(0.1, 1.86, 6.6),
+  target: new THREE.Vector3(0, 1.5, -1.2),
 }
 
 // one close anchor per hotspot, framing that object's own screen/board
@@ -41,29 +41,32 @@ export const CAMERA_CLOSE_MAP = {
     target: new THREE.Vector3(-2.3, 1.2, 0.54),
   },
   experiencia: {
-    position: new THREE.Vector3(0.3, 0.8, -0.35),
-    target: new THREE.Vector3(0.3, 0.68, -1.58),
+    position: new THREE.Vector3(-1.35, 0.8, -1.55),
+    target: new THREE.Vector3(-1.35, 0.68, -2.78),
   },
   sobre: {
     position: new THREE.Vector3(2.55, 1.82, -2.1),
     target: new THREE.Vector3(2.95, 1.78, -3.6),
   },
   contato: {
-    position: new THREE.Vector3(1.78, 1.5, 2.35),
-    target: new THREE.Vector3(1.93, 1.28, 1.5),
+    position: new THREE.Vector3(2.78, 1.5, 1.85),
+    target: new THREE.Vector3(2.93, 1.28, 1.0),
   },
 }
 
-// the intro dolly-out starts here, close on the terminal screen
-export const CAMERA_CLOSE = CAMERA_CLOSE_MAP.projetos
+// the intro opens on the door, closed, before the recognition reveal
+export const CAMERA_DOOR = {
+  position: new THREE.Vector3(0.6, 1.55, -1.1),
+  target: new THREE.Vector3(0.6, 1.35, -3.74),
+}
 
-export const CLOSE_FOV = 26
+export const CLOSE_FOV = 32
 export const ZOOM_FOV = 32
 
 export function createCamera(aspect) {
   const camera = new THREE.PerspectiveCamera(CLOSE_FOV, aspect, 0.1, 50)
-  camera.position.copy(CAMERA_CLOSE.position)
-  camera.lookAt(CAMERA_CLOSE.target)
+  camera.position.copy(CAMERA_DOOR.position)
+  camera.lookAt(CAMERA_DOOR.target)
   camera.userData.wideFov = fovForAspect(aspect)
   return camera
 }
@@ -115,9 +118,15 @@ export function createLights(scene) {
 
   // cool moonlight pouring through the window — the one cold light against all
   // the warm candle glow, what actually sells "high up, night air, not a cellar"
-  const moonlight = new THREE.PointLight(0xb4c8ff, 7, 8, 2)
+  const moonlight = new THREE.PointLight(0xb4c8ff, 10, 8, 2)
   moonlight.position.set(2.4, 2.0, 0.6)
   scene.add(moonlight)
+
+  // dedicated light right at the window frame so its brass bezel actually reads,
+  // without relying on the single room-wide moonlight to reach that far corner
+  const windowLight = new THREE.PointLight(0xd8e4ff, 2.2, 2.8, 2)
+  windowLight.position.set(3.6, 2.1, 0.6)
+  scene.add(windowLight)
 
   return { overhead }
 }

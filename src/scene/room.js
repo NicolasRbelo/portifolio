@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import {
   arcaneSealTexture,
   runeBorderTexture,
+  bannerTexture,
   starMapTexture,
   rugTexture,
   loadSurfaceTextures,
@@ -257,14 +258,16 @@ export function buildRoom() {
     [0, 0.525, 0.05, 1.5],
     [0, -0.525, 0.05, 1.5],
   ].forEach(([ly, lz, width, height]) => {
-    windowGroup.add(place(box(0.06, height, width, COLORS.brass, { metalness: 0.35, roughness: 0.5 }), -0.07, ly, lz))
+    windowGroup.add(place(box(0.07, height, width, COLORS.brass, { metalness: 0.3, roughness: 0.4 }), -0.075, ly, lz))
   })
   const windowGlass = new THREE.Mesh(new THREE.PlaneGeometry(1.0, 1.4), new THREE.MeshBasicMaterial({ map: nightSkyTexture() }))
   windowGlass.position.set(-0.14, 0, 0)
   windowGlass.rotation.y = -Math.PI / 2
   windowGroup.add(windowGlass)
-  // a thin stone mullion crossing the glass, standard arcane-tower glazing
-  windowGroup.add(place(box(0.03, 1.4, 0.03, COLORS.stoneDark), -0.13, 0, 0))
+  // a brass mullion crossing the glass — catches the window light, reads clearly
+  // against the night sky instead of disappearing like the old stone one did
+  windowGroup.add(place(box(0.025, 1.4, 0.025, COLORS.brass, { metalness: 0.4, roughness: 0.4 }), -0.13, 0, 0))
+  windowGroup.add(place(box(0.025, 0.025, 1.0, COLORS.brass, { metalness: 0.4, roughness: 0.4 }), -0.13, 0, 0))
   group.add(windowGroup)
 
   // moonbeam falling across the floor from the window
@@ -294,10 +297,12 @@ export function buildRoom() {
   plaque.position.set(0.6, 2.85, -3.77)
   group.add(plaque)
 
-  // carved rune border beside the door
-  const runes = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.22), new THREE.MeshBasicMaterial({ map: runeBorderTexture() }))
-  runes.position.set(-1.35, 1.0, -3.78)
-  group.add(runes)
+  // a heraldic banner beside the door — an original sigil, not borrowed iconography,
+  // but the kind of woven house-mark a tower like this would actually hang
+  const banner = new THREE.Mesh(new THREE.PlaneGeometry(0.62, 1.3), new THREE.MeshBasicMaterial({ map: bannerTexture() }))
+  banner.position.set(1.8, 1.85, -3.78)
+  group.add(banner)
+  group.add(place(cylinder(0.014, 0.014, 0.7, 8, COLORS.ironDark, { metalness: 0.5 }), 1.8, 2.47, -3.76, Math.PI / 2))
 
   // map of Arton, left wall
   const map = new THREE.Mesh(new THREE.PlaneGeometry(0.68, 0.85), new THREE.MeshBasicMaterial({ map: starMapTexture() }))
@@ -305,20 +310,23 @@ export function buildRoom() {
   map.rotation.y = Math.PI / 2
   group.add(map)
 
-  // --- Iron-banded wooden door (decorative backdrop) ---
+  // --- Iron-banded wooden door, hinged so the intro can swing it open ---
   const doorFrame = place(box(1.8, 2.9, 0.1, COLORS.stoneDark, { roughness: 0.9 }), 0.6, 1.3, -3.79)
   group.add(doorFrame)
-  const doorPanel = place(box(1.5, 2.6, 0.1, COLORS.doorWood, { roughness: 0.75 }), 0.6, 1.25, -3.74)
-  group.add(doorPanel)
+
+  const doorHinge = new THREE.Group()
+  doorHinge.position.set(-0.15, 0, -3.74)
+  doorHinge.add(place(box(1.5, 2.6, 0.1, COLORS.doorWood, { roughness: 0.75 }), 0.75, 1.25, 0))
   ;[0.35, 1.25, 2.15].forEach((y) => {
-    group.add(place(box(1.5, 0.12, 0.04, COLORS.ironBand, { metalness: 0.6, roughness: 0.4 }), 0.6, y, -3.68))
+    doorHinge.add(place(box(1.5, 0.12, 0.04, COLORS.ironBand, { metalness: 0.6, roughness: 0.4 }), 0.75, y, 0.06))
     for (let x = -0.6; x <= 0.6; x += 0.3) {
-      group.add(place(box(0.05, 0.05, 0.06, COLORS.brass, { metalness: 0.7, roughness: 0.3 }), 0.6 + x, y, -3.655))
+      doorHinge.add(place(box(0.05, 0.05, 0.06, COLORS.brass, { metalness: 0.7, roughness: 0.3 }), 0.75 + x, y, 0.085))
     }
   })
   const doorRing = torus(0.14, 0.03, 10, 20, Math.PI * 2, COLORS.brass, { metalness: 0.75, roughness: 0.25 })
-  doorRing.position.set(0.6, 1.25, -3.65)
-  group.add(doorRing)
+  doorRing.position.set(0.75, 1.25, 0.09)
+  doorHinge.add(doorRing)
+  group.add(doorHinge)
 
   // iron chandelier, hanging from the ceiling
   const chandelierGroup = new THREE.Group()
@@ -373,6 +381,21 @@ export function buildRoom() {
   bedGroup.add(place(box(1.5, 0.08, 0.34, 0x6b2a2a, { roughness: 0.9 }), 0, 0.59, 0.25))
   bedGroup.add(place(box(0.42, 0.1, 0.26, COLORS.pillow, { roughness: 0.8 }), -0.5, 0.6, -0.35, 0.1))
   bedGroup.add(place(box(0.42, 0.1, 0.26, COLORS.pillow, { roughness: 0.8 }), 0.1, 0.6, -0.35, -0.08))
+  // four carved posts and a simple top frame — a proper tower four-poster,
+  // not just a mattress on a box
+  ;[
+    [-0.82, -0.5],
+    [0.82, -0.5],
+    [-0.82, 0.5],
+    [0.82, 0.5],
+  ].forEach(([px, pz]) => {
+    bedGroup.add(place(cylinder(0.035, 0.045, 1.55, 8, COLORS.bedFrame, { roughness: 0.7 }), px, 1.14, pz))
+    bedGroup.add(place(cone(0.05, 0.1, 8, COLORS.brass, { metalness: 0.5, roughness: 0.4 }), px, 1.94, pz))
+  })
+  bedGroup.add(place(box(1.74, 0.06, 0.06, COLORS.bedFrame, { roughness: 0.7 }), 0, 1.87, -0.5))
+  bedGroup.add(place(box(1.74, 0.06, 0.06, COLORS.bedFrame, { roughness: 0.7 }), 0, 1.87, 0.5))
+  bedGroup.add(place(box(0.06, 0.06, 1.1, COLORS.bedFrame, { roughness: 0.7 }), -0.82, 1.87, 0))
+  bedGroup.add(place(box(0.06, 0.06, 1.1, COLORS.bedFrame, { roughness: 0.7 }), 0.82, 1.87, 0))
   group.add(bedGroup)
   addContactShadow(-3.55, 1.6, 1.4, 2.0, 0.35, 0.0045)
 
@@ -494,6 +517,16 @@ export function buildRoom() {
   deskGroup.add(place(box(0.22, 0.01, 0.3, COLORS.paper), -0.6, 0.825, 0.18, 0.15))
   addBooks(deskGroup, 0.68, 0.82, -0.26, 0.2, 4)
 
+  // an oversized ornamental twenty-sider on the desk — every Arton arcanist's
+  // most basic tool of trade, carved in brass-veined stone
+  const d20 = new THREE.Mesh(
+    new THREE.IcosahedronGeometry(0.075, 0),
+    new THREE.MeshStandardMaterial({ color: 0x241c30, roughness: 0.35, metalness: 0.2, emissive: 0x3a1a5a, emissiveIntensity: 0.15 }),
+  )
+  d20.position.set(-0.35, 0.86, 0.22)
+  d20.rotation.set(0.4, 0.7, 0.2)
+  deskGroup.add(d20)
+
   const orbGlowSprite = makeGlowSprite('#9a7bff', 0.26)
   orbGlowSprite.position.set(0, 1.16, 0.0)
   deskGroup.add(orbGlowSprite)
@@ -502,10 +535,10 @@ export function buildRoom() {
   group.add(deskGroup)
   addContactShadow(-2.3, 0.3, 1.9, 1.0, 0.4)
 
-  // stool pushed back from the desk, mid-work — offset to the side so it doesn't
-  // block the camera's line of sight when the orb hotspot is zoomed into
-  addModel(group, 'stool.glb', { x: -2.85, z: 0.85, ry: 0.5 })
-  addContactShadow(-2.85, 0.85, 0.5, 0.5, 0.35)
+  // stool pushed back from the desk, mid-work — tucked to its front-right, clear
+  // of both the bed and the camera's line of sight when the orb is zoomed into
+  addModel(group, 'stool.glb', { x: -1.75, z: 0.75, ry: -0.5 })
+  addContactShadow(-1.75, 0.75, 0.5, 0.5, 0.35)
 
   hotspots.projetos = new THREE.Vector3(-2.3, 1.22, 0.17)
   const projetosHit = place(box(0.7, 0.6, 0.6, 0x000000), -2.3, 1.18, 0.1)
@@ -513,13 +546,19 @@ export function buildRoom() {
   projetosHit.userData.hotspot = 'projetos'
   group.add(projetosHit)
 
-  // ============== SCRYING MIRROR -> EXPERIÊNCIA (free-standing, clear of the door) ==============
+  // ============== SCRYING MIRROR -> EXPERIÊNCIA (console against the back wall,
+  // between the bookshelf and the door — a dresser mirror, not a floor orphan) ==============
   const mirrorGroup = new THREE.Group()
-  mirrorGroup.position.set(0.3, 0, -1.9)
+  mirrorGroup.position.set(-1.35, 0, -3.1)
   mirrorGroup.add(place(box(1.0, 0.5, 0.35, COLORS.shelfWood, { roughness: 0.7 }), 0, 0.25, 0))
   mirrorGroup.add(place(box(0.5, 0.64, 0.05, COLORS.brass, { metalness: 0.6, roughness: 0.3 }), 0, 0.64, 0))
   const mirrorFinial = place(box(0.08, 0.08, 0.08, COLORS.brass, { metalness: 0.65, roughness: 0.25 }), 0, 0.98, 0)
   mirrorGroup.add(mirrorFinial)
+  // a strip of engraved wards across the console's foot — the room's rune motif,
+  // now tied to the one object whose whole purpose is seeing beyond the veil
+  const mirrorRunes = new THREE.Mesh(new THREE.PlaneGeometry(0.46, 0.1), new THREE.MeshBasicMaterial({ map: runeBorderTexture() }))
+  mirrorRunes.position.set(0, 0.42, 0.176)
+  mirrorGroup.add(mirrorRunes)
 
   const mirrorVision = createMirrorVision()
   const mirrorGlass = new THREE.Mesh(new THREE.PlaneGeometry(0.4, 0.5), mirrorVision.material)
@@ -532,9 +571,9 @@ export function buildRoom() {
   glowSprites.push(mirrorGlowSprite)
 
   group.add(mirrorGroup)
-  addContactShadow(0.3, -1.9, 1.2, 0.55, 0.4)
-  hotspots.experiencia = new THREE.Vector3(0.3, 1.0, -1.65)
-  const expHit = place(box(0.9, 1.6, 0.5, 0x000000), 0.3, 0.9, -1.7)
+  addContactShadow(-1.35, -3.1, 1.2, 0.55, 0.4)
+  hotspots.experiencia = new THREE.Vector3(-1.35, 1.0, -2.85)
+  const expHit = place(box(0.9, 1.6, 0.5, 0x000000), -1.35, 0.9, -2.9)
   expHit.visible = false
   expHit.userData.hotspot = 'experiencia'
   group.add(expHit)
@@ -548,10 +587,17 @@ export function buildRoom() {
     [-0.35, 0.2, 0xe8d9a8],
     [0.1, 0.28, 0xd8c998],
     [-0.1, -0.2, 0xc9b888],
+    [0.45, 0.1, 0xe3d4a0],
+    [-0.45, -0.28, 0xd0c190],
+    [0.3, -0.35, 0xe8d9a8],
   ]
   notes.forEach(([x, y, c]) => {
     mapGroup.add(place(box(0.22, 0.16, 0.01, c, { roughness: 0.9, metalness: 0 }), x, y, 0.04, (Math.random() - 0.5) * 0.3))
   })
+  // a loose scrap of parchment pinned slightly askew, curling at one corner
+  const curlNote = place(box(0.16, 0.12, 0.01, 0xe8d9a8, { roughness: 0.9 }), 0.55, -0.1, 0.045, 0.2)
+  curlNote.rotation.x = -0.15
+  mapGroup.add(curlNote)
   const sketchFrame = place(box(0.32, 0.4, 0.016, COLORS.mapFrame, { roughness: 0.6 }), -0.42, -0.1, 0.045, -0.06)
   mapGroup.add(sketchFrame)
   mapGroup.add(place(box(0.27, 0.35, 0.02, 0x6a5a48, { roughness: 0.8 }), -0.42, -0.1, 0.05, -0.06))
@@ -567,9 +613,10 @@ export function buildRoom() {
   sobreHit.userData.hotspot = 'sobre'
   group.add(sobreHit)
 
-  // ============== GRIMOIRE ON LECTERN -> CONTATO ==============
+  // ============== GRIMOIRE ON LECTERN -> CONTATO (tucked under the window, where
+  // the light is best for reading and writing letters) ==============
   const lecternGroup = new THREE.Group()
-  lecternGroup.position.set(2.0, 0, 1.3)
+  lecternGroup.position.set(3.0, 0, 0.8)
   lecternGroup.add(place(box(0.3, 0.9, 0.3, COLORS.shelfWood, { metalness: 0.05, roughness: 0.75 }), 0, 0.45, 0))
   const plinth = place(box(0.1, 0.5, 0.32, COLORS.ironDark, { metalness: 0.4, roughness: 0.5 }), 0, 1.05, 0)
   plinth.rotation.x = THREE.MathUtils.degToRad(18)
@@ -602,10 +649,22 @@ export function buildRoom() {
   lecternGroup.add(grimoireGlowSprite)
   glowSprites.push(grimoireGlowSprite)
 
+  // wax seal + stamp and a raven-feather quill, waiting beside the grimoire —
+  // this is where a letter actually gets written and sent
+  const sealWax = place(cylinder(0.025, 0.028, 0.012, 12, 0x8a2a2a, { roughness: 0.4 }), 0.14, 0.915, 0.08)
+  lecternGroup.add(sealWax)
+  const sealStamp = place(cylinder(0.014, 0.016, 0.08, 10, COLORS.brass, { metalness: 0.6, roughness: 0.35 }), 0.14, 0.965, 0.08)
+  sealStamp.rotation.z = THREE.MathUtils.degToRad(20)
+  lecternGroup.add(sealStamp)
+  const ravenQuill = place(cylinder(0.003, 0.005, 0.24, 6, 0x1a1a1f, { roughness: 0.6 }), 0.1, 1.0, -0.02)
+  ravenQuill.rotation.z = THREE.MathUtils.degToRad(65)
+  ravenQuill.rotation.y = 0.6
+  lecternGroup.add(ravenQuill)
+
   group.add(lecternGroup)
-  addContactShadow(2.0, 1.3, 0.6, 0.6, 0.4)
-  hotspots.contato = new THREE.Vector3(2.0, 1.27, 1.45)
-  const contatoHit = place(box(0.55, 0.65, 0.55, 0x000000), 2.0, 1.1, 1.3)
+  addContactShadow(3.0, 0.8, 0.6, 0.6, 0.4)
+  hotspots.contato = new THREE.Vector3(3.0, 1.27, 0.95)
+  const contatoHit = place(box(0.55, 0.65, 0.55, 0x000000), 3.0, 1.1, 0.8)
   contatoHit.visible = false
   contatoHit.userData.hotspot = 'contato'
   group.add(contatoHit)
@@ -619,6 +678,7 @@ export function buildRoom() {
     glowSprites,
     fixtureGlow,
     dustField,
+    doorHinge,
     screenContent: { projetos: orbVision, experiencia: mirrorVision, contato: grimoireVision },
   }
 }

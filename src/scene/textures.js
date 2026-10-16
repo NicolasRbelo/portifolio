@@ -170,6 +170,63 @@ export function rugTexture() {
   })
 }
 
+export function bannerTexture() {
+  return canvas(200, 420, (ctx, w, h) => {
+    const cloth = ctx.createLinearGradient(0, 0, 0, h)
+    cloth.addColorStop(0, '#3a1a3a')
+    cloth.addColorStop(1, '#241026')
+    ctx.fillStyle = cloth
+    ctx.fillRect(0, 0, w, h - 36)
+    // scalloped fringe along the bottom edge
+    ctx.fillStyle = '#8a6a2a'
+    const scallops = 7
+    const sw = w / scallops
+    for (let i = 0; i < scallops; i += 1) {
+      ctx.beginPath()
+      ctx.arc(sw * i + sw / 2, h - 36, sw / 2, 0, Math.PI)
+      ctx.fill()
+    }
+    ctx.strokeStyle = '#8a6a2a'
+    ctx.lineWidth = 6
+    ctx.strokeRect(10, 10, w - 20, h - 56)
+
+    const cx = w / 2
+    const cy = h * 0.4
+    ctx.fillStyle = '#d8ad5a'
+    // a tower silhouette — this house's own mark, not borrowed heraldry
+    ctx.beginPath()
+    ctx.moveTo(cx - 26, cy + 70)
+    ctx.lineTo(cx - 22, cy - 10)
+    ctx.lineTo(cx - 34, cy - 10)
+    ctx.lineTo(cx - 34, cy - 30)
+    ctx.lineTo(cx - 18, cy - 30)
+    ctx.lineTo(cx - 18, cy - 55)
+    ctx.lineTo(cx + 18, cy - 55)
+    ctx.lineTo(cx + 18, cy - 30)
+    ctx.lineTo(cx + 34, cy - 30)
+    ctx.lineTo(cx + 34, cy - 10)
+    ctx.lineTo(cx + 22, cy - 10)
+    ctx.lineTo(cx + 26, cy + 70)
+    ctx.closePath()
+    ctx.fill()
+    // a radiant eight-point star crowning the tower
+    ctx.save()
+    ctx.translate(cx, cy - 92)
+    ctx.beginPath()
+    for (let i = 0; i < 8; i += 1) {
+      const a = (i / 8) * Math.PI * 2
+      const r = i % 2 === 0 ? 26 : 11
+      const px = Math.cos(a) * r
+      const py = Math.sin(a) * r
+      if (i === 0) ctx.moveTo(px, py)
+      else ctx.lineTo(px, py)
+    }
+    ctx.closePath()
+    ctx.fill()
+    ctx.restore()
+  })
+}
+
 export function nightSkyTexture() {
   return canvas(320, 384, (ctx, w, h) => {
     const sky = ctx.createLinearGradient(0, 0, 0, h)

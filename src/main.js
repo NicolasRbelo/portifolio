@@ -37,7 +37,7 @@ const renderer = createRenderer(canvas)
 const camera = createCamera(stage.clientWidth / stage.clientHeight)
 createLights(scene)
 
-const { group: roomGroup, hotspots, hitboxes, glowSprites, dustField, screenContent } = buildRoom()
+const { group: roomGroup, hotspots, hitboxes, glowSprites, dustField, doorHinge, screenContent } = buildRoom()
 scene.add(roomGroup)
 
 function size() {
@@ -48,9 +48,13 @@ const { w: initW, h: initH } = size()
 renderer.setSize(initW, initH)
 const composer = new CRTComposer(renderer, initW, initH)
 
-// camStage: 'log' (boot) -> 'intro' (dolly out) -> 'idle' (wide, free) ->
+// camStage: 'log' (boot) -> 'door-hold' (held on the closed door) -> 'intro'
+// (door swings open as the camera pulls back) -> 'idle' (wide, free) ->
 // 'zoom-in' -> 'zoomed' (panel open) -> 'zoom-out' -> back to 'idle'
 let camStage = 'log'
+let doorHoldStart = null
+const DOOR_HOLD_MS = 650
+const DOOR_OPEN_ANGLE = -Math.PI * 0.42
 
 function handleResize() {
   const { w, h } = size()
@@ -166,12 +170,10 @@ function beginCameraTween(to, fov, nextStage, onDone) {
 
 runConnectSequence(bootLog, () => {
   bootEl.classList.add('is-hidden')
-  beginCameraTween(CAMERA_WIDE, null, 'intro', () => {
-    camStage = 'idle'
-    interactive = true
-    canvas.classList.add('is-interactive')
-    hotspotLayer.classList.add('is-visible')
-  })
+  // the seal has just "opened" narratively — hold a beat on the closed door
+  // before it actually swings, so the recognition reads as a real beat, not a cut
+  camStage = 'door-hold'
+  doorHoldStart = performance.now()
 })
 
 // ---------- animation loop ----------
@@ -192,6 +194,15 @@ function animate() {
   const delta = Math.min(clock.getDelta(), 0.1)
   frame += 1
 
+  if (camStage === 'door-hold' && performance.now() - doorHoldStart >= DOOR_HOLD_MS) {
+    beginCameraTween(CAMERA_WIDE, null, 'intro', () => {
+      camStage = 'idle'
+      interactive = true
+      canvas.classList.add('is-interactive')
+      hotspotLayer.classList.add('is-visible')
+    })
+  }
+
   if (tween) {
     const t = Math.min((performance.now() - tween.start) / tween.duration, 1)
     const eased = easeOutCubic(t)
@@ -200,6 +211,9 @@ function animate() {
     camera.lookAt(tmpTarget)
     camera.fov = THREE.MathUtils.lerp(tween.from.fov, tween.to.fov, eased)
     camera.updateProjectionMatrix()
+    // the recognition door swings open in step with the reveal dolly, settling
+    // open for good by the time the camera reaches the wide idle framing
+    if (camStage === 'intro') doorHinge.rotation.y = eased * DOOR_OPEN_ANGLE
     if (t >= 1) {
       const done = tween.onDone
       tween = null
