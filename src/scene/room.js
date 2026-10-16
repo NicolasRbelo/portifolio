@@ -4,8 +4,7 @@ import {
   runeBorderTexture,
   starMapTexture,
   rugTexture,
-  stoneWallTexture,
-  woodFloorTexture,
+  loadSurfaceTextures,
   shadowBlobTexture,
   nightSkyTexture,
   lightShaftTexture,
@@ -13,6 +12,7 @@ import {
   makeGlowSprite,
 } from './textures.js'
 import { createOrbVision, createMirrorVision, createGrimoireVision } from './screenContent.js'
+import { loadModel } from './models.js'
 
 const COLORS = {
   stoneDark: 0x241f1a,
@@ -27,11 +27,9 @@ const COLORS = {
   mapFrame: 0x2c2015,
   mapBoard: 0x4a3624,
   paper: 0xe8d9a8,
-  crate: 0x4a3624,
   grimoireCover: 0x3a2a3a,
   chain: 0x4a463c,
   shelfWood: 0x3a2a1c,
-  shelfDoor: 0x2e2015,
   bedFrame: 0x3a2a1c,
   mattress: 0x5a4a38,
   pillow: 0x9a8a68,
@@ -47,6 +45,7 @@ function box(w, h, d, color, options = {}) {
   const mat = new THREE.MeshStandardMaterial({
     color: options.map ? 0xffffff : color,
     map: options.map ?? null,
+    normalMap: options.normalMap ?? null,
     roughness: options.roughness ?? 0.8,
     metalness: options.metalness ?? 0.15,
     emissive: options.emissive ?? 0x000000,
@@ -113,6 +112,17 @@ function addBooks(group, x, y, z, ry = 0, count = 3) {
     group.add(book)
     cy += h
   }
+}
+
+/** Loads a small CC0 prop model (see ASSETS_CREDITS.md) into the room, fire-and-forget
+ * since the files are tiny (<60KB) and this only ever runs once at scene build time. */
+function addModel(group, file, { x, y = 0, z, ry = 0, scale = 1 } = {}) {
+  loadModel(file).then((model) => {
+    model.position.set(x, y, z)
+    model.rotation.y = ry
+    model.scale.setScalar(scale)
+    group.add(model)
+  })
 }
 
 /** A small iron wall sconce holding a lit candle — the room's hanging-chain/pipe
@@ -210,7 +220,8 @@ export function buildRoom() {
   const addContactShadow = makeContactShadowAdder(group)
 
   // --- Shell: floor, back wall, side walls ---
-  const floor = place(box(9, 0.2, 8, COLORS.floor, { roughness: 0.95, map: woodFloorTexture(6, 5) }), 0, -0.1, -1)
+  const floorTex = loadSurfaceTextures('wood-floor-color.jpg', 'wood-floor-normal.jpg', 6, 5)
+  const floor = place(box(9, 0.2, 8, COLORS.floor, { roughness: 0.85, map: floorTex.map, normalMap: floorTex.normalMap }), 0, -0.1, -1)
   group.add(floor)
 
   // worn rug, the room's warm focal patch over the wood floor
@@ -219,11 +230,13 @@ export function buildRoom() {
   rug.position.set(-3.15, 0.002, 1.6)
   group.add(rug)
 
-  const backWall = place(box(9, 3.6, 0.2, COLORS.stoneDark, { map: stoneWallTexture(5, 2) }), 0, 1.7, -3.9)
+  const wallTexBack = loadSurfaceTextures('stone-wall-color.jpg', 'stone-wall-normal.jpg', 5, 2)
+  const backWall = place(box(9, 3.6, 0.2, COLORS.stoneDark, { map: wallTexBack.map, normalMap: wallTexBack.normalMap }), 0, 1.7, -3.9)
   group.add(backWall)
-  const leftWall = place(box(0.2, 3.6, 8, COLORS.stoneDark, { map: stoneWallTexture(4, 2) }), -4.4, 1.7, -1, 0)
+  const wallTexSide = loadSurfaceTextures('stone-wall-color.jpg', 'stone-wall-normal.jpg', 4, 2)
+  const leftWall = place(box(0.2, 3.6, 8, COLORS.stoneDark, { map: wallTexSide.map, normalMap: wallTexSide.normalMap }), -4.4, 1.7, -1, 0)
   group.add(leftWall)
-  const rightWall = place(box(0.2, 3.6, 8, COLORS.stoneDark, { map: stoneWallTexture(4, 2) }), 4.4, 1.7, -1, 0)
+  const rightWall = place(box(0.2, 3.6, 8, COLORS.stoneDark, { map: wallTexSide.map, normalMap: wallTexSide.normalMap }), 4.4, 1.7, -1, 0)
   group.add(rightWall)
   const ceilingTrim = place(box(9, 0.15, 8, COLORS.ironDark), 0, 3.5, -1)
   group.add(ceilingTrim)
@@ -330,29 +343,18 @@ export function buildRoom() {
   group.add(chandelierGroup)
   const fixtureGlow = chandelierGlow
 
-  // crates / barrel, set dressing
-  group.add(place(box(0.5, 0.5, 0.5, COLORS.crate), 3.5, 0.45, -1.2))
-  group.add(place(cylinder(0.26, 0.26, 0.42, 14, COLORS.crate, { roughness: 0.85, metalness: 0.05 }), 3.75, 0.21, -0.5))
+  // crates / barrel / travel chest, set dressing
+  addModel(group, 'crate.glb', { x: 3.5, y: 0.526, z: -1.2, ry: 0.3 })
+  addModel(group, 'barrel.glb', { x: 3.75, y: 0.4, z: -0.5, ry: 1.1 })
+  addModel(group, 'chest.glb', { x: -2.85, z: 2.2, ry: -0.6, scale: 0.9 })
   addContactShadow(3.5, -1.2, 0.65, 0.65, 0.4)
   addContactShadow(3.75, -0.5, 0.6, 0.6, 0.4)
+  addContactShadow(-2.85, 2.2, 0.55, 0.45, 0.35, 0.0045)
 
   // ============== BOOKSHELF BANK (set dressing, back wall) ==============
-  const shelfGroup = new THREE.Group()
-  shelfGroup.position.set(1.65, 0, -3.72)
-  const shelfCount = 3
-  for (let i = 0; i < shelfCount; i += 1) {
-    const lx = (i - (shelfCount - 1) / 2) * 0.46
-    shelfGroup.add(place(box(0.42, 1.9, 0.42, COLORS.shelfWood, { metalness: 0.1, roughness: 0.75 }), lx, 0.95, 0))
-    shelfGroup.add(place(box(0.36, 1.78, 0.02, COLORS.shelfDoor, { metalness: 0.05, roughness: 0.7 }), lx, 0.96, 0.21))
-    shelfGroup.add(place(cylinder(0.018, 0.018, 0.08, 8, COLORS.brass, { metalness: 0.6 }), lx + 0.13, 0.95, 0.22, Math.PI / 2))
-    for (let v = 0; v < 5; v += 1) {
-      shelfGroup.add(place(box(0.36, 0.01, 0.022, 0x14100c), lx, 0.3 + v * 0.35, 0.22))
-    }
-  }
-  group.add(shelfGroup)
+  addModel(group, 'bookcase.glb', { x: 1.65, z: -3.68, ry: Math.PI, scale: 1.3 })
   addContactShadow(1.65, -3.72, 1.8, 0.6, 0.4)
   addBooks(group, 2.5, 0, -3.3, Math.PI / 2 + 0.1, 5)
-  addBooks(group, 1.5, 1.9, -3.6, 0.3, 3)
 
   // ============== BED (set dressing, left wall) ==============
   const bedGroup = new THREE.Group()
@@ -483,19 +485,7 @@ export function buildRoom() {
 
   // stool pushed back from the desk, mid-work — offset to the side so it doesn't
   // block the camera's line of sight when the orb hotspot is zoomed into
-  const stoolGroup = new THREE.Group()
-  stoolGroup.position.set(-2.85, 0, 0.85)
-  stoolGroup.rotation.y = 0.5
-  stoolGroup.add(place(cylinder(0.18, 0.18, 0.04, 14, COLORS.shelfWood, { roughness: 0.75 }), 0, 0.42, 0))
-  ;[
-    [0.13, 0.13],
-    [-0.13, 0.13],
-    [0.13, -0.13],
-    [-0.13, -0.13],
-  ].forEach(([lx, lz]) => {
-    stoolGroup.add(place(cylinder(0.015, 0.015, 0.42, 6, COLORS.ironDark, { metalness: 0.4 }), lx, 0.2, lz))
-  })
-  group.add(stoolGroup)
+  addModel(group, 'stool.glb', { x: -2.85, z: 0.85, ry: 0.5 })
   addContactShadow(-2.85, 0.85, 0.5, 0.5, 0.35)
 
   hotspots.projetos = new THREE.Vector3(-2.3, 1.22, 0.17)

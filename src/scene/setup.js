@@ -105,7 +105,7 @@ export function createLights(scene) {
   scene.add(rim, rim.target)
 
   // the bed / nightstand corner sits far from every other light, so it needs its own
-  const bedLight = new THREE.PointLight(0xe8d4b8, 20, 6.5, 2)
+  const bedLight = new THREE.PointLight(0xe8d4b8, 11, 6.5, 2)
   bedLight.position.set(-3.2, 2.2, 1.8)
   scene.add(bedLight)
 

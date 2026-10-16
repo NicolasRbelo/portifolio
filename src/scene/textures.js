@@ -3,6 +3,26 @@ import * as THREE from 'three'
 /** All textures here are generated at runtime on a 2D canvas — no external image files,
  * consistent with the room's "geometry + procedural color" material approach. */
 
+const photoLoader = new THREE.TextureLoader()
+const assetBase = import.meta.env.BASE_URL
+
+/** Loads a real (CC0) photographed PBR color+normal pair — see ASSETS_CREDITS.md —
+ * tiled to the given repeat count, for the room's big architectural surfaces. */
+export function loadSurfaceTextures(colorFile, normalFile, repeatX, repeatY) {
+  const map = photoLoader.load(`${assetBase}textures/${colorFile}`)
+  map.wrapS = THREE.RepeatWrapping
+  map.wrapT = THREE.RepeatWrapping
+  map.repeat.set(repeatX, repeatY)
+  map.colorSpace = THREE.SRGBColorSpace
+
+  const normalMap = photoLoader.load(`${assetBase}textures/${normalFile}`)
+  normalMap.wrapS = THREE.RepeatWrapping
+  normalMap.wrapT = THREE.RepeatWrapping
+  normalMap.repeat.set(repeatX, repeatY)
+
+  return { map, normalMap }
+}
+
 function canvas(w, h, draw) {
   const c = document.createElement('canvas')
   c.width = w
@@ -148,67 +168,6 @@ export function rugTexture() {
     }
     ctx.globalAlpha = 1
   })
-}
-
-export function stoneWallTexture(repeatX = 4, repeatY = 2) {
-  const texture = canvas(256, 256, (ctx, w, h) => {
-    ctx.fillStyle = '#2a2420'
-    ctx.fillRect(0, 0, w, h)
-    const rows = 4
-    const rowH = h / rows
-    for (let r = 0; r < rows; r += 1) {
-      const offset = r % 2 === 0 ? 0 : w / 5
-      const blockW = w / 2.4
-      for (let x = -blockW; x < w + blockW; x += blockW) {
-        ctx.fillStyle = `rgb(${54 + Math.random() * 14},${48 + Math.random() * 12},${42 + Math.random() * 10})`
-        ctx.fillRect(x + offset + 2, r * rowH + 2, blockW - 4, rowH - 4)
-      }
-    }
-    ctx.strokeStyle = '#161210'
-    ctx.lineWidth = 4
-    for (let r = 0; r <= rows; r += 1) ctx.strokeRect(0, r * rowH, w, 0)
-    ctx.globalAlpha = 0.5
-    ctx.strokeStyle = '#161210'
-    for (let r = 0; r < rows; r += 1) {
-      const offset = r % 2 === 0 ? 0 : w / 5
-      const blockW = w / 2.4
-      for (let x = -blockW; x < w + blockW; x += blockW) {
-        ctx.strokeRect(x + offset, r * rowH, blockW, rowH)
-      }
-    }
-    ctx.globalAlpha = 1
-  })
-  texture.wrapS = THREE.RepeatWrapping
-  texture.wrapT = THREE.RepeatWrapping
-  texture.repeat.set(repeatX, repeatY)
-  return texture
-}
-
-export function woodFloorTexture(repeatX = 3, repeatY = 3) {
-  const texture = canvas(256, 256, (ctx, w, h) => {
-    ctx.fillStyle = '#3c2a1a'
-    ctx.fillRect(0, 0, w, h)
-    const plankH = h / 6
-    for (let r = 0; r < 6; r += 1) {
-      ctx.fillStyle = `rgb(${58 + Math.random() * 14},${40 + Math.random() * 10},${24 + Math.random() * 8})`
-      ctx.fillRect(0, r * plankH, w, plankH - 2)
-      ctx.strokeStyle = '#201509'
-      ctx.lineWidth = 2
-      ctx.strokeRect(0, r * plankH, w, plankH)
-      ctx.strokeStyle = 'rgba(0,0,0,0.25)'
-      for (let i = 0; i < 4; i += 1) {
-        const y = r * plankH + 4 + Math.random() * (plankH - 8)
-        ctx.beginPath()
-        ctx.moveTo(0, y)
-        ctx.bezierCurveTo(w * 0.3, y + 4, w * 0.6, y - 4, w, y)
-        ctx.stroke()
-      }
-    }
-  })
-  texture.wrapS = THREE.RepeatWrapping
-  texture.wrapT = THREE.RepeatWrapping
-  texture.repeat.set(repeatX, repeatY)
-  return texture
 }
 
 export function nightSkyTexture() {
