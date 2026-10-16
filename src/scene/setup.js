@@ -30,8 +30,8 @@ export function fovForAspect(aspect) {
 }
 
 export const CAMERA_WIDE = {
-  position: new THREE.Vector3(0.1, 1.85, 7.0),
-  target: new THREE.Vector3(0, 1.4, -1.2),
+  position: new THREE.Vector3(0.1, 2.15, 7.0),
+  target: new THREE.Vector3(0, 1.45, -1.2),
 }
 
 // one close anchor per hotspot, framing that object's own screen/board
@@ -112,6 +112,12 @@ export function createLights(scene) {
   const candleLight = new THREE.PointLight(0xffb84d, 9, 2.6, 2)
   candleLight.position.set(-3.6, 0.95, 2.9)
   scene.add(candleLight)
+
+  // cool moonlight pouring through the window — the one cold light against all
+  // the warm candle glow, what actually sells "high up, night air, not a cellar"
+  const moonlight = new THREE.PointLight(0xb4c8ff, 7, 8, 2)
+  moonlight.position.set(2.4, 2.0, 0.6)
+  scene.add(moonlight)
 
   return { overhead }
 }

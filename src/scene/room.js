@@ -7,6 +7,9 @@ import {
   stoneWallTexture,
   woodFloorTexture,
   shadowBlobTexture,
+  nightSkyTexture,
+  lightShaftTexture,
+  dustTexture,
   makeGlowSprite,
 } from './textures.js'
 import { createOrbVision, createMirrorVision, createGrimoireVision } from './screenContent.js'
@@ -134,6 +137,49 @@ function addSconce(group, x, y, z) {
   return glowSprite
 }
 
+/** Motes of dust drifting through the moonbeam — a handful of additive sprites with
+ * gentle per-point drift, updated once per frame from main.js's animation loop. */
+function createDustField() {
+  const count = 70
+  const bounds = { x: [1.8, 4.2], y: [0.4, 2.9], z: [-2.2, 2.2] }
+  const positions = new Float32Array(count * 3)
+  const speeds = new Float32Array(count)
+  for (let i = 0; i < count; i += 1) {
+    positions[i * 3] = bounds.x[0] + Math.random() * (bounds.x[1] - bounds.x[0])
+    positions[i * 3 + 1] = bounds.y[0] + Math.random() * (bounds.y[1] - bounds.y[0])
+    positions[i * 3 + 2] = bounds.z[0] + Math.random() * (bounds.z[1] - bounds.z[0])
+    speeds[i] = 0.035 + Math.random() * 0.05
+  }
+  const geometry = new THREE.BufferGeometry()
+  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+  const material = new THREE.PointsMaterial({
+    map: dustTexture(),
+    size: 0.028,
+    transparent: true,
+    opacity: 0.5,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    sizeAttenuation: true,
+  })
+  const points = new THREE.Points(geometry, material)
+  let elapsed = 0
+
+  function update(delta) {
+    elapsed += delta
+    const pos = geometry.attributes.position
+    for (let i = 0; i < count; i += 1) {
+      let y = pos.getY(i) + speeds[i] * delta
+      if (y > bounds.y[1]) y = bounds.y[0]
+      const sway = Math.sin(elapsed * 0.6 + i) * 0.002
+      pos.setY(i, y)
+      pos.setX(i, pos.getX(i) + sway)
+    }
+    pos.needsUpdate = true
+  }
+
+  return { points, update }
+}
+
 /** A soft dark ellipse decal on the floor beneath a piece of furniture — a cheap
  * stand-in for real shadow mapping that grounds every object in the scene. */
 function makeContactShadowAdder(group) {
@@ -184,6 +230,48 @@ export function buildRoom() {
 
   // wall sconces, replacing the old pipe conduits — flickering candlelight along the back wall
   const sconceGlows = [addSconce(group, -1.9, 2.2, -3.75), addSconce(group, 2.4, 2.2, -3.75)]
+
+  // arched window on the right wall — this is the top of the tower, not a cellar:
+  // the city of Arton sleeps far below, moonlight and night air pour in
+  const windowGroup = new THREE.Group()
+  windowGroup.position.set(4.3, 2.05, 0.6)
+  windowGroup.add(place(box(0.12, 1.75, 1.35, COLORS.stoneDark, { roughness: 0.9 }), -0.06, 0, 0))
+  // brass bezel as a thin border around the opening (not a solid panel), set behind
+  // the glass plane so it frames it instead of occluding it from the camera's side
+  ;[
+    [0.725, 0, 1.1, 0.05],
+    [-0.725, 0, 1.1, 0.05],
+    [0, 0.525, 0.05, 1.5],
+    [0, -0.525, 0.05, 1.5],
+  ].forEach(([ly, lz, width, height]) => {
+    windowGroup.add(place(box(0.06, height, width, COLORS.brass, { metalness: 0.35, roughness: 0.5 }), -0.07, ly, lz))
+  })
+  const windowGlass = new THREE.Mesh(new THREE.PlaneGeometry(1.0, 1.4), new THREE.MeshBasicMaterial({ map: nightSkyTexture() }))
+  windowGlass.position.set(-0.14, 0, 0)
+  windowGlass.rotation.y = -Math.PI / 2
+  windowGroup.add(windowGlass)
+  // a thin stone mullion crossing the glass, standard arcane-tower glazing
+  windowGroup.add(place(box(0.03, 1.4, 0.03, COLORS.stoneDark), -0.13, 0, 0))
+  group.add(windowGroup)
+
+  // moonbeam falling across the floor from the window
+  const lightShaft = new THREE.Mesh(
+    new THREE.PlaneGeometry(1.6, 3.2),
+    new THREE.MeshBasicMaterial({
+      map: lightShaftTexture(),
+      transparent: true,
+      opacity: 0.22,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    }),
+  )
+  lightShaft.position.set(2.9, 1.5, 0.6)
+  lightShaft.rotation.z = THREE.MathUtils.degToRad(12)
+  lightShaft.rotation.y = Math.PI / 2
+  group.add(lightShaft)
+
+  const dustField = createDustField()
+  group.add(dustField.points)
 
   // arcane seal plaque above the door
   const plaque = new THREE.Mesh(
@@ -282,8 +370,33 @@ export function buildRoom() {
   bedGroup.add(place(box(1.5, 0.08, 0.34, 0x6b2a2a, { roughness: 0.9 }), 0, 0.59, 0.25))
   bedGroup.add(place(box(0.42, 0.1, 0.26, COLORS.pillow, { roughness: 0.8 }), -0.5, 0.6, -0.35, 0.1))
   bedGroup.add(place(box(0.42, 0.1, 0.26, COLORS.pillow, { roughness: 0.8 }), 0.1, 0.6, -0.35, -0.08))
+  // blanket kicked half-open and a book left face-down — someone was just here
+  bedGroup.add(place(box(0.5, 0.03, 0.34, 0x8a2a2a, { roughness: 0.85 }), -0.2, 0.62, 0.15, -0.15))
+  const nightBook = place(box(0.14, 0.02, 0.1, COLORS.book2, { roughness: 0.75 }), 0.35, 0.55, 0.1, 0.5)
+  nightBook.rotation.x = 0.15
+  bedGroup.add(nightBook)
   group.add(bedGroup)
   addContactShadow(-3.55, 1.6, 1.4, 2.0, 0.35, 0.0045)
+
+  // boots kicked off by the bed
+  ;[-0.1, 0.1].forEach((dz) => {
+    const boot = new THREE.Group()
+    boot.position.set(-2.95, 0, 2.55 + dz)
+    boot.rotation.y = 0.4 + Math.random() * 0.4
+    boot.add(place(box(0.09, 0.1, 0.24, 0x3a2a1c, { roughness: 0.75 }), 0, 0.05, 0))
+    boot.add(place(box(0.08, 0.14, 0.08, 0x3a2a1c, { roughness: 0.75 }), 0, 0.12, -0.08))
+    group.add(boot)
+  })
+  addContactShadow(-2.95, 2.55, 0.5, 0.4, 0.3, 0.0045)
+
+  // a cloak on a wall hook by the door — last one through it was in a hurry
+  const cloakGroup = new THREE.Group()
+  cloakGroup.position.set(-2.4, 2.05, -3.77)
+  cloakGroup.add(place(cylinder(0.015, 0.015, 0.09, 6, COLORS.ironDark, { metalness: 0.6 }), 0, 0, 0.09))
+  const cloak = place(box(0.34, 0.55, 0.03, 0x3a2a6b, { roughness: 0.8 }), 0, -0.3, 0.1)
+  cloak.rotation.z = THREE.MathUtils.degToRad(4)
+  cloakGroup.add(cloak)
+  group.add(cloakGroup)
 
   // nightstand + candle beside the bed, lit by its own small warm light
   const standGroup = new THREE.Group()
@@ -367,6 +480,24 @@ export function buildRoom() {
 
   group.add(deskGroup)
   addContactShadow(-2.3, 0.3, 1.9, 1.0, 0.4)
+
+  // stool pushed back from the desk, mid-work — offset to the side so it doesn't
+  // block the camera's line of sight when the orb hotspot is zoomed into
+  const stoolGroup = new THREE.Group()
+  stoolGroup.position.set(-2.85, 0, 0.85)
+  stoolGroup.rotation.y = 0.5
+  stoolGroup.add(place(cylinder(0.18, 0.18, 0.04, 14, COLORS.shelfWood, { roughness: 0.75 }), 0, 0.42, 0))
+  ;[
+    [0.13, 0.13],
+    [-0.13, 0.13],
+    [0.13, -0.13],
+    [-0.13, -0.13],
+  ].forEach(([lx, lz]) => {
+    stoolGroup.add(place(cylinder(0.015, 0.015, 0.42, 6, COLORS.ironDark, { metalness: 0.4 }), lx, 0.2, lz))
+  })
+  group.add(stoolGroup)
+  addContactShadow(-2.85, 0.85, 0.5, 0.5, 0.35)
+
   hotspots.projetos = new THREE.Vector3(-2.3, 1.22, 0.17)
   const projetosHit = place(box(0.7, 0.6, 0.6, 0x000000), -2.3, 1.18, 0.1)
   projetosHit.visible = false
@@ -478,6 +609,7 @@ export function buildRoom() {
     hitboxes,
     glowSprites,
     fixtureGlow,
+    dustField,
     screenContent: { projetos: orbVision, experiencia: mirrorVision, contato: grimoireVision },
   }
 }

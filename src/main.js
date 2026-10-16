@@ -37,7 +37,7 @@ const renderer = createRenderer(canvas)
 const camera = createCamera(stage.clientWidth / stage.clientHeight)
 createLights(scene)
 
-const { group: roomGroup, hotspots, hitboxes, glowSprites, screenContent } = buildRoom()
+const { group: roomGroup, hotspots, hitboxes, glowSprites, dustField, screenContent } = buildRoom()
 scene.add(roomGroup)
 
 function size() {
@@ -218,6 +218,8 @@ function animate() {
   glowSprites.forEach((sprite, i) => {
     sprite.material.opacity = 0.4 + Math.sin(clock.elapsedTime * 8.0 + i * 2.1) * 0.06
   })
+
+  dustField.update(delta)
 
   if (interactive) {
     raycaster.setFromCamera(pointer, camera)

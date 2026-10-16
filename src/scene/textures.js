@@ -211,6 +211,88 @@ export function woodFloorTexture(repeatX = 3, repeatY = 3) {
   return texture
 }
 
+export function nightSkyTexture() {
+  return canvas(320, 384, (ctx, w, h) => {
+    const sky = ctx.createLinearGradient(0, 0, 0, h)
+    sky.addColorStop(0, '#0a0a2a')
+    sky.addColorStop(0.55, '#241a3a')
+    sky.addColorStop(1, '#4a2a3a')
+    ctx.fillStyle = sky
+    ctx.fillRect(0, 0, w, h)
+
+    for (let i = 0; i < 140; i += 1) {
+      const x = Math.random() * w
+      const y = Math.random() * h * 0.7
+      const r = Math.random() * 1.4
+      ctx.fillStyle = `rgba(255,255,255,${0.3 + Math.random() * 0.6})`
+      ctx.beginPath()
+      ctx.arc(x, y, r, 0, Math.PI * 2)
+      ctx.fill()
+    }
+
+    const moonX = w * 0.72
+    const moonY = h * 0.22
+    const moonGlow = ctx.createRadialGradient(moonX, moonY, 0, moonX, moonY, 60)
+    moonGlow.addColorStop(0, 'rgba(216,217,180,0.35)')
+    moonGlow.addColorStop(1, 'rgba(216,217,180,0)')
+    ctx.fillStyle = moonGlow
+    ctx.fillRect(0, 0, w, h)
+    ctx.fillStyle = '#e8e9c8'
+    ctx.beginPath()
+    ctx.arc(moonX, moonY, 22, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.fillStyle = sky
+    ctx.beginPath()
+    ctx.arc(moonX + 9, moonY - 5, 20, 0, Math.PI * 2)
+    ctx.fill()
+
+    // distant rooftops of the city below, a faint skyline silhouette
+    ctx.fillStyle = '#140a1c'
+    ctx.beginPath()
+    ctx.moveTo(0, h)
+    let x = 0
+    while (x < w) {
+      const bw = 18 + Math.random() * 26
+      const bh = 20 + Math.random() * 55
+      ctx.lineTo(x, h * 0.74 - bh * 0.35)
+      ctx.lineTo(x + bw, h * 0.74 - bh * 0.35)
+      x += bw
+    }
+    ctx.lineTo(w, h)
+    ctx.closePath()
+    ctx.fill()
+  })
+}
+
+export function lightShaftTexture() {
+  return canvas(64, 256, (ctx, w, h) => {
+    const grad = ctx.createLinearGradient(0, 0, 0, h)
+    grad.addColorStop(0, 'rgba(180,190,255,0.55)')
+    grad.addColorStop(0.6, 'rgba(180,190,255,0.14)')
+    grad.addColorStop(1, 'rgba(180,190,255,0)')
+    ctx.fillStyle = grad
+    ctx.fillRect(0, 0, w, h)
+    const mask = ctx.createLinearGradient(0, 0, w, 0)
+    mask.addColorStop(0, 'rgba(0,0,0,1)')
+    mask.addColorStop(0.5, 'rgba(0,0,0,0)')
+    mask.addColorStop(1, 'rgba(0,0,0,1)')
+    ctx.globalCompositeOperation = 'destination-out'
+    ctx.fillStyle = mask
+    ctx.fillRect(0, 0, w, h)
+    ctx.globalCompositeOperation = 'source-over'
+  })
+}
+
+export function dustTexture() {
+  return canvas(32, 32, (ctx, w, h) => {
+    const grad = ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2)
+    grad.addColorStop(0, 'rgba(255,245,220,0.9)')
+    grad.addColorStop(1, 'rgba(255,245,220,0)')
+    ctx.fillStyle = grad
+    ctx.fillRect(0, 0, w, h)
+  })
+}
+
 export function shadowBlobTexture() {
   return canvas(128, 128, (ctx, w, h) => {
     const grad = ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2)
