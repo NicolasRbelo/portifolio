@@ -14,86 +14,121 @@ function canvas(w, h, draw) {
   return texture
 }
 
-export function vaultPlaqueTexture(topLine, bottomLine) {
+export function arcaneSealTexture(topLine, bottomLine) {
   return canvas(512, 256, (ctx, w, h) => {
-    ctx.fillStyle = '#1b2118'
+    ctx.fillStyle = '#241c30'
     ctx.fillRect(0, 0, w, h)
-    ctx.strokeStyle = '#3a4a3a'
+    ctx.strokeStyle = '#8a6a2a'
     ctx.lineWidth = 6
     ctx.strokeRect(10, 10, w - 20, h - 20)
-    ctx.fillStyle = '#ffb000'
-    ctx.font = '700 96px "Share Tech Mono", monospace'
+    ctx.strokeStyle = '#9a7bff'
+    ctx.lineWidth = 2
+    ctx.strokeRect(20, 20, w - 40, h - 40)
+    ctx.fillStyle = '#d8ad5a'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
-    ctx.fillText(topLine, w / 2, h * 0.42)
-    ctx.fillStyle = '#6b7a63'
-    ctx.font = '400 32px "Share Tech Mono", monospace'
-    ctx.fillText(bottomLine, w / 2, h * 0.78)
+    const maxWidth = w - 60
+    let topSize = 78
+    ctx.font = `400 ${topSize}px "MedievalSharp", cursive`
+    while (ctx.measureText(topLine).width > maxWidth && topSize > 20) {
+      topSize -= 2
+      ctx.font = `400 ${topSize}px "MedievalSharp", cursive`
+    }
+    ctx.fillText(topLine, w / 2, h * 0.4)
+    ctx.fillStyle = '#b8a8d8'
+    let bottomSize = 28
+    ctx.font = `400 ${bottomSize}px "Share Tech Mono", monospace`
+    while (ctx.measureText(bottomLine).width > maxWidth && bottomSize > 12) {
+      bottomSize -= 2
+      ctx.font = `400 ${bottomSize}px "Share Tech Mono", monospace`
+    }
+    ctx.fillText(bottomLine, w / 2, h * 0.76)
   })
 }
 
-export function hazardStripeTexture() {
+export function runeBorderTexture() {
   return canvas(256, 64, (ctx, w, h) => {
-    ctx.fillStyle = '#12100a'
+    ctx.fillStyle = '#1a1420'
     ctx.fillRect(0, 0, w, h)
-    ctx.save()
-    ctx.translate(w / 2, h / 2)
-    ctx.fillStyle = '#d9a515'
-    const stripeW = 26
-    for (let x = -w; x < w * 2; x += stripeW * 2) {
-      ctx.save()
-      ctx.rotate(Math.PI / 4)
-      ctx.fillRect(x, -h * 2, stripeW, h * 4)
-      ctx.restore()
+    ctx.strokeStyle = '#4a3a8a'
+    ctx.lineWidth = 2
+    ctx.strokeRect(4, 4, w - 8, h - 8)
+    const glyphs = ['ᚠ', 'ᚱ', 'ᛇ', 'ᛒ', 'ᛚ', 'ᛦ']
+    ctx.fillStyle = '#c3a8ff'
+    ctx.font = '400 30px "Share Tech Mono", monospace'
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    for (let x = 22; x < w; x += 44) {
+      ctx.fillText(glyphs[Math.floor(Math.random() * glyphs.length)], x, h / 2)
     }
-    ctx.restore()
   })
 }
 
-export function radiationPosterTexture() {
+export function starMapTexture() {
   return canvas(256, 320, (ctx, w, h) => {
-    ctx.fillStyle = '#1a1407'
+    ctx.fillStyle = '#e8d9a8'
     ctx.fillRect(0, 0, w, h)
-    ctx.strokeStyle = '#8c5f00'
-    ctx.lineWidth = 5
-    ctx.strokeRect(8, 8, w - 16, h - 16)
-    ctx.fillStyle = '#ffb000'
-    ctx.beginPath()
-    const cx = w / 2
-    const cy = h * 0.42
-    const r = 46
-    ctx.arc(cx, cy, 14, 0, Math.PI * 2)
-    ctx.fill()
-    for (let i = 0; i < 3; i += 1) {
-      const a0 = (i / 3) * Math.PI * 2 - Math.PI / 2
-      const a1 = a0 + (Math.PI * 2) / 3 - 0.18
-      ctx.beginPath()
-      ctx.moveTo(cx, cy)
-      ctx.arc(cx, cy, r, a0 + 0.09, a1)
-      ctx.closePath()
-      ctx.fill()
+    ctx.globalAlpha = 0.12
+    for (let i = 0; i < 400; i += 1) {
+      ctx.fillStyle = Math.random() > 0.5 ? '#8a6a2a' : '#3a2a1c'
+      ctx.fillRect(Math.random() * w, Math.random() * h, 1, 1)
     }
-    ctx.fillStyle = '#d9a515'
-    ctx.font = '700 22px "Share Tech Mono", monospace'
+    ctx.globalAlpha = 1
+    ctx.strokeStyle = '#4a3420'
+    ctx.lineWidth = 6
+    ctx.strokeRect(8, 8, w - 16, h - 16)
+
+    // a rough coastline silhouette for "Arton", with a few marked provinces
+    ctx.strokeStyle = '#5a3a20'
+    ctx.lineWidth = 2
+    ctx.beginPath()
+    ctx.moveTo(40, 60)
+    ctx.bezierCurveTo(30, 120, 70, 160, 60, 210)
+    ctx.bezierCurveTo(90, 240, 150, 230, 180, 180)
+    ctx.bezierCurveTo(220, 150, 210, 90, 170, 70)
+    ctx.bezierCurveTo(130, 40, 70, 40, 40, 60)
+    ctx.stroke()
+
+    ctx.fillStyle = '#8a2a2a'
+    ;[[80, 100], [130, 150], [110, 190]].forEach(([x, y]) => {
+      ctx.beginPath()
+      ctx.arc(x, y, 4, 0, Math.PI * 2)
+      ctx.fill()
+    })
+
+    // compass rose
+    const cx = w / 2
+    const cy = h * 0.82
+    ctx.strokeStyle = '#8a6a2a'
+    ctx.lineWidth = 1.5
+    ctx.beginPath()
+    ctx.arc(cx, cy, 24, 0, Math.PI * 2)
+    ctx.stroke()
+    ctx.beginPath()
+    ctx.moveTo(cx, cy - 24)
+    ctx.lineTo(cx, cy + 24)
+    ctx.moveTo(cx - 24, cy)
+    ctx.lineTo(cx + 24, cy)
+    ctx.stroke()
+
+    ctx.fillStyle = '#4a3420'
+    ctx.font = '400 20px "MedievalSharp", cursive'
     ctx.textAlign = 'center'
-    ctx.fillText('CUIDADO', w / 2, h * 0.72)
-    ctx.font = '400 13px "Share Tech Mono", monospace'
-    ctx.fillStyle = '#8c5f00'
-    ctx.fillText('RISCO DE RADIAÇÃO', w / 2, h * 0.8)
+    ctx.fillText('ARTON', w / 2, h * 0.08)
   })
 }
 
 export function rugTexture() {
   return canvas(256, 384, (ctx, w, h) => {
-    ctx.fillStyle = '#4a1816'
+    ctx.fillStyle = '#4a1430'
     ctx.fillRect(0, 0, w, h)
-    ctx.strokeStyle = '#2c0f0e'
+    ctx.strokeStyle = '#2c0d1e'
     ctx.lineWidth = 10
     ctx.strokeRect(14, 14, w - 28, h - 28)
-    ctx.strokeStyle = '#7a3a2a'
+    ctx.strokeStyle = '#8a6a2a'
     ctx.lineWidth = 3
     ctx.strokeRect(30, 30, w - 60, h - 60)
-    ctx.fillStyle = '#7a3a2a'
+    ctx.fillStyle = '#8a6a2a'
     const cx = w / 2
     const cy = h / 2
     for (let i = 0; i < 6; i += 1) {
@@ -102,7 +137,7 @@ export function rugTexture() {
       ctx.arc(cx + Math.cos(a) * 46, cy + Math.sin(a) * 70, 16, 0, Math.PI * 2)
       ctx.fill()
     }
-    ctx.fillStyle = '#c99a4a'
+    ctx.fillStyle = '#d8ad5a'
     ctx.beginPath()
     ctx.arc(cx, cy, 20, 0, Math.PI * 2)
     ctx.fill()
@@ -113,6 +148,67 @@ export function rugTexture() {
     }
     ctx.globalAlpha = 1
   })
+}
+
+export function stoneWallTexture(repeatX = 4, repeatY = 2) {
+  const texture = canvas(256, 256, (ctx, w, h) => {
+    ctx.fillStyle = '#2a2420'
+    ctx.fillRect(0, 0, w, h)
+    const rows = 4
+    const rowH = h / rows
+    for (let r = 0; r < rows; r += 1) {
+      const offset = r % 2 === 0 ? 0 : w / 5
+      const blockW = w / 2.4
+      for (let x = -blockW; x < w + blockW; x += blockW) {
+        ctx.fillStyle = `rgb(${54 + Math.random() * 14},${48 + Math.random() * 12},${42 + Math.random() * 10})`
+        ctx.fillRect(x + offset + 2, r * rowH + 2, blockW - 4, rowH - 4)
+      }
+    }
+    ctx.strokeStyle = '#161210'
+    ctx.lineWidth = 4
+    for (let r = 0; r <= rows; r += 1) ctx.strokeRect(0, r * rowH, w, 0)
+    ctx.globalAlpha = 0.5
+    ctx.strokeStyle = '#161210'
+    for (let r = 0; r < rows; r += 1) {
+      const offset = r % 2 === 0 ? 0 : w / 5
+      const blockW = w / 2.4
+      for (let x = -blockW; x < w + blockW; x += blockW) {
+        ctx.strokeRect(x + offset, r * rowH, blockW, rowH)
+      }
+    }
+    ctx.globalAlpha = 1
+  })
+  texture.wrapS = THREE.RepeatWrapping
+  texture.wrapT = THREE.RepeatWrapping
+  texture.repeat.set(repeatX, repeatY)
+  return texture
+}
+
+export function woodFloorTexture(repeatX = 3, repeatY = 3) {
+  const texture = canvas(256, 256, (ctx, w, h) => {
+    ctx.fillStyle = '#3c2a1a'
+    ctx.fillRect(0, 0, w, h)
+    const plankH = h / 6
+    for (let r = 0; r < 6; r += 1) {
+      ctx.fillStyle = `rgb(${58 + Math.random() * 14},${40 + Math.random() * 10},${24 + Math.random() * 8})`
+      ctx.fillRect(0, r * plankH, w, plankH - 2)
+      ctx.strokeStyle = '#201509'
+      ctx.lineWidth = 2
+      ctx.strokeRect(0, r * plankH, w, plankH)
+      ctx.strokeStyle = 'rgba(0,0,0,0.25)'
+      for (let i = 0; i < 4; i += 1) {
+        const y = r * plankH + 4 + Math.random() * (plankH - 8)
+        ctx.beginPath()
+        ctx.moveTo(0, y)
+        ctx.bezierCurveTo(w * 0.3, y + 4, w * 0.6, y - 4, w, y)
+        ctx.stroke()
+      }
+    }
+  })
+  texture.wrapS = THREE.RepeatWrapping
+  texture.wrapT = THREE.RepeatWrapping
+  texture.repeat.set(repeatX, repeatY)
+  return texture
 }
 
 export function glowSpriteTexture(hex) {

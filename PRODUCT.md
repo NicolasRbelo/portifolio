@@ -34,7 +34,7 @@ Desenvolvedor full stack que é o único responsável por um ERP interno constru
 ## Brand Commitments
 - Nome: Nicolas Rabelo de Melo.
 - Tagline do currículo: "Desenvolvedor Full Stack | Python · React · React Native | Pós-graduando em Cibersegurança (Blue Team)".
-- Direção visual explicitamente pedida pelo usuário: tema **Fallout** (estética Pip-Boy / terminal CRT âmbar-verde, "wasteland"/retrofuturista), mantendo o mecanismo de navegação 3D ponto-e-clique do site de referência (tadao.dev) — câmera fixa, hotspots clicáveis em objetos de uma cena 3D, overlay de scanline/CRT/aberração cromática.
+- [Decidido pelo usuário, revisão] Direção visual trocada de Fallout para **Tormenta 20 / Arton** (torre de um arcanista: pedra, madeira, latão, luz de vela e magia arcana — orbe de cristal, espelho de clarividência, grimório em um atril), mantendo o mesmo mecanismo de navegação 3D ponto-e-clique do site de referência (tadao.dev) — câmera fixa, hotspots clicáveis em objetos de uma cena 3D. O overlay de pós-processamento deixou de simular uma tela CRT (sem scanlines/aberração cromática) e passou a simular ambiência de luz de vela (vinheta quente, leve cintilação, grão sutil).
 
 ## Evidence on Hand
 - Currículo completo (real, não inventado) extraído em `scratchpad/resume_text.txt`: resumo profissional, habilidades técnicas, experiência, 3 projetos, formação, certificações, idiomas.

@@ -1,13 +1,13 @@
 const LINES = [
-  { text: 'VAULT-TEC TERMLINK PROTOCOL v2.3', pause: 260 },
-  { text: 'INICIALIZANDO INTERFACE DE OVERSEER...', pause: 420 },
-  { text: '> Verificando integridade do sistema...... OK', pause: 240 },
-  { text: '> Montando unidade de armazenamento........ OK', pause: 240 },
-  { text: '> Carregando perfil do usuário.............. OK', pause: 240 },
-  { text: '> Estabelecendo conexão segura.............. OK', pause: 240 },
-  { text: '> Autenticando credenciais.................. OK', pause: 340 },
-  { text: 'ACESSO CONCEDIDO', pause: 260 },
-  { text: 'BEM-VINDO, NICOLAS.DEV', pause: 900 },
+  { text: 'GRIMÓRIO DE NICOLAS — RITO DE ABERTURA', pause: 260 },
+  { text: 'DESPERTANDO O SELO ARCANO...', pause: 420 },
+  { text: '> Alinhando os cristais de foco....... OK', pause: 240 },
+  { text: '> Acordando os espíritos da torre..... OK', pause: 240 },
+  { text: '> Decifrando as runas de acesso....... OK', pause: 240 },
+  { text: '> Tecendo o fio de maná............... OK', pause: 240 },
+  { text: '> Reconhecendo o visitante............ OK', pause: 340 },
+  { text: 'O SELO SE ABRE', pause: 260 },
+  { text: 'SEJA BEM-VINDO À TORRE, VIAJANTE', pause: 900 },
 ]
 
 const CHAR_DELAY = 16

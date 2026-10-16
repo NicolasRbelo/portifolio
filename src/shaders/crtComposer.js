@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { fullscreenVertex, brightPassFragment, blurFragment, crtCompositeFragment } from './chunks.js'
+import { fullscreenVertex, brightPassFragment, blurFragment, compositeFragment } from './chunks.js'
 
 function makeQuad(material) {
   const scene = new THREE.Scene()
@@ -41,16 +41,15 @@ export class CRTComposer {
     })
     this.compositeMat = new THREE.ShaderMaterial({
       vertexShader: fullscreenVertex,
-      fragmentShader: crtCompositeFragment,
+      fragmentShader: compositeFragment,
       uniforms: {
         tScene: { value: null },
         tBloom: { value: null },
         resolution: { value: new THREE.Vector2(width, height) },
         time: { value: 0 },
-        vignetteStrength: { value: 0.32 },
-        scanlineStrength: { value: 0.07 },
-        aberration: { value: 0.0022 },
-        tint: { value: new THREE.Color(0.85, 1.0, 0.88) },
+        vignetteStrength: { value: 0.24 },
+        grainStrength: { value: 0.045 },
+        tint: { value: new THREE.Color(1.05, 0.95, 0.82) },
       },
     })
 

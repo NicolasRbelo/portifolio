@@ -34,14 +34,13 @@ export const blurFragment = /* glsl */ `
   }
 `
 
-export const crtCompositeFragment = /* glsl */ `
+export const compositeFragment = /* glsl */ `
   uniform sampler2D tScene;
   uniform sampler2D tBloom;
   uniform vec2 resolution;
   uniform float time;
   uniform float vignetteStrength;
-  uniform float scanlineStrength;
-  uniform float aberration;
+  uniform float grainStrength;
   uniform vec3 tint;
   varying vec2 vUv;
 
@@ -51,40 +50,23 @@ export const crtCompositeFragment = /* glsl */ `
 
   void main() {
     vec2 uv = vUv;
-
-    // subtle barrel curvature
     vec2 centered = uv * 2.0 - 1.0;
-    float r2 = dot(centered, centered);
-    centered *= 1.0 + 0.035 * r2;
-    uv = centered * 0.5 + 0.5;
 
-    if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) {
-      gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-      return;
-    }
-
-    float ab = aberration * (0.4 + r2);
-    float rC = texture2D(tScene, uv + vec2(ab, 0.0)).r;
-    float gC = texture2D(tScene, uv).g;
-    float bC = texture2D(tScene, uv - vec2(ab, 0.0)).b;
-    vec3 color = vec3(rC, gC, bC);
-
+    vec3 color = texture2D(tScene, uv).rgb;
     vec3 bloom = texture2D(tBloom, uv).rgb;
     color += bloom * 0.62;
 
-    float scan = sin((uv.y * resolution.y) * 1.0 + time * 6.0) * 0.5 + 0.5;
-    color -= scan * scanlineStrength;
+    // gentle candle flicker
+    float flicker = 1.0 + sin(time * 3.1) * 0.012 + sin(time * 7.7) * 0.006;
+    color *= flicker;
 
-    float lineMask = mod(gl_FragCoord.y, 2.0) < 1.0 ? 1.0 : 0.0;
-    color -= lineMask * 0.07;
-
-    float vig = smoothstep(1.05, 0.2, length(centered));
+    float vig = smoothstep(1.1, 0.25, length(centered));
     color *= mix(1.0 - vignetteStrength, 1.0, vig);
 
-    float grain = (rand(uv * time * 60.0) - 0.5) * 0.05;
+    float grain = (rand(uv * time * 40.0) - 0.5) * grainStrength;
     color += grain;
 
-    color = mix(color, color * tint, 0.18);
+    color = mix(color, color * tint, 0.22);
 
     gl_FragColor = vec4(color, 1.0);
   }

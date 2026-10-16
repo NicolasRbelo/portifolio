@@ -9,7 +9,7 @@ export function createRenderer(canvas) {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
   renderer.outputColorSpace = THREE.SRGBColorSpace
   renderer.toneMapping = THREE.ReinhardToneMapping
-  renderer.toneMappingExposure = 2.3
+  renderer.toneMappingExposure = 2.7
   return renderer
 }
 
@@ -69,47 +69,49 @@ export function createCamera(aspect) {
 }
 
 export function createLights(scene) {
-  const ambient = new THREE.AmbientLight(0x455f4c, 3.6)
+  const ambient = new THREE.AmbientLight(0x6a5a4c, 4.3)
   scene.add(ambient)
 
-  const fill = new THREE.HemisphereLight(0x5c8d68, 0x141a14, 2.3)
+  const fill = new THREE.HemisphereLight(0x8d6c5c, 0x1a1414, 2.8)
   scene.add(fill)
 
-  const overhead = new THREE.PointLight(0xdcffdf, 48, 11, 2)
+  // chandelier candlelight, warm and slightly flickering in feel via a high color temp
+  const overhead = new THREE.PointLight(0xffd9a0, 58, 11, 2)
   overhead.position.set(-0.4, 2.85, 0.8)
   scene.add(overhead)
 
-  const terminalGlow = new THREE.PointLight(0x39ff14, 40, 6.5, 2)
-  terminalGlow.position.set(-2.3, 1.6, 0.55)
-  scene.add(terminalGlow)
+  // crystal orb glow — the room's one cool, arcane light source
+  const orbGlow = new THREE.PointLight(0x9a7bff, 38, 6.5, 2)
+  orbGlow.position.set(-2.3, 1.6, 0.55)
+  scene.add(orbGlow)
 
-  const radioGlow = new THREE.PointLight(0xffb000, 13, 4.2, 2)
-  radioGlow.position.set(0.3, 1.3, -2.75)
-  scene.add(radioGlow)
+  const mirrorGlow = new THREE.PointLight(0x7fb0ff, 14, 4.2, 2)
+  mirrorGlow.position.set(0.3, 1.3, -2.75)
+  scene.add(mirrorGlow)
 
-  // lights the Pip-Boy prop itself (position matches the prop's x=2.0, not the old x=2.3)
-  const pipboyGlow = new THREE.PointLight(0x39ff14, 28, 5, 2)
-  pipboyGlow.position.set(2.0, 1.3, 1.5)
-  scene.add(pipboyGlow)
+  // lights the grimoire-on-lectern prop (position matches the prop's x=2.0)
+  const grimoireGlow = new THREE.PointLight(0xd8ad5a, 24, 5, 2)
+  grimoireGlow.position.set(2.0, 1.3, 1.5)
+  scene.add(grimoireGlow)
 
-  // dedicated fill for the corkboard, which otherwise gets only ambient/rim light
-  const corkLight = new THREE.PointLight(0xdfe8d0, 3.2, 3.6, 1.6)
-  corkLight.position.set(2.85, 1.75, -3.35)
-  scene.add(corkLight)
+  // dedicated fill for the adventure map, which otherwise gets only ambient/rim light
+  const mapLight = new THREE.PointLight(0xe8d9b8, 3.2, 3.6, 1.6)
+  mapLight.position.set(2.85, 1.75, -3.35)
+  scene.add(mapLight)
 
-  const rim = new THREE.SpotLight(0x8fb998, 55, 13, Math.PI / 4.2, 0.5, 1.4)
+  const rim = new THREE.SpotLight(0xb89868, 55, 13, Math.PI / 4.2, 0.5, 1.4)
   rim.position.set(2.5, 3.2, 3.5)
   rim.target.position.set(0, 1, -1)
   scene.add(rim, rim.target)
 
   // the bed / nightstand corner sits far from every other light, so it needs its own
-  const bedLight = new THREE.PointLight(0xdce8d8, 20, 6.5, 2)
+  const bedLight = new THREE.PointLight(0xe8d4b8, 20, 6.5, 2)
   bedLight.position.set(-3.2, 2.2, 1.8)
   scene.add(bedLight)
 
-  const lampLight = new THREE.PointLight(0xffdf9b, 9, 2.6, 2)
-  lampLight.position.set(-3.6, 0.95, 2.9)
-  scene.add(lampLight)
+  const candleLight = new THREE.PointLight(0xffb84d, 9, 2.6, 2)
+  candleLight.position.set(-3.6, 0.95, 2.9)
+  scene.add(candleLight)
 
   return { overhead }
 }
