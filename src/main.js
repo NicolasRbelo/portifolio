@@ -30,7 +30,7 @@ const panelKicker = document.getElementById('panel-kicker')
 const panelBody = document.getElementById('panel-body')
 
 const scene = new THREE.Scene()
-scene.fog = new THREE.FogExp2(0x05070a, 0.055)
+scene.fog = new THREE.FogExp2(0x070a09, 0.032)
 
 const renderer = createRenderer(canvas)
 const camera = createCamera(stage.clientWidth / stage.clientHeight)

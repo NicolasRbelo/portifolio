@@ -9,7 +9,7 @@ export function createRenderer(canvas) {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
   renderer.outputColorSpace = THREE.SRGBColorSpace
   renderer.toneMapping = THREE.ReinhardToneMapping
-  renderer.toneMappingExposure = 1.75
+  renderer.toneMappingExposure = 2.3
   return renderer
 }
 
@@ -69,13 +69,13 @@ export function createCamera(aspect) {
 }
 
 export function createLights(scene) {
-  const ambient = new THREE.AmbientLight(0x3a5640, 2.6)
+  const ambient = new THREE.AmbientLight(0x455f4c, 3.6)
   scene.add(ambient)
 
-  const fill = new THREE.HemisphereLight(0x4c7d58, 0x0a0f0a, 1.5)
+  const fill = new THREE.HemisphereLight(0x5c8d68, 0x141a14, 2.3)
   scene.add(fill)
 
-  const overhead = new THREE.PointLight(0xdcffdf, 38, 10, 2)
+  const overhead = new THREE.PointLight(0xdcffdf, 48, 11, 2)
   overhead.position.set(-0.4, 2.85, 0.8)
   scene.add(overhead)
 

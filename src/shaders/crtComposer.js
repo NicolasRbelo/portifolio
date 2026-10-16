@@ -47,7 +47,7 @@ export class CRTComposer {
         tBloom: { value: null },
         resolution: { value: new THREE.Vector2(width, height) },
         time: { value: 0 },
-        vignetteStrength: { value: 0.46 },
+        vignetteStrength: { value: 0.32 },
         scanlineStrength: { value: 0.07 },
         aberration: { value: 0.0022 },
         tint: { value: new THREE.Color(0.85, 1.0, 0.88) },

@@ -3,9 +3,9 @@ import { vaultPlaqueTexture, hazardStripeTexture, radiationPosterTexture, rugTex
 import { createCodeScreen, createGameScreen, createHudScreen } from './screenContent.js'
 
 const COLORS = {
-  wallDark: 0x11160f,
-  wallPanel: 0x171d14,
-  floor: 0x0c0f0a,
+  wallDark: 0x1a2117,
+  wallPanel: 0x222b1e,
+  floor: 0x141a12,
   floorStripe: 0x7a5a12,
   metal: 0x2a2f27,
   metalDark: 0x1c211a,
