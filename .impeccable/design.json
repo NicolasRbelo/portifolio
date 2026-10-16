@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-16T00:00:00.000Z",
+  "title": "Design System: Nicolas Rabelo de Melo — Vault Overseer Terminal",
+  "extensions": {
+    "colorMeta": {
+      "phosphor": { "role": "primary", "displayName": "Phosphor Green", "canonical": "#39ff14", "tonalRamp": ["#041302", "#0c2d07", "#145c0c", "#1a8f0c", "#39ff14", "#6cff4e", "#9dffb0", "#d4ffdc"] },
+      "phosphor-dim": { "role": "primary", "displayName": "Phosphor Dim", "canonical": "#1a8f0c", "tonalRamp": ["#030a02", "#0a1f06", "#11440a", "#1a8f0c", "#2fbf1a", "#55d93f", "#8aeb77", "#c4f5bb"] },
+      "phosphor-bright": { "role": "primary", "displayName": "Phosphor Bright", "canonical": "#9dffb0", "tonalRamp": ["#082710", "#113f1d", "#1c5c2e", "#2f8a4c", "#55c072", "#7fe096", "#9dffb0", "#d4ffe0"] },
+      "amber": { "role": "secondary", "displayName": "Amber Warning", "canonical": "#ffb000", "tonalRamp": ["#1f1200", "#3d2400", "#5c3600", "#8c5f00", "#c48200", "#ffb000", "#ffc94d", "#ffe3a3"] },
+      "amber-dim": { "role": "secondary", "displayName": "Amber Dim", "canonical": "#8c5f00", "tonalRamp": ["#140d00", "#2a1c00", "#412b00", "#5c3e00", "#8c5f00", "#b98300", "#dba93a", "#f0cf85"] },
+      "bg": { "role": "neutral", "displayName": "Near-Black Bunker", "canonical": "#05070a", "tonalRamp": ["#000000", "#05070a", "#0a0e14", "#13181f", "#23282f", "#3a4047", "#5e6469", "#8c9196"] },
+      "bg-panel": { "role": "neutral", "displayName": "Panel Dark", "canonical": "#0a100c", "tonalRamp": ["#010302", "#0a100c", "#121c16", "#1e2d24", "#324a3c", "#4f6e5c", "#79967f", "#aec2ab"] },
+      "ink": { "role": "neutral", "displayName": "Phosphor Ink", "canonical": "#e9ffe4", "tonalRamp": ["#1a2417", "#2f402a", "#4f6b46", "#7a9d6e", "#a9c79e", "#cfe8c6", "#e9ffe4", "#f6fff2"] },
+      "rust": { "role": "neutral", "displayName": "Rust Metal", "canonical": "#6b4a2b", "tonalRamp": ["#140d06", "#2a1c0f", "#432c17", "#6b4a2b", "#8f6540", "#b1875e", "#cdab82", "#e8d3b4"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display (VT323)", "purpose": "Boot title, panel/dossier titles, résumé section headers. Phosphor green only." },
+      "body": { "displayName": "Body (Share Tech Mono)", "purpose": "Dossier and résumé paragraph copy." },
+      "label": { "displayName": "Label (Share Tech Mono, uppercase)", "purpose": "Terminal-readout micro-labels: corner chrome, kickers, tag chips, button text, hotspot tags." }
+    },
+    "shadows": [
+      { "name": "panel-lift", "value": "0 0 0 1px rgba(57,255,20,0.08), 0 24px 60px rgba(0,0,0,0.6)", "purpose": "Lifts the dossier modal off the dimmed backdrop. Reserved for this one surface." },
+      { "name": "phosphor-glow", "value": "0 0 8px 2px rgba(57,255,20,0.8)", "purpose": "Hotspot pin glow halo." },
+      { "name": "boot-title-bloom", "value": "0 0 6px rgba(57,255,20,0.65), 0 0 22px rgba(57,255,20,0.35)", "purpose": "Text-shadow bloom on the boot-screen title." }
+    ],
+    "motion": [
+      { "name": "panel-open", "value": "opacity 0.28s ease-out, transform 0.28s ease-out", "purpose": "Dossier panel open/close (translateY 14px -> 0, scale 0.98 -> 1)." },
+      { "name": "hotspot-fade", "value": "opacity 0.25s ease-out, transform 0.25s ease-out", "purpose": "Hotspot label visibility transition as the camera/projection updates." },
+      { "name": "boot-blink", "value": "blink 1.1s steps(1) infinite", "purpose": "Boot prompt cursor-style blink." }
+    ],
+    "breakpoints": [
+      { "name": "mobile", "value": "640px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Flat outlined link/button used for CTAs (project links, contact links, CV download, panel close).",
+      "html": "<a class=\"ds-btn-primary\" href=\"#\">Abrir projeto ↗</a>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 8px; font-family: 'Share Tech Mono', monospace; font-size: 13px; letter-spacing: 0.04em; color: #9dffb0; border: 1px solid #1a8f0c; padding: 9px 14px; text-decoration: none; background: transparent; } .ds-btn-primary:hover { border-color: #ffb000; color: #ffb000; } .ds-btn-primary:focus-visible { outline: 3px solid #ffb000; outline-offset: 2px; }"
+    },
+    {
+      "name": "Tag Chip",
+      "kind": "chip",
+      "refersTo": "chip-tag",
+      "description": "Inline label used for skills, certifications, and tag rows.",
+      "html": "<span class=\"ds-chip-tag\">Python</span>",
+      "css": ".ds-chip-tag { font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 0.04em; border: 1px solid #1a8f0c; color: #9dffb0; padding: 3px 8px; display: inline-block; }"
+    },
+    {
+      "name": "Dossier Panel",
+      "kind": "card",
+      "refersTo": "panel-dossier",
+      "description": "Centered modal used for all four content sections (Projetos, Experiência, Sobre mim, Contato), opened from a hotspot click.",
+      "html": "<section class=\"ds-panel\"><div class=\"ds-panel-head\"><p class=\"ds-panel-kicker\">DOSSIÊ</p><h2 class=\"ds-panel-title\">Projetos</h2><button class=\"ds-panel-close\">FECHAR [X]</button></div><div class=\"ds-panel-body\"><p>Body copy...</p></div></section>",
+      "css": ".ds-panel { width: min(760px, 92vw); max-height: min(78vh, 720px); overflow-y: auto; background: linear-gradient(180deg, #081209, #04080a); border: 1px solid #1a8f0c; box-shadow: 0 0 0 1px rgba(57,255,20,0.08), 0 24px 60px rgba(0,0,0,0.6); padding: 26px 28px 30px; } .ds-panel-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; border-bottom: 1px solid #1a8f0c; padding-bottom: 10px; margin-bottom: 16px; } .ds-panel-kicker { font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 0.25em; color: #1a8f0c; text-transform: uppercase; } .ds-panel-title { font-family: 'VT323', monospace; font-size: clamp(1.8rem, 4vw, 2.4rem); color: #39ff14; margin: 2px 0 0; letter-spacing: 0.02em; } .ds-panel-close { font-family: 'Share Tech Mono', monospace; background: transparent; border: 1px solid #1a8f0c; color: #9dffb0; padding: 6px 12px; } .ds-panel-close:hover { border-color: #ffb000; color: #ffb000; }"
+    },
+    {
+      "name": "Hotspot Label",
+      "kind": "nav",
+      "refersTo": null,
+      "description": "Screen-projected clickable marker over a 3D world object; pin dot + uppercase tag.",
+      "html": "<button type=\"button\" class=\"ds-hotspot\"><span class=\"ds-hotspot-pin\"></span><span class=\"ds-hotspot-tag\">Projetos</span></button>",
+      "css": ".ds-hotspot { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; background: none; border: none; cursor: pointer; } .ds-hotspot-pin { width: 7px; height: 7px; border-radius: 50%; background: #39ff14; box-shadow: 0 0 8px 2px rgba(57,255,20,0.8); } .ds-hotspot-tag { font-family: 'Share Tech Mono', monospace; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: #9dffb0; background: rgba(5,10,7,0.78); border: 1px solid #1a8f0c; padding: 4px 10px; white-space: nowrap; } .ds-hotspot:hover .ds-hotspot-tag, .ds-hotspot:focus-visible .ds-hotspot-tag { border-color: #ffb000; color: #ffb000; }"
+    },
+    {
+      "name": "Log Entry",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Left-rule record block used for projects, experience, and education entries inside dossier panels.",
+      "html": "<div class=\"ds-entry\"><div class=\"ds-entry-title\">finderCafé</div><div class=\"ds-entry-meta\">React · Leaflet · OpenStreetMap</div><p>Description text...</p></div>",
+      "css": ".ds-entry { border-left: 1px solid #1a8f0c; padding-left: 14px; margin-bottom: 20px; } .ds-entry-title { font-weight: 700; color: #9dffb0; font-family: 'Share Tech Mono', monospace; } .ds-entry-meta { font-size: 12px; color: #ffb000; margin: 2px 0 8px; font-family: 'Share Tech Mono', monospace; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Vault Overseer Terminal",
+    "overview": "The build is a fixed-camera Three.js bunker room — floor stripes, rust-metal pipe conduits, a Vault-Tec stencil plaque, a vault door backdrop — rendered through a hand-rolled CRT composer (bright-pass + two-pass Gaussian blur bloom, scanline, chromatic aberration, vignette, phosphor tint) built from render targets, with no three/examples/jsm addons. The DOM overlay (boot screen, hotspot labels, dossier panels, corner chrome, and a plain-HTML résumé fallback below the stage) never pretends to be print or glass; it reads as terminal firmware laid over the 3D viewport. Phosphor green is the committed interaction color, delivered as glow/emissive/text-shadow rather than flat color fills — the room's geometry carries color and material (roughness/metalness), the UI layer carries light. This is a code-led, no-image-generation build: every token is read from src/style.css's :root custom properties and from the Three.js material/shader source, not from a visual comp.",
+    "keyCharacteristics": [
+      "Phosphor-green glow as the dominant interactive signal; amber as a secondary warning/CTA accent",
+      "CRT post-process (scanline, chromatic aberration, vignette, bloom) layered over every frame, DOM included",
+      "Flat, zero-radius rectangular UI chrome; the 3D room supplies the only curved forms (dials, bezels, rivets)",
+      "Terminal mono/pixel-mono type pairing (VT323 display, Share Tech Mono body/label) with no serif, no gradient fills, no glassmorphism"
+    ],
+    "rules": [
+      { "name": "The Glow-Not-Fill Rule", "body": "Phosphor green never appears as a flat background or solid button fill. It is always carried by emissive material, box-shadow glow, or text-shadow bloom — light, not paint.", "section": "colors" },
+      { "name": "The All-Mono Rule", "body": "No serif and no system UI sans anywhere in the build; every text node routes through VT323 or Share Tech Mono.", "section": "typography" },
+      { "name": "The Glow-Is-Elevation Rule", "body": "Outside the single dossier-panel modal, depth comes from phosphor/amber glow (box-shadow halos, text-shadow bloom, shader bloom), never from a generic drop-shadow card system.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do carry phosphor green as glow/emissive (text-shadow, box-shadow, material emissive), never as a flat fill — The Glow-Not-Fill Rule.",
+      "Do reserve amber strictly for hover/focus state and secondary CTA/warning emphasis; it is not a co-equal second primary.",
+      "Do keep all DOM chrome flat and zero-radius; round forms belong to hardware silhouettes in the 3D room only.",
+      "Do route every text node through VT323 (display) or Share Tech Mono (body/label) — The All-Mono Rule."
+    ],
+    "donts": [
+      "Don't add a generic drop-shadow card-elevation system; depth outside the dossier modal comes from glow only.",
+      "Don't introduce new kicker/eyebrow micro-labels beyond the two inherited instances (.boot-kicker, .panel-kicker). They are a carried build detail, not a system pattern to extend onto new surfaces.",
+      "Don't add border-radius to DOM UI chrome beyond the existing circular hotspot pin.",
+      "Don't reach for the unused --danger (#ff3b30) token to invent an error/alert pattern; it is declared but not wired into any shipped component."
+    ]
+  }
+}
