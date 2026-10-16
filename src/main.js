@@ -25,6 +25,7 @@ const hotspotLayer = document.getElementById('hotspot-layer')
 const bootEl = document.getElementById('boot')
 const bootLog = document.getElementById('boot-log')
 const panelRoot = document.getElementById('panel-root')
+const panelEl = panelRoot.querySelector('.panel')
 const panelTitle = document.getElementById('panel-title')
 const panelKicker = document.getElementById('panel-kicker')
 const panelBody = document.getElementById('panel-body')
@@ -83,6 +84,7 @@ function openPanel(key) {
   activeHotspot = key
   interactive = false
   hotspotLayer.classList.remove('is-visible')
+  panelEl.dataset.theme = key
   panelKicker.textContent = content.kicker
   panelTitle.textContent = content.title
   panelBody.innerHTML = content.html

@@ -211,6 +211,17 @@ export function woodFloorTexture(repeatX = 3, repeatY = 3) {
   return texture
 }
 
+export function shadowBlobTexture() {
+  return canvas(128, 128, (ctx, w, h) => {
+    const grad = ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2)
+    grad.addColorStop(0, 'rgba(0,0,0,0.9)')
+    grad.addColorStop(0.6, 'rgba(0,0,0,0.5)')
+    grad.addColorStop(1, 'rgba(0,0,0,0)')
+    ctx.fillStyle = grad
+    ctx.fillRect(0, 0, w, h)
+  })
+}
+
 export function glowSpriteTexture(hex) {
   return canvas(128, 128, (ctx, w, h) => {
     const grad = ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2)

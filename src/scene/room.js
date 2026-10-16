@@ -6,6 +6,7 @@ import {
   rugTexture,
   stoneWallTexture,
   woodFloorTexture,
+  shadowBlobTexture,
   makeGlowSprite,
 } from './textures.js'
 import { createOrbVision, createMirrorVision, createGrimoireVision } from './screenContent.js'
@@ -97,15 +98,18 @@ function place(mesh, x, y, z, ry = 0) {
   return mesh
 }
 
-function addBooks(group, x, y, z, ry = 0) {
-  const colors = [COLORS.book1, COLORS.book2, COLORS.book3]
+const BOOK_COLORS = [COLORS.book1, COLORS.book2, COLORS.book3, 0x8a6a2a, 0x2a3a5a, 0x5a2a4a]
+
+function addBooks(group, x, y, z, ry = 0, count = 3) {
   let cy = y
-  colors.forEach((c, i) => {
-    const h = 0.05 + (i % 2) * 0.015
-    const book = place(box(0.18, h, 0.13, c, { roughness: 0.75 }), x, cy + h / 2, z, ry + (Math.random() - 0.5) * 0.08)
+  for (let i = 0; i < count; i += 1) {
+    const c = BOOK_COLORS[Math.floor(Math.random() * BOOK_COLORS.length)]
+    const h = 0.045 + Math.random() * 0.025
+    const w = 0.15 + Math.random() * 0.05
+    const book = place(box(w, h, 0.11 + Math.random() * 0.03, c, { roughness: 0.75 }), x, cy + h / 2, z, ry + (Math.random() - 0.5) * 0.12)
     group.add(book)
     cy += h
-  })
+  }
 }
 
 /** A small iron wall sconce holding a lit candle — the room's hanging-chain/pipe
@@ -130,11 +134,34 @@ function addSconce(group, x, y, z) {
   return glowSprite
 }
 
+/** A soft dark ellipse decal on the floor beneath a piece of furniture — a cheap
+ * stand-in for real shadow mapping that grounds every object in the scene. */
+function makeContactShadowAdder(group) {
+  const texture = shadowBlobTexture()
+  return (x, z, w, d, opacity = 0.45, y = 0.0015) => {
+    const mesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(w, d),
+      new THREE.MeshBasicMaterial({
+        map: texture,
+        transparent: true,
+        opacity,
+        depthWrite: false,
+        blending: THREE.MultiplyBlending,
+        premultipliedAlpha: true,
+      }),
+    )
+    mesh.rotation.x = -Math.PI / 2
+    mesh.position.set(x, y, z)
+    group.add(mesh)
+  }
+}
+
 /** Builds the arcanist's tower room and returns the group, hotspot anchors, and
  * per-surface canvas-texture tick functions (so main.js can animate the "live"
  * magical surfaces). */
 export function buildRoom() {
   const group = new THREE.Group()
+  const addContactShadow = makeContactShadowAdder(group)
 
   // --- Shell: floor, back wall, side walls ---
   const floor = place(box(9, 0.2, 8, COLORS.floor, { roughness: 0.95, map: woodFloorTexture(6, 5) }), 0, -0.1, -1)
@@ -218,6 +245,8 @@ export function buildRoom() {
   // crates / barrel, set dressing
   group.add(place(box(0.5, 0.5, 0.5, COLORS.crate), 3.5, 0.45, -1.2))
   group.add(place(cylinder(0.26, 0.26, 0.42, 14, COLORS.crate, { roughness: 0.85, metalness: 0.05 }), 3.75, 0.21, -0.5))
+  addContactShadow(3.5, -1.2, 0.65, 0.65, 0.4)
+  addContactShadow(3.75, -0.5, 0.6, 0.6, 0.4)
 
   // ============== BOOKSHELF BANK (set dressing, back wall) ==============
   const shelfGroup = new THREE.Group()
@@ -233,7 +262,9 @@ export function buildRoom() {
     }
   }
   group.add(shelfGroup)
-  addBooks(group, 2.5, 0, -3.3, Math.PI / 2 + 0.1)
+  addContactShadow(1.65, -3.72, 1.8, 0.6, 0.4)
+  addBooks(group, 2.5, 0, -3.3, Math.PI / 2 + 0.1, 5)
+  addBooks(group, 1.5, 1.9, -3.6, 0.3, 3)
 
   // ============== BED (set dressing, left wall) ==============
   const bedGroup = new THREE.Group()
@@ -252,6 +283,7 @@ export function buildRoom() {
   bedGroup.add(place(box(0.42, 0.1, 0.26, COLORS.pillow, { roughness: 0.8 }), -0.5, 0.6, -0.35, 0.1))
   bedGroup.add(place(box(0.42, 0.1, 0.26, COLORS.pillow, { roughness: 0.8 }), 0.1, 0.6, -0.35, -0.08))
   group.add(bedGroup)
+  addContactShadow(-3.55, 1.6, 1.4, 2.0, 0.35, 0.0045)
 
   // nightstand + candle beside the bed, lit by its own small warm light
   const standGroup = new THREE.Group()
@@ -269,6 +301,22 @@ export function buildRoom() {
   candleGlowSprite.position.set(0, 0.73, 0)
   standGroup.add(candleGlowSprite)
   group.add(standGroup)
+  addContactShadow(-3.65, 2.95, 0.65, 0.6, 0.35, 0.0045)
+
+  // dice and a rolled scroll, dropped on the rug
+  ;[
+    [-2.55, 2.0, 0x8a2a2a],
+    [-2.42, 2.08, 0xe8d9a8],
+  ].forEach(([dx, dz, c]) => {
+    group.add(place(box(0.055, 0.055, 0.055, c, { roughness: 0.5 }), dx, 0.028, dz, Math.random() * Math.PI))
+  })
+  const scrollGroup = new THREE.Group()
+  scrollGroup.position.set(-2.7, 0.03, 2.4)
+  scrollGroup.rotation.y = 0.6
+  scrollGroup.add(place(cylinder(0.028, 0.028, 0.26, 10, COLORS.paper, { roughness: 0.8 }), 0, 0, 0, 0))
+  scrollGroup.children[0].rotation.z = Math.PI / 2
+  scrollGroup.add(place(box(0.03, 0.005, 0.26, 0x6b2a2a, { roughness: 0.6 }), 0, 0.03, 0))
+  group.add(scrollGroup)
 
   const hotspots = {}
   const glowSprites = [candleGlowSprite, chandelierGlow, ...sconceGlows]
@@ -300,10 +348,17 @@ export function buildRoom() {
   orbDisc.position.set(0, 1.16, -0.048)
   deskGroup.add(orbDisc)
 
-  // inkwell + parchment + tomes clutter
+  // inkwell + quill + potion bottle + parchment + tomes clutter
   deskGroup.add(place(cylinder(0.05, 0.06, 0.1, 8, 0x1a1410), 0.6, 0.87, 0.3))
+  const quill = place(cylinder(0.004, 0.004, 0.22, 6, 0xe8d9b0, { roughness: 0.6 }), 0.57, 0.97, 0.26)
+  quill.rotation.z = THREE.MathUtils.degToRad(70)
+  quill.rotation.y = 0.3
+  deskGroup.add(quill)
+  const potionBottle = place(cylinder(0.025, 0.03, 0.08, 10, 0x2a4a3a, { roughness: 0.3, metalness: 0.1 }), -0.75, 0.86, -0.1)
+  deskGroup.add(potionBottle)
+  deskGroup.add(place(cylinder(0.014, 0.014, 0.03, 8, 0x8a6a2a, { metalness: 0.3 }), -0.75, 0.91, -0.1))
   deskGroup.add(place(box(0.22, 0.01, 0.3, COLORS.paper), -0.6, 0.825, 0.18, 0.15))
-  addBooks(deskGroup, 0.68, 0.82, -0.26, 0.2)
+  addBooks(deskGroup, 0.68, 0.82, -0.26, 0.2, 4)
 
   const orbGlowSprite = makeGlowSprite('#9a7bff', 0.26)
   orbGlowSprite.position.set(0, 1.16, 0.0)
@@ -311,6 +366,7 @@ export function buildRoom() {
   glowSprites.push(orbGlowSprite)
 
   group.add(deskGroup)
+  addContactShadow(-2.3, 0.3, 1.9, 1.0, 0.4)
   hotspots.projetos = new THREE.Vector3(-2.3, 1.22, 0.17)
   const projetosHit = place(box(0.7, 0.6, 0.6, 0x000000), -2.3, 1.18, 0.1)
   projetosHit.visible = false
@@ -336,6 +392,7 @@ export function buildRoom() {
   glowSprites.push(mirrorGlowSprite)
 
   group.add(mirrorGroup)
+  addContactShadow(0.3, -3.1, 1.2, 0.55, 0.4)
   hotspots.experiencia = new THREE.Vector3(0.3, 1.0, -2.85)
   const expHit = place(box(0.9, 1.6, 0.5, 0x000000), 0.3, 0.9, -2.9)
   expHit.visible = false
@@ -406,6 +463,7 @@ export function buildRoom() {
   glowSprites.push(grimoireGlowSprite)
 
   group.add(lecternGroup)
+  addContactShadow(2.0, 1.3, 0.6, 0.6, 0.4)
   hotspots.contato = new THREE.Vector3(2.0, 1.27, 1.45)
   const contatoHit = place(box(0.55, 0.65, 0.55, 0x000000), 2.0, 1.1, 1.3)
   contatoHit.visible = false
