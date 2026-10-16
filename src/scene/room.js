@@ -343,18 +343,19 @@ export function buildRoom() {
   group.add(chandelierGroup)
   const fixtureGlow = chandelierGlow
 
-  // crates / barrel / travel chest, set dressing
-  addModel(group, 'crate.glb', { x: 3.5, y: 0.526, z: -1.2, ry: 0.3 })
-  addModel(group, 'barrel.glb', { x: 3.75, y: 0.4, z: -0.5, ry: 1.1 })
-  addModel(group, 'chest.glb', { x: -2.85, z: 2.2, ry: -0.6, scale: 0.9 })
-  addContactShadow(3.5, -1.2, 0.65, 0.65, 0.4)
-  addContactShadow(3.75, -0.5, 0.6, 0.6, 0.4)
-  addContactShadow(-2.85, 2.2, 0.55, 0.45, 0.35, 0.0045)
+  // crates / barrel / travel chest, tucked into the back-right corner as a storage
+  // nook — clear of the map-board camera's sightline and of the lectern beyond
+  addModel(group, 'crate.glb', { x: 3.9, y: 0.526, z: -3.3, ry: 0.3 })
+  addModel(group, 'barrel.glb', { x: 3.5, y: 0.4, z: -2.3, ry: 1.1 })
+  addModel(group, 'chest.glb', { x: 3.3, z: -1.3, ry: -0.6, scale: 0.9 })
+  addContactShadow(3.9, -3.3, 0.65, 0.65, 0.4)
+  addContactShadow(3.5, -2.3, 0.6, 0.6, 0.4)
+  addContactShadow(3.3, -1.3, 0.55, 0.45, 0.35)
 
-  // ============== BOOKSHELF BANK (set dressing, back wall) ==============
-  addModel(group, 'bookcase.glb', { x: 1.65, z: -3.68, ry: Math.PI, scale: 1.3 })
-  addContactShadow(1.65, -3.72, 1.8, 0.6, 0.4)
-  addBooks(group, 2.5, 0, -3.3, Math.PI / 2 + 0.1, 5)
+  // ============== BOOKSHELF BANK (set dressing, back wall far-left — clear of the door) ==============
+  addModel(group, 'bookcase.glb', { x: -3.2, z: -3.68, ry: Math.PI, scale: 1.3 })
+  addContactShadow(-3.2, -3.72, 1.8, 0.6, 0.4)
+  addBooks(group, -4.0, 0, -3.3, Math.PI / 2 + 0.1, 5)
 
   // ============== BED (set dressing, left wall) ==============
   const bedGroup = new THREE.Group()
@@ -372,11 +373,6 @@ export function buildRoom() {
   bedGroup.add(place(box(1.5, 0.08, 0.34, 0x6b2a2a, { roughness: 0.9 }), 0, 0.59, 0.25))
   bedGroup.add(place(box(0.42, 0.1, 0.26, COLORS.pillow, { roughness: 0.8 }), -0.5, 0.6, -0.35, 0.1))
   bedGroup.add(place(box(0.42, 0.1, 0.26, COLORS.pillow, { roughness: 0.8 }), 0.1, 0.6, -0.35, -0.08))
-  // blanket kicked half-open and a book left face-down — someone was just here
-  bedGroup.add(place(box(0.5, 0.03, 0.34, 0x8a2a2a, { roughness: 0.85 }), -0.2, 0.62, 0.15, -0.15))
-  const nightBook = place(box(0.14, 0.02, 0.1, COLORS.book2, { roughness: 0.75 }), 0.35, 0.55, 0.1, 0.5)
-  nightBook.rotation.x = 0.15
-  bedGroup.add(nightBook)
   group.add(bedGroup)
   addContactShadow(-3.55, 1.6, 1.4, 2.0, 0.35, 0.0045)
 
@@ -415,6 +411,10 @@ export function buildRoom() {
   const candleGlowSprite = makeGlowSprite('#ffb84d', 0.4)
   candleGlowSprite.position.set(0, 0.73, 0)
   standGroup.add(candleGlowSprite)
+  // a book left face-down beside the candle — someone was just reading
+  const nightBook = place(box(0.14, 0.02, 0.1, COLORS.book2, { roughness: 0.75 }), -0.08, 0.525, 0.08, 0.4)
+  nightBook.rotation.x = 0.1
+  standGroup.add(nightBook)
   group.add(standGroup)
   addContactShadow(-3.65, 2.95, 0.65, 0.6, 0.35, 0.0045)
 
@@ -451,16 +451,35 @@ export function buildRoom() {
     deskGroup.add(place(box(0.08, 0.78, 0.08, COLORS.ironDark, { metalness: 0.3 }), x, y, z))
   })
 
-  // brass cradle holding the orb, standing where the monitor used to sit
+  // brass cradle holding a glass crystal orb, standing where the monitor used to sit
   const orbPedestal = place(cylinder(0.08, 0.1, 0.26, 10, COLORS.brass, { metalness: 0.6, roughness: 0.35 }), 0, 0.9, -0.05)
   deskGroup.add(orbPedestal)
-  const orbCradle = torus(0.22, 0.025, 10, 24, Math.PI * 2, COLORS.brass, { metalness: 0.7, roughness: 0.3 })
-  orbCradle.position.set(0, 1.16, -0.05)
-  deskGroup.add(orbCradle)
+  const orbStand = torus(0.1, 0.018, 10, 24, Math.PI * 2, COLORS.brass, { metalness: 0.7, roughness: 0.3 })
+  orbStand.position.set(0, 1.025, -0.05)
+  orbStand.rotation.x = Math.PI / 2
+  deskGroup.add(orbStand)
+  const orbCage = torus(0.145, 0.012, 8, 20, Math.PI * 1.3, COLORS.brass, { metalness: 0.7, roughness: 0.3 })
+  orbCage.position.set(0, 1.16, -0.05)
+  orbCage.rotation.y = Math.PI / 2
+  deskGroup.add(orbCage)
 
   const orbVision = createOrbVision()
-  const orbDisc = new THREE.Mesh(new THREE.CircleGeometry(0.19, 28), orbVision.material)
-  orbDisc.position.set(0, 1.16, -0.048)
+  const orbSphere = new THREE.Mesh(
+    new THREE.SphereGeometry(0.145, 28, 28),
+    new THREE.MeshPhysicalMaterial({
+      color: 0x3a2a6b,
+      roughness: 0.15,
+      transmission: 0.65,
+      thickness: 0.3,
+      ior: 1.4,
+      emissive: 0x2a1a4a,
+      emissiveIntensity: 0.25,
+    }),
+  )
+  orbSphere.position.set(0, 1.16, -0.05)
+  deskGroup.add(orbSphere)
+  const orbDisc = new THREE.Mesh(new THREE.CircleGeometry(0.1, 28), orbVision.material)
+  orbDisc.position.set(0, 1.16, -0.07)
   deskGroup.add(orbDisc)
 
   // inkwell + quill + potion bottle + parchment + tomes clutter
@@ -494,9 +513,9 @@ export function buildRoom() {
   projetosHit.userData.hotspot = 'projetos'
   group.add(projetosHit)
 
-  // ============== SCRYING MIRROR -> EXPERIÊNCIA ==============
+  // ============== SCRYING MIRROR -> EXPERIÊNCIA (free-standing, clear of the door) ==============
   const mirrorGroup = new THREE.Group()
-  mirrorGroup.position.set(0.3, 0, -3.1)
+  mirrorGroup.position.set(0.3, 0, -1.9)
   mirrorGroup.add(place(box(1.0, 0.5, 0.35, COLORS.shelfWood, { roughness: 0.7 }), 0, 0.25, 0))
   mirrorGroup.add(place(box(0.5, 0.64, 0.05, COLORS.brass, { metalness: 0.6, roughness: 0.3 }), 0, 0.64, 0))
   const mirrorFinial = place(box(0.08, 0.08, 0.08, COLORS.brass, { metalness: 0.65, roughness: 0.25 }), 0, 0.98, 0)
@@ -513,9 +532,9 @@ export function buildRoom() {
   glowSprites.push(mirrorGlowSprite)
 
   group.add(mirrorGroup)
-  addContactShadow(0.3, -3.1, 1.2, 0.55, 0.4)
-  hotspots.experiencia = new THREE.Vector3(0.3, 1.0, -2.85)
-  const expHit = place(box(0.9, 1.6, 0.5, 0x000000), 0.3, 0.9, -2.9)
+  addContactShadow(0.3, -1.9, 1.2, 0.55, 0.4)
+  hotspots.experiencia = new THREE.Vector3(0.3, 1.0, -1.65)
+  const expHit = place(box(0.9, 1.6, 0.5, 0x000000), 0.3, 0.9, -1.7)
   expHit.visible = false
   expHit.userData.hotspot = 'experiencia'
   group.add(expHit)

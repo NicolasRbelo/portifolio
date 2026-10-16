@@ -41,8 +41,8 @@ export const CAMERA_CLOSE_MAP = {
     target: new THREE.Vector3(-2.3, 1.2, 0.54),
   },
   experiencia: {
-    position: new THREE.Vector3(0.3, 0.8, -1.55),
-    target: new THREE.Vector3(0.3, 0.68, -2.78),
+    position: new THREE.Vector3(0.3, 0.8, -0.35),
+    target: new THREE.Vector3(0.3, 0.68, -1.58),
   },
   sobre: {
     position: new THREE.Vector3(2.55, 1.82, -2.1),
