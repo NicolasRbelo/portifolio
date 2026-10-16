@@ -1,25 +1,27 @@
 ---
-name: Nicolas Rabelo de Melo — Vault Overseer Terminal
-description: A fixed-camera 3D vault-bunker portfolio read through a hand-rolled CRT terminal overlay.
+name: Nicolas Rabelo de Melo — Torre Arcana
+description: A fixed-camera 3D arcanist's-tower portfolio, read through a warm candlelight atmosphere instead of a screen.
 colors:
-  phosphor: "#39ff14"
-  phosphor-dim: "#1a8f0c"
-  phosphor-bright: "#9dffb0"
-  amber: "#ffb000"
-  amber-dim: "#8c5f00"
-  bg: "#05070a"
-  bg-panel: "#0a100c"
-  ink: "#e9ffe4"
-  rust: "#6b4a2b"
+  bg: "#0b0914"
+  bg-panel: "#140f1d"
+  arcane: "#9a7bff"
+  arcane-dim: "#4a3a8a"
+  arcane-bright: "#cab8ff"
+  gold: "#d8ad5a"
+  gold-dim: "#8a6a2a"
+  ink: "#ecdfc6"
+  mirror-accent: "#7fb0ff"
+  mirror-border: "#4a7a9a"
+  parchment: "#e8d9a8"
 typography:
   display:
-    fontFamily: "VT323, monospace"
-    fontSize: "clamp(1.8rem, 9vw, 5.5rem)"
+    fontFamily: "MedievalSharp, cursive"
+    fontSize: "clamp(1.8rem, 2.3vw, 2.4rem)"
     fontWeight: 400
-    lineHeight: 1
+    lineHeight: 1.2
     letterSpacing: "0.02em"
   body:
-    fontFamily: "Share Tech Mono, monospace"
+    fontFamily: "IM Fell English, serif"
     fontSize: "16px"
     fontWeight: 400
     lineHeight: 1.6
@@ -29,10 +31,11 @@ typography:
     fontSize: "11px"
     fontWeight: 400
     lineHeight: 1.3
-    letterSpacing: "0.1em"
+    letterSpacing: "0.08em"
 rounded:
   none: "0px"
   pin: "50%"
+  pill: "999px"
 spacing:
   xs: "6px"
   sm: "10px"
@@ -42,13 +45,13 @@ spacing:
 components:
   button-primary:
     backgroundColor: "transparent"
-    textColor: "{colors.phosphor-bright}"
+    textColor: "{colors.arcane-bright}"
     typography: "{typography.label}"
     rounded: "{rounded.none}"
     padding: "9px 14px"
   button-primary-hover:
     backgroundColor: "transparent"
-    textColor: "{colors.amber}"
+    textColor: "{colors.gold}"
     rounded: "{rounded.none}"
     padding: "9px 14px"
   panel-dossier:
@@ -58,118 +61,122 @@ components:
     padding: "26px 28px 30px"
   chip-tag:
     backgroundColor: "transparent"
-    textColor: "{colors.phosphor-bright}"
+    textColor: "{colors.arcane-bright}"
     typography: "{typography.label}"
     rounded: "{rounded.none}"
     padding: "3px 8px"
 ---
 
-# Design System: Nicolas Rabelo de Melo — Vault Overseer Terminal
+# Design System: Nicolas Rabelo de Melo — Torre Arcana
 
 ## Overview
 
-**Creative North Star: "The Vault Overseer Terminal"**
+**Creative North Star: "The Arcanist's Night Study"**
 
-The build is a fixed-camera Three.js bunker room — floor stripes, rust-metal pipe conduits, a Vault-Tec stencil plaque, a vault door backdrop — rendered through a hand-rolled CRT composer (bright-pass + two-pass Gaussian blur bloom, scanline, chromatic aberration, vignette, phosphor tint) built from render targets, with no `three/examples/jsm` addons. The DOM overlay (boot screen, hotspot labels, dossier panels, corner chrome, and a plain-HTML résumé fallback below the stage) never pretends to be print or glass; it reads as terminal firmware laid over the 3D viewport. Phosphor green is the committed interaction color, delivered as glow/emissive/text-shadow rather than flat color fills — the room's geometry carries color and material (roughness/metalness), the UI layer carries light.
+The build is a fixed-camera Three.js room at the top of a stone tower — real photographed stone and wood PBR surfaces, a hand-built four-poster bed, a brass-caged crystal orb, a scrying mirror, a grimoire on a lectern — rendered through a hand-rolled post-process composer (bright-pass + two-pass Gaussian blur bloom, warm vignette, gentle candle-flicker, film grain) built from render targets, with no `three/examples/jsm` loaders in the shader path (the few CC0 prop models route through `GLTFLoader` instead). The DOM overlay (recognition boot screen, hotspot labels, dossier panels, corner chrome) never pretends to be a physical object; it reads as handwriting and candlelight laid over the 3D viewport. Arcane purple is the committed interaction color, carried as glow/emissive/text-shadow rather than flat fills; warm gold stands in for candlelight and secondary emphasis. The room's geometry and real-world textures carry color and material; the UI layer carries light and ink.
 
-This is a code-led, no-image-generation build: every token below is read from `src/style.css`'s `:root` custom properties and from the Three.js material/shader source, not from a visual comp.
+This is a code-led, near-zero external-asset build: procedural canvas textures and Three.js materials for everything except a handful of CC0 stone/wood photographs and five tiny CC0 prop models (see `ASSETS_CREDITS.md`) — not a visual comp.
 
 **Key Characteristics:**
-- Phosphor-green glow as the dominant interactive signal; amber as a secondary warning/CTA accent
-- CRT post-process (scanline, chromatic aberration, vignette, bloom) layered over every frame, DOM included
-- Flat, zero-radius rectangular UI chrome; the 3D room supplies the only curved forms (dials, bezels, rivets)
-- Terminal mono/pixel-mono type pairing (VT323 display, Share Tech Mono body/label) with no serif, no gradient fills, no glassmorphism
+- Arcane purple glow as the dominant interactive signal; warm gold as the secondary candlelight/CTA accent
+- A warm, flicker-and-grain atmosphere composite (no scanlines, no chromatic aberration — this is candlelight, not a CRT) layered over every frame, DOM included
+- Flat, zero-radius rectangular UI chrome as the default register, with two confirmed exceptions: the circular hotspot pin and the fully-pill `contato` panel's buttons
+- A display/body/label type trio (MedievalSharp display, IM Fell English body, Share Tech Mono label) that reads as "a scholar's hand plus a terminal's precision," never generic system sans
+- Each of the four dossier panels is skinned to the object that opened it — the content panel is an extension of the 3D prop, not a reused template
 
 ## Colors
 
-A near-black CRT base lit almost entirely by two glow colors; no neutral grays, no flat color blocks for the accent hues.
+A near-black indigo base lit by one cool glow (arcane purple) and one warm one (candle gold); real material color comes from the 3D scene's stone/wood/brass, not from DOM fills.
 
 ### Primary
-- **Phosphor Green** (`#39ff14`): the dominant interactive/active color — terminal screen emissive, hotspot pin + glow sprites, boot title with a dual text-shadow bloom, panel border accents. Always delivered as glow/emissive, never as a solid fill.
-- **Phosphor Dim** (`#1a8f0c`): borders and dividers (panel borders, hotspot tag borders, scrollbar thumb) — the resting, unlit state of the phosphor hue.
-- **Phosphor Bright** (`#9dffb0`): link color, dossier entry titles, hotspot tag text, button text — the readable "lit paper" tone of the same hue family.
+- **Arcane Purple** (`#9a7bff`): the dominant interactive/active color — hotspot pin + glow, link color, boot-log text and its dual-layer glow, panel borders and titles by default (the `projetos` panel keeps this as its own accent). Always delivered as glow/emissive/text-shadow, never as a solid fill.
+- **Arcane Dim** (`#4a3a8a`): resting borders and dividers (panel borders, hotspot tag borders, scrollbar thumb, entry rules).
+- **Arcane Bright** (`#cab8ff`): readable "lit ink" tone — dossier entry titles, hotspot tag text, button text, link color.
 
 ### Secondary
-- **Amber** (`#ffb000`): secondary accent reserved for hover/focus state and standalone warning-style call-to-actions (CV download links, hover border/text on buttons and hotspot tags, radio-console screen emissive, panel body `h3` labels).
-- **Amber Dim** (`#8c5f00`): muted amber for low-emphasis underlines (boot-screen footer links, dotted link borders).
+- **Candle Gold** (`#d8ad5a`): secondary accent reserved for hover/focus state and the `contato` panel's own accent (its buttons are gold pills, not purple rectangles) — CV download link, panel `h3` labels, hover border/text on buttons and hotspot tags.
+- **Gold Dim** (`#8a6a2a`): muted gold for low-emphasis underlines and the `sobre` panel's own border/kicker color.
 
 ### Neutral
-- **Near-Black Bunker** (`#05070a`): page/stage background.
-- **Panel Dark** (`#0a100c`): résumé fallback section background.
-- **Phosphor Ink** (`#e9ffe4`): default body text color (not pure white — tinted toward the phosphor family).
-- **Rust** (`#6b4a2b`): the one warm neutral — résumé `h3` rule border and the rust-metal material color reused across pipe/crate geometry in the 3D room.
+- **Near-Black Indigo** (`#0b0914`): page/stage background — night, not a bunker.
+- **Panel Indigo** (`#140f1d`): base panel background before the per-hotspot gradient takes over.
+- **Parchment Ink** (`#ecdfc6`): default body text color — warm paper, not cool phosphor.
 
 ### Named Rules
-**The Glow-Not-Fill Rule.** Phosphor green never appears as a flat background or solid button fill. It is always carried by emissive material, box-shadow glow, or text-shadow bloom — light, not paint.
+**The Glow-Not-Fill Rule.** Arcane purple never appears as a flat background or solid button fill. It is always carried by emissive material, box-shadow glow, or text-shadow bloom — light, not paint.
+
+**The Panel-Matches-the-Prop Rule.** A dossier panel's accent color is not always arcane purple: `experiencia` (the scrying mirror) runs cool blue (`#4a7a9a` / `#7fb0ff` / `#bcdcff`), `sobre` (the pinned map) runs warm parchment gold (`#8a6a2a` / `#e8c888`) with its chips rendered as rotated sticky notes, and `contato` (the grimoire) keeps gold but turns its buttons into pills. Only `projetos` (the orb) keeps the default arcane-purple panel treatment. A new panel must pick its accent from the object that opens it, not default to purple by habit.
 
 ## Typography
 
-**Display Font:** VT323 (with monospace fallback)
-**Body/Label Font:** Share Tech Mono (with monospace fallback)
+**Display Font:** MedievalSharp (with cursive fallback)
+**Body Font:** IM Fell English (with serif fallback)
+**Label/Mono Font:** Share Tech Mono (with monospace fallback)
 
-**Character:** A rounded, slightly glitchy pixel-terminal display face paired with a crisp technical mono for everything load-bearing — the pairing reads as "firmware," never as an editorial or marketing voice.
+**Character:** A hand-lettered display face for titles and the boot-log ritual text, a legible old-style serif for everything a visitor actually reads, and a crisp technical mono reserved for system chrome (kickers, tags, corner readouts, buttons) — the pairing reads as "a scholar's study with one precise instrument on the desk," not as either pure fantasy-manuscript or pure terminal.
 
 ### Hierarchy
-- **Display** (400, `clamp(1.8rem, 9vw, 5.5rem)` down to a fixed 44px/30px for `h1`/`h2`, line-height 1): boot title, panel/dossier titles, résumé section headers. Always phosphor green with a glow text-shadow on the boot title.
-- **Body** (400, 16px, line-height 1.6): dossier panel paragraphs and résumé body copy, capped at `68ch` in the résumé section.
-- **Label** (400, 11–13px, letter-spacing 0.08–0.25em, uppercase): terminal-style micro-labels — scene-chrome corner readouts, dossier/résumé section sub-headers (`h3`), tag chips, hotspot tags, button text. This is the terminal-readout convention the whole UI runs on, not a decorative device.
+- **Display** (400, `clamp(1.8rem, 2.3vw, 2.4rem)` down to a fixed 44px/30px for `h1`/`h2`, line-height ~1.2): boot-log ritual text, panel/dossier titles. Arcane purple by default, gold or blue when the panel's own accent overrides it.
+- **Body** (400, 16px, line-height 1.6): dossier panel paragraphs, set in parchment ink.
+- **Label** (400, 11–13px, letter-spacing 0.04–0.25em, uppercase where used): terminal-style micro-chrome — scene-chrome corner readouts, panel kickers, tag chips, hotspot tags, button text. Reserved for system/UI text; body copy never runs through it.
 
 ### Named Rules
-**The All-Mono Rule.** No serif and no system UI sans anywhere in the build; every text node routes through VT323 or Share Tech Mono.
+**The Hand-Plus-Instrument Rule.** No system UI sans anywhere in the build. Reading copy always routes through IM Fell English; system chrome always routes through Share Tech Mono; only titles and the boot ritual use MedievalSharp.
 
 ## Layout
 
-The experience stage (`#stage`) is a fixed-camera, full-viewport (`100svh`, min-height 560px) 3D canvas with the CRT composer rendered over it; all DOM chrome is absolutely positioned on top (`z-index` 10–50) rather than flowing in normal layout. Corner chrome anchors to the four stage corners; hotspot labels are projected from 3D world coordinates onto 2D screen space every frame and re-positioned absolutely. Dossier panels open as a centered modal (`min(760px, 92vw)`, max-height `min(78vh, 720px)`, internal scroll) over a dimming backdrop. Below the 3D stage, a single-column plain-HTML résumé section (`max-width: 760px`) provides a non-3D fast path for accessibility, SEO, and recruiters in a hurry — a durable product constraint (PRODUCT.md "the 3D experience cannot be the only way to get essential information"), not a decorative section.
+The experience stage (`#stage`) is a fixed-camera, full-viewport (`100svh`, min-height 560px) 3D canvas with the post-process composite rendered over it; all DOM chrome is absolutely positioned on top (`z-index` 10–50) rather than flowing in normal layout. Corner chrome anchors to the four stage corners; hotspot labels are projected from 3D world coordinates onto 2D screen space every frame and re-positioned absolutely. Dossier panels open as a centered modal (`min(760px, 92vw)`, max-height `min(78vh, 720px)`, internal scroll) over a dimming backdrop. There is no below-the-fold page: every piece of content lives inside a dossier opened from a 3D object, and the CV PDF download is the one fast path out of the 3D experience (corner chrome, always visible) — a durable product decision (PRODUCT.md), not an oversight.
 
 ## Elevation & Depth
 
-This system does not use a conventional card-shadow elevation ladder. Depth is conveyed almost entirely by glow: emissive materials and sprite-based glow halos in the 3D scene, a dual text-shadow bloom on the boot title, and a bright-pass + two-pass-blur bloom composited in the CRT shader itself. The one exception is the dossier panel modal, which carries a literal `box-shadow` (`0 0 0 1px rgba(57,255,20,0.08), 0 24px 60px rgba(0,0,0,0.6)`) to lift it off the dimmed backdrop — a conventional drop-shadow, reserved for that single modal surface.
+Depth comes from two sources that don't normally coexist: literal scene lighting (real emissive materials, contact-shadow decals under furniture, bloom) in the 3D layer, and glow-as-elevation in the DOM layer. The one DOM exception is the dossier panel modal, which carries a real `box-shadow` (`0 0 0 1px rgba(154,123,255,0.1), 0 24px 60px rgba(0,0,0,0.6)`) to lift it off the dimmed backdrop.
 
 ### Shadow Vocabulary
-- **Panel lift** (`box-shadow: 0 0 0 1px rgba(57,255,20,0.08), 0 24px 60px rgba(0,0,0,0.6)`): the dossier modal only.
-- **Phosphor glow** (`box-shadow: 0 0 8px 2px rgba(57,255,20,0.8)` / `text-shadow: 0 0 6px rgba(57,255,20,0.65), 0 0 22px rgba(57,255,20,0.35)`): hotspot pins and the boot title — light-as-depth, not a drop shadow.
+- **Panel lift** (`box-shadow: 0 0 0 1px rgba(154,123,255,0.1), 0 24px 60px rgba(0,0,0,0.6)`): the dossier modal only.
+- **Arcane glow** (`box-shadow: 0 0 8px 2px rgba(154,123,255,0.8)` / `text-shadow: 0 0 8px rgba(154,123,255,0.55)`): hotspot pins and the boot-log text — light-as-depth, not a drop shadow.
 
 ### Named Rules
-**The Glow-Is-Elevation Rule.** Outside the single dossier-panel modal, depth comes from phosphor/amber glow (box-shadow halos, text-shadow bloom, shader bloom), never from a generic drop-shadow card system.
+**The Glow-Is-Elevation Rule.** Outside the single dossier-panel modal, DOM depth comes from arcane/gold glow only, never from a generic drop-shadow card system.
 
 ## Shapes
 
-Zero border-radius across the DOM UI — panels, buttons, chips, inputs, and the boot screen are all flat rectangles. The one circular DOM element is the hotspot-label "pin" dot (`border-radius: 50%`), which doubles as a glow source. In the 3D room, box geometry dominates (walls, desks, consoles, crates); circular/toroidal forms (the vault-door wheel and rivet ring, Pip-Boy dial bezel and retention strap, radio tuning dials) appear only where the real-world hardware they represent is round. Flat rectangles are the UI's default register; round forms are reserved for hardware silhouettes in the 3D scene.
+Zero border-radius is the DOM default — panels, buttons, chips, and the boot screen are flat rectangles. Two confirmed exceptions: the hotspot-label pin (`border-radius: 50%`, doubles as a glow source) and the `contato` panel's buttons (`border-radius: 999px`, a deliberate pill treatment tied to that one panel's wax-seal character — not a system-wide button shape). In the 3D room, box geometry dominates (walls, desk, lectern, bed frame); circular/toroidal brass forms (the orb's cage and stand, the door ring, the mirror's finial) appear only where the object they represent is actually round.
 
 ## Components
 
 ### Buttons
-- **Shape:** flat rectangle, 0 radius, 1px solid `phosphor-dim` border.
-- **Primary (`.btn`, `.panel-close`):** transparent background, `phosphor-bright` text, `9px 14px` padding (panel-close: `6px 12px`), Share Tech Mono label sizing (13px).
-- **Hover / Focus:** border and text shift to `amber`; focus-visible also gets a 3px solid amber outline with 2px offset (`--focus-ring`).
+- **Shape:** flat rectangle, 0 radius, 1px solid `arcane-dim` border — except inside the `contato` panel, where the same button becomes a `999px`-radius gold pill.
+- **Primary (`.btn`, `.panel-close`):** transparent background, `arcane-bright` text, `9px 14px` padding (panel-close: `6px 12px`), Share Tech Mono label sizing (13px).
+- **Hover / Focus:** border and text shift to `gold` (the one hover color shared by every panel skin); focus-visible also gets a 3px solid gold outline with 2px offset (`--focus-ring`).
 
 ### Chips (`.tag-chip`)
-- **Style:** transparent background, 1px `phosphor-dim` border, `phosphor-bright` text, 11px uppercase-weight label sizing, no selected/unselected state — used to list certifications and skill items inline.
+- **Default style:** transparent background, 1px `arcane-dim` border, `arcane-bright` text, 11px label sizing.
+- **`sobre` panel override:** no border; instead a solid parchment-toned background (cycling through 6 warm hex values), serif body font, a soft drop shadow, and a small per-chip rotation (`nth-child` cycling ±1–2deg) — the chip becomes a physical sticky note pinned to the map, not a UI tag.
 
 ### Cards / Containers (`.panel`, dossier `.entry`)
 - **Corner Style:** 0 radius.
-- **Background:** `.panel` uses a dark green-black gradient (`linear-gradient(180deg, #081209, #04080a)`); `.entry` has no background, only a 1px `phosphor-dim` left border as a log-entry rule.
+- **Background:** base `.panel` uses `linear-gradient(180deg, #1a1322, #0e0a16)`; each panel's `data-theme` attribute overrides this — `projetos` gets a radial purple glow from the top, `experiencia` a cool blue-black gradient, `sobre` a warm brown-black gradient, `contato` a purple-to-indigo gradient. `.entry` has no background, only a 1px left border (accent color follows the panel's own theme) as a log-entry rule.
 - **Shadow Strategy:** see Elevation & Depth — the modal panel lift only.
-- **Border:** 1px `phosphor-dim` throughout.
 - **Internal Padding:** panel `26px 28px 30px` (18–20px on ≤640px); entries `14px` left padding.
 
 ### Navigation (hotspot labels)
-- **Style:** a glowing pin dot plus an uppercase mono tag (13px, 0.08em tracking) in a semi-transparent dark pill with a `phosphor-dim` border; screen-projected from 3D world anchors every frame, fades in via opacity/transform transition.
-- **Hover/Focus:** tag border and text shift to amber, matching the button convention.
+- **Style:** a glowing arcane pin dot plus an uppercase mono tag (13px, 0.08em tracking) in a semi-transparent dark pill with an `arcane-dim` border; screen-projected from 3D world anchors every frame, fades in via opacity/transform transition once the intro reveal completes.
+- **Hover/Focus:** tag border and text shift to gold, matching the button convention.
 
-### Boot Screen (signature component)
-Full-viewport overlay that gates the 3D scene: a tiny uppercase label line, a large glowing VT323 title, an amber subtitle, a blinking `[ PRESSIONE QUALQUER TEKLA ]`-style prompt, and a footer row pairing a SPECIAL-stat Easter egg with the CV download link. Fades out via opacity transition once dismissed.
+### Boot / Recognition Screen (signature component)
+Full-viewport overlay that gates the 3D scene: a MedievalSharp ritual log ("GRIMÓRIO DE NICOLAS — RITO DE ABERTURA" … "O SELO SE ABRE" … "SEJA BEM-VINDO À TORRE, VIAJANTE") typed out via `requestAnimationFrame`, with a blinking cursor and a click/key-to-skip hint. On completion the overlay fades and the camera — which opened looking at the tower's closed door — holds a beat, then the door swings open on its hinge in step with the camera's reveal dolly, ending at the wide idle framing with hotspot labels fading in. This recognition beat (not a simple cut or dolly) is the build's one authored motion moment; it is not repeated elsewhere.
 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** carry phosphor green as glow/emissive (text-shadow, box-shadow, material emissive), never as a flat fill — **The Glow-Not-Fill Rule**.
-- **Do** reserve amber strictly for hover/focus state and secondary CTA/warning emphasis; it is not a co-equal second primary.
-- **Do** keep all DOM chrome flat and zero-radius; round forms belong to hardware silhouettes in the 3D room only.
-- **Do** route every text node through VT323 (display) or Share Tech Mono (body/label) — **The All-Mono Rule**.
+- **Do** carry arcane purple as glow/emissive (text-shadow, box-shadow, material emissive), never as a flat fill — **The Glow-Not-Fill Rule**.
+- **Do** let each dossier panel's accent color follow the 3D object that opens it, per **The Panel-Matches-the-Prop Rule** — don't default every new panel to purple.
+- **Do** keep all DOM chrome flat and zero-radius, with only the two confirmed exceptions (hotspot pin, `contato` pill buttons) — round forms otherwise belong to brass/hardware silhouettes in the 3D room.
+- **Do** route body copy through IM Fell English and system chrome through Share Tech Mono — **The Hand-Plus-Instrument Rule**. Reserve MedievalSharp for titles and the boot ritual only.
+- **Do** keep new 3D props and external assets CC0/credited (see `ASSETS_CREDITS.md`) and small — the whole model budget so far is under 300KB.
 
 ### Don't:
-- **Don't** add a generic drop-shadow card-elevation system; depth outside the dossier modal comes from glow only.
-- **Don't** introduce new kicker/eyebrow micro-labels beyond the two inherited instances (`.boot-kicker`, `.panel-kicker`). They are a carried build detail, not a system pattern to extend onto new surfaces.
-- **Don't** add border-radius to DOM UI chrome beyond the existing circular hotspot pin.
-- **Don't** reach for the unused `--danger` (`#ff3b30`) token to invent an error/alert pattern; it is declared but not wired into any shipped component.
+- **Don't** add a generic drop-shadow card-elevation system; DOM depth outside the dossier modal comes from glow only.
+- **Don't** add scanline, chromatic-aberration, or CRT-style post-processing — the atmosphere is candlelight (warm vignette, flicker, grain), not a screen. That identity was explicitly retired when the theme moved from a vault terminal to this tower.
+- **Don't** add border-radius to DOM UI chrome beyond the two confirmed exceptions.
+- **Don't** introduce new kicker/eyebrow micro-labels beyond the panel kicker already in use; it is a carried build detail, not a pattern to extend.
