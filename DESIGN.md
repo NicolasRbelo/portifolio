@@ -1,37 +1,38 @@
 ---
-name: Nicolas Rabelo de Melo — Torre Arcana
-description: A fixed-camera 3D arcanist's-tower portfolio, read through a warm candlelight atmosphere instead of a screen.
+name: Nicolas Rabelo de Melo — Quarto do Dev
+description: A fixed-camera 3D developer's bedroom-office, inspired directly by tadao.dev's room and lit by a neon desk-setup glow.
 colors:
-  bg: "#0b0914"
-  bg-panel: "#140f1d"
-  arcane: "#9a7bff"
-  arcane-dim: "#4a3a8a"
-  arcane-bright: "#cab8ff"
-  gold: "#d8ad5a"
-  gold-dim: "#8a6a2a"
-  ink: "#ecdfc6"
-  mirror-accent: "#7fb0ff"
-  mirror-border: "#4a7a9a"
-  parchment: "#e8d9a8"
+  bg: "#0a0b14"
+  bg-panel: "#10121e"
+  neon: "#ff3ec9"
+  neon-dim: "#7a2060"
+  neon-bright: "#ff8fe0"
+  cyan: "#4ad9ff"
+  cyan-dim: "#1f6a85"
+  amber: "#ffb347"
+  amber-dim: "#8a5a1f"
+  green: "#4ade80"
+  green-dim: "#1f6a42"
+  ink: "#e8e6f0"
 typography:
   display:
-    fontFamily: "MedievalSharp, cursive"
-    fontSize: "clamp(1.8rem, 2.3vw, 2.4rem)"
-    fontWeight: 400
+    fontFamily: "JetBrains Mono, monospace"
+    fontWeight: 700
+    fontSize: "clamp(1.6rem, 4vw, 2.1rem)"
     lineHeight: 1.2
-    letterSpacing: "0.02em"
+    letterSpacing: "-0.01em"
   body:
-    fontFamily: "IM Fell English, serif"
+    fontFamily: "Inter, sans-serif"
     fontSize: "16px"
     fontWeight: 400
     lineHeight: 1.6
     letterSpacing: "normal"
   label:
-    fontFamily: "Share Tech Mono, monospace"
+    fontFamily: "JetBrains Mono, monospace"
     fontSize: "11px"
     fontWeight: 400
     lineHeight: 1.3
-    letterSpacing: "0.08em"
+    letterSpacing: "0.04em"
 rounded:
   none: "0px"
   pin: "50%"
@@ -45,13 +46,13 @@ spacing:
 components:
   button-primary:
     backgroundColor: "transparent"
-    textColor: "{colors.arcane-bright}"
+    textColor: "{colors.neon-bright}"
     typography: "{typography.label}"
     rounded: "{rounded.none}"
     padding: "9px 14px"
   button-primary-hover:
     backgroundColor: "transparent"
-    textColor: "{colors.gold}"
+    textColor: "{colors.cyan}"
     rounded: "{rounded.none}"
     padding: "9px 14px"
   panel-dossier:
@@ -61,122 +62,123 @@ components:
     padding: "26px 28px 30px"
   chip-tag:
     backgroundColor: "transparent"
-    textColor: "{colors.arcane-bright}"
+    textColor: "{colors.neon-bright}"
     typography: "{typography.label}"
     rounded: "{rounded.none}"
     padding: "3px 8px"
 ---
 
-# Design System: Nicolas Rabelo de Melo — Torre Arcana
+# Design System: Nicolas Rabelo de Melo — Quarto do Dev
 
 ## Overview
 
-**Creative North Star: "The Arcanist's Night Study"**
+**Creative North Star: "The Setup, After Hours"**
 
-The build is a fixed-camera Three.js room at the top of a stone tower — real photographed stone and wood PBR surfaces, a hand-built four-poster bed, a brass-caged crystal orb, a scrying mirror, a grimoire on a lectern — rendered through a hand-rolled post-process composer (bright-pass + two-pass Gaussian blur bloom, warm vignette, gentle candle-flicker, film grain) built from render targets, with no `three/examples/jsm` loaders in the shader path (the few CC0 prop models route through `GLTFLoader` instead). The DOM overlay (recognition boot screen, hotspot labels, dossier panels, corner chrome) never pretends to be a physical object; it reads as handwriting and candlelight laid over the 3D viewport. Arcane purple is the committed interaction color, carried as glow/emissive/text-shadow rather than flat fills; warm gold stands in for candlelight and secondary emphasis. The room's geometry and real-world textures carry color and material; the UI layer carries light and ink.
+The build is a fixed-camera Three.js bedroom-office — a real desk with a modern monitor, PC tower and an articulated desk lamp; a TV and retro console in a hobby corner; a corkboard thick with real sticky notes; a phone charging on the nightstand — rendered through a hand-rolled post-process composer (bright-pass + two-pass Gaussian blur bloom, cool vignette, gentle screen-glow flicker, film grain). The DOM overlay (terminal-style boot log, hotspot labels, dossier panels, corner chrome) reads as an extension of the room's own screens, not a costume. Hot-pink neon is the committed interaction color, sourced directly from the room's own LED strip rather than invented for the UI; cyan stands in for monitor/TV glow, warm amber for sticky notes and practical lamp light, green for the phone's messaging glow. This is a direct, studied homage to tadao.dev's "Dev Room" — same point-and-click mechanic, same category of objects (desk/TV/corkboard), re-populated with Nicolas's own real content and his own room's layout.
 
-This is a code-led, near-zero external-asset build: procedural canvas textures and Three.js materials for everything except a handful of CC0 stone/wood photographs and five tiny CC0 prop models (see `ASSETS_CREDITS.md`) — not a visual comp.
+This is a code-led, near-zero external-asset build: procedural canvas textures and Three.js primitives for every prop (office chair, skateboard, cardboard boxes, plant, Rubik's-cube-style desk clutter) except one CC0 wood-floor photograph (see `ASSETS_CREDITS.md`) — not a visual comp.
 
 **Key Characteristics:**
-- Arcane purple glow as the dominant interactive signal; warm gold as the secondary candlelight/CTA accent
-- A warm, flicker-and-grain atmosphere composite (no scanlines, no chromatic aberration — this is candlelight, not a CRT) layered over every frame, DOM included
-- Flat, zero-radius rectangular UI chrome as the default register, with two confirmed exceptions: the circular hotspot pin and the fully-pill `contato` panel's buttons
-- A display/body/label type trio (MedievalSharp display, IM Fell English body, Share Tech Mono label) that reads as "a scholar's hand plus a terminal's precision," never generic system sans
-- Each of the four dossier panels is skinned to the object that opened it — the content panel is an extension of the 3D prop, not a reused template
+- Neon pink glow as the dominant interactive signal, sourced from the room's own LED strip — never an invented UI color
+- Each dossier panel's accent color matches the screen that opened it: pink for the monitor (Projetos), cyan for the TV (Experiência), warm sticky-note tones for the corkboard (Sobre mim), green for the phone (Contato)
+- Flat, zero-radius rectangular UI chrome as the default register, with the contato panel's pill buttons as the one confirmed exception (a messaging-app visual cue)
+- A terminal/code type pairing (JetBrains Mono for titles and system chrome, Inter for anything a visitor actually reads) — the pairing reads as "a working dev's portfolio," not a gimmick
+- The intro is one authored moment: the camera opens on the closed door, holds a beat, then the door swings open on its hinge as the camera pulls back to reveal the room and its hotspots
 
 ## Colors
 
-A near-black indigo base lit by one cool glow (arcane purple) and one warm one (candle gold); real material color comes from the 3D scene's stone/wood/brass, not from DOM fills.
+A near-black indigo-navy base lit by one cool magenta glow (the LED strip) and several smaller practical/screen glows; no neutral grays as a design choice — every light source in the room has a real-world reason to be the color it is.
 
 ### Primary
-- **Arcane Purple** (`#9a7bff`): the dominant interactive/active color — hotspot pin + glow, link color, boot-log text and its dual-layer glow, panel borders and titles by default (the `projetos` panel keeps this as its own accent). Always delivered as glow/emissive/text-shadow, never as a solid fill.
-- **Arcane Dim** (`#4a3a8a`): resting borders and dividers (panel borders, hotspot tag borders, scrollbar thumb, entry rules).
-- **Arcane Bright** (`#cab8ff`): readable "lit ink" tone — dossier entry titles, hotspot tag text, button text, link color.
+- **Neon Pink** (`#ff3ec9`): the dominant interactive/active color — hotspot pin + glow, boot-log text, the `projetos` panel's own accent, link color. Sourced from the room's LED strip, chandelier-glow, and monitor-adjacent PC RGB accent — always delivered as glow/emissive, never as a flat fill.
+- **Neon Dim** (`#7a2060`): resting borders and dividers.
+- **Neon Bright** (`#ff8fe0`): readable "lit" text tone — entry titles, hotspot tag text, button text.
 
 ### Secondary
-- **Candle Gold** (`#d8ad5a`): secondary accent reserved for hover/focus state and the `contato` panel's own accent (its buttons are gold pills, not purple rectangles) — CV download link, panel `h3` labels, hover border/text on buttons and hotspot tags.
-- **Gold Dim** (`#8a6a2a`): muted gold for low-emphasis underlines and the `sobre` panel's own border/kicker color.
+- **Cyan** (`#4ad9ff`): the monitor/TV screen-glow color — `experiencia` panel's own accent, hover state, secondary emphasis.
+- **Amber** (`#ffb347`): the desk lamp's warm practical light and the `sobre` panel's sticky-note accent.
+- **Green** (`#4ade80`): the phone's messaging-app glow and the `contato` panel's own accent, including its pill-shaped buttons.
 
 ### Neutral
-- **Near-Black Indigo** (`#0b0914`): page/stage background — night, not a bunker.
-- **Panel Indigo** (`#140f1d`): base panel background before the per-hotspot gradient takes over.
-- **Parchment Ink** (`#ecdfc6`): default body text color — warm paper, not cool phosphor.
+- **Near-Black Indigo** (`#0a0b14`): page/stage background — a room at night, lit only by its own fixtures and screens.
+- **Panel Indigo** (`#10121e`): base panel background before the per-hotspot gradient takes over.
+- **Soft White Ink** (`#e8e6f0`): default body text color.
 
 ### Named Rules
-**The Glow-Not-Fill Rule.** Arcane purple never appears as a flat background or solid button fill. It is always carried by emissive material, box-shadow glow, or text-shadow bloom — light, not paint.
+**The Glow-Not-Fill Rule.** Neon pink never appears as a flat background or solid button fill. It is always carried by emissive material, box-shadow glow, or text-shadow bloom — light, not paint.
 
-**The Panel-Matches-the-Prop Rule.** A dossier panel's accent color is not always arcane purple: `experiencia` (the scrying mirror) runs cool blue (`#4a7a9a` / `#7fb0ff` / `#bcdcff`), `sobre` (the pinned map) runs warm parchment gold (`#8a6a2a` / `#e8c888`) with its chips rendered as rotated sticky notes, and `contato` (the grimoire) keeps gold but turns its buttons into pills. Only `projetos` (the orb) keeps the default arcane-purple panel treatment. A new panel must pick its accent from the object that opens it, not default to purple by habit.
+**The Panel-Matches-the-Screen Rule.** A dossier panel's accent color is the color of the screen that opened it: monitor=pink, TV=cyan, corkboard=warm sticky-note tones, phone=green. A new panel picks its accent from its object's own light, never defaults to pink by habit.
 
 ## Typography
 
-**Display Font:** MedievalSharp (with cursive fallback)
-**Body Font:** IM Fell English (with serif fallback)
-**Label/Mono Font:** Share Tech Mono (with monospace fallback)
+**Display Font:** JetBrains Mono (bold, with monospace fallback)
+**Body Font:** Inter (with sans-serif fallback)
+**Label/Mono Font:** JetBrains Mono (with monospace fallback — same family as Display)
 
-**Character:** A hand-lettered display face for titles and the boot-log ritual text, a legible old-style serif for everything a visitor actually reads, and a crisp technical mono reserved for system chrome (kickers, tags, corner readouts, buttons) — the pairing reads as "a scholar's study with one precise instrument on the desk," not as either pure fantasy-manuscript or pure terminal.
+**Character:** The same programming font doing double duty as both headline voice and system chrome (titles, kickers, tags, buttons all in JetBrains Mono) paired with a clean, highly legible sans for anything a recruiter actually has to read (Inter). The pairing is deliberately "this person's actual tools," not a themed costume.
 
 ### Hierarchy
-- **Display** (400, `clamp(1.8rem, 2.3vw, 2.4rem)` down to a fixed 44px/30px for `h1`/`h2`, line-height ~1.2): boot-log ritual text, panel/dossier titles. Arcane purple by default, gold or blue when the panel's own accent overrides it.
-- **Body** (400, 16px, line-height 1.6): dossier panel paragraphs, set in parchment ink.
-- **Label** (400, 11–13px, letter-spacing 0.04–0.25em, uppercase where used): terminal-style micro-chrome — scene-chrome corner readouts, panel kickers, tag chips, hotspot tags, button text. Reserved for system/UI text; body copy never runs through it.
+- **Display** (700, `clamp(1.6rem, 4vw, 2.1rem)`, line-height ~1.2): boot-log text, panel/dossier titles. Neon pink by default, overridden by the panel's own accent.
+- **Body** (400, 16px, line-height 1.6): dossier panel paragraphs, set in soft white ink.
+- **Label** (400, 11–13px, letter-spacing 0.02–0.2em, uppercase where used): terminal-style system chrome — corner readouts, panel kickers, tag chips, hotspot tags, button text.
 
 ### Named Rules
-**The Hand-Plus-Instrument Rule.** No system UI sans anywhere in the build. Reading copy always routes through IM Fell English; system chrome always routes through Share Tech Mono; only titles and the boot ritual use MedievalSharp.
+**The One-Font-Two-Jobs Rule.** JetBrains Mono is both the Display and Label font — there is no separate "fantasy" or "decorative" face anywhere in the build. Inter is the only other font, reserved strictly for reading copy.
 
 ## Layout
 
-The experience stage (`#stage`) is a fixed-camera, full-viewport (`100svh`, min-height 560px) 3D canvas with the post-process composite rendered over it; all DOM chrome is absolutely positioned on top (`z-index` 10–50) rather than flowing in normal layout. Corner chrome anchors to the four stage corners; hotspot labels are projected from 3D world coordinates onto 2D screen space every frame and re-positioned absolutely. Dossier panels open as a centered modal (`min(760px, 92vw)`, max-height `min(78vh, 720px)`, internal scroll) over a dimming backdrop. There is no below-the-fold page: every piece of content lives inside a dossier opened from a 3D object, and the CV PDF download is the one fast path out of the 3D experience (corner chrome, always visible) — a durable product decision (PRODUCT.md), not an oversight.
+The experience stage (`#stage`) is a fixed-camera, full-viewport (`100svh`, min-height 560px) 3D canvas with the post-process composite rendered over it; all DOM chrome is absolutely positioned on top (`z-index` 10–50). Hotspot labels are projected from 3D world coordinates onto 2D screen space every frame; their world anchors are deliberately spaced apart (not just their physical props) so labels never visually collide even on narrower viewports — a layout constraint discovered and fixed during build, not a coincidence. Dossier panels open as a centered modal (`min(760px, 92vw)`, max-height `min(78vh, 720px)`, internal scroll) over a dimming backdrop.
 
 ## Elevation & Depth
 
-Depth comes from two sources that don't normally coexist: literal scene lighting (real emissive materials, contact-shadow decals under furniture, bloom) in the 3D layer, and glow-as-elevation in the DOM layer. The one DOM exception is the dossier panel modal, which carries a real `box-shadow` (`0 0 0 1px rgba(154,123,255,0.1), 0 24px 60px rgba(0,0,0,0.6)`) to lift it off the dimmed backdrop.
+Depth comes from real scene lighting (emissive materials, contact-shadow decals under every piece of furniture, bloom) in the 3D layer, and glow-as-elevation in the DOM layer. The one DOM exception is the dossier panel modal, which carries a real `box-shadow` (`0 0 0 1px rgba(255,62,201,0.1), 0 24px 60px rgba(0,0,0,0.6)`) to lift it off the dimmed backdrop.
 
 ### Shadow Vocabulary
-- **Panel lift** (`box-shadow: 0 0 0 1px rgba(154,123,255,0.1), 0 24px 60px rgba(0,0,0,0.6)`): the dossier modal only.
-- **Arcane glow** (`box-shadow: 0 0 8px 2px rgba(154,123,255,0.8)` / `text-shadow: 0 0 8px rgba(154,123,255,0.55)`): hotspot pins and the boot-log text — light-as-depth, not a drop shadow.
+- **Panel lift** (`box-shadow: 0 0 0 1px rgba(255,62,201,0.1), 0 24px 60px rgba(0,0,0,0.6)`): the dossier modal only.
+- **Neon glow** (`box-shadow: 0 0 8px 2px rgba(255,62,201,0.8)` / `text-shadow: 0 0 8px rgba(255,62,201,0.45)`): hotspot pins and the boot-log text.
 
 ### Named Rules
-**The Glow-Is-Elevation Rule.** Outside the single dossier-panel modal, DOM depth comes from arcane/gold glow only, never from a generic drop-shadow card system.
+**The Glow-Is-Elevation Rule.** Outside the single dossier-panel modal, DOM depth comes from neon/cyan/amber/green glow only, never from a generic drop-shadow card system.
 
 ## Shapes
 
-Zero border-radius is the DOM default — panels, buttons, chips, and the boot screen are flat rectangles. Two confirmed exceptions: the hotspot-label pin (`border-radius: 50%`, doubles as a glow source) and the `contato` panel's buttons (`border-radius: 999px`, a deliberate pill treatment tied to that one panel's wax-seal character — not a system-wide button shape). In the 3D room, box geometry dominates (walls, desk, lectern, bed frame); circular/toroidal brass forms (the orb's cage and stand, the door ring, the mirror's finial) appear only where the object they represent is actually round.
+Zero border-radius is the DOM default. One confirmed exception: the `contato` panel's buttons (`border-radius: 999px`), a deliberate pill shape tied to its messaging-app character — not a system-wide button shape. In the 3D room, box geometry dominates (desk, TV stand, bookshelf, bed, nightstand); round forms (wheels, the clock face, the lamp's cylindrical joints, the office chair's star base) appear only where the real object they represent is actually round.
 
 ## Components
 
 ### Buttons
-- **Shape:** flat rectangle, 0 radius, 1px solid `arcane-dim` border — except inside the `contato` panel, where the same button becomes a `999px`-radius gold pill.
-- **Primary (`.btn`, `.panel-close`):** transparent background, `arcane-bright` text, `9px 14px` padding (panel-close: `6px 12px`), Share Tech Mono label sizing (13px).
-- **Hover / Focus:** border and text shift to `gold` (the one hover color shared by every panel skin); focus-visible also gets a 3px solid gold outline with 2px offset (`--focus-ring`).
+- **Shape:** flat rectangle, 0 radius, 1px solid `neon-dim` border — except inside the `contato` panel, where it becomes a `999px`-radius green pill.
+- **Primary (`.btn`, `.panel-close`):** transparent background, `neon-bright` text, `9px 14px` padding (panel-close: `6px 12px`).
+- **Hover / Focus:** border and text shift to `cyan`; focus-visible gets a 3px solid neon outline with 2px offset.
 
 ### Chips (`.tag-chip`)
-- **Default style:** transparent background, 1px `arcane-dim` border, `arcane-bright` text, 11px label sizing.
-- **`sobre` panel override:** no border; instead a solid parchment-toned background (cycling through 6 warm hex values), serif body font, a soft drop shadow, and a small per-chip rotation (`nth-child` cycling ±1–2deg) — the chip becomes a physical sticky note pinned to the map, not a UI tag.
+- **Default style:** transparent background, 1px `neon-dim` border, `neon-bright` text.
+- **`sobre` panel override:** solid Post-it-colored background (yellow/orange/mint/pink/blue, cycling), dark text, a soft drop shadow, and a small per-chip rotation — a real sticky note, not a UI tag.
 
 ### Cards / Containers (`.panel`, dossier `.entry`)
 - **Corner Style:** 0 radius.
-- **Background:** base `.panel` uses `linear-gradient(180deg, #1a1322, #0e0a16)`; each panel's `data-theme` attribute overrides this — `projetos` gets a radial purple glow from the top, `experiencia` a cool blue-black gradient, `sobre` a warm brown-black gradient, `contato` a purple-to-indigo gradient. `.entry` has no background, only a 1px left border (accent color follows the panel's own theme) as a log-entry rule.
-- **Shadow Strategy:** see Elevation & Depth — the modal panel lift only.
+- **Background:** base `.panel` uses `linear-gradient(180deg, #16111f, #0c0a14)`; each panel's `data-theme` attribute overrides this to match its screen (pink radial glow for `projetos`, cyan-black for `experiencia`, warm brown-black for `sobre`, green-black for `contato`).
+- **Shadow Strategy:** see Elevation & Depth.
 - **Internal Padding:** panel `26px 28px 30px` (18–20px on ≤640px); entries `14px` left padding.
 
 ### Navigation (hotspot labels)
-- **Style:** a glowing arcane pin dot plus an uppercase mono tag (13px, 0.08em tracking) in a semi-transparent dark pill with an `arcane-dim` border; screen-projected from 3D world anchors every frame, fades in via opacity/transform transition once the intro reveal completes.
-- **Hover/Focus:** tag border and text shift to gold, matching the button convention.
+- **Style:** a glowing neon pin dot plus an uppercase mono tag in a semi-transparent dark pill with a `neon-dim` border; screen-projected every frame, fades in once the door-opening reveal completes.
+- **Hover/Focus:** tag border and text shift to cyan.
 
 ### Boot / Recognition Screen (signature component)
-Full-viewport overlay that gates the 3D scene: a MedievalSharp ritual log ("GRIMÓRIO DE NICOLAS — RITO DE ABERTURA" … "O SELO SE ABRE" … "SEJA BEM-VINDO À TORRE, VIAJANTE") typed out via `requestAnimationFrame`, with a blinking cursor and a click/key-to-skip hint. On completion the overlay fades and the camera — which opened looking at the tower's closed door — holds a beat, then the door swings open on its hinge in step with the camera's reveal dolly, ending at the wide idle framing with hotspot labels fading in. This recognition beat (not a simple cut or dolly) is the build's one authored motion moment; it is not repeated elsewhere.
+Full-viewport overlay that gates the 3D scene: a JetBrains Mono terminal log (`nicolas@portfolio ~ % ./entrar.sh` … `ACESSO LIBERADO` … `BEM-VINDO, A PORTA JÁ ESTÁ ABRINDO`) typed out via `requestAnimationFrame`. On completion the overlay fades and the camera — which opened looking at the room's closed door — holds a beat, then the door swings open on its hinge in step with the camera's reveal dolly, ending at the wide idle framing with hotspot labels fading in.
 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** carry arcane purple as glow/emissive (text-shadow, box-shadow, material emissive), never as a flat fill — **The Glow-Not-Fill Rule**.
-- **Do** let each dossier panel's accent color follow the 3D object that opens it, per **The Panel-Matches-the-Prop Rule** — don't default every new panel to purple.
-- **Do** keep all DOM chrome flat and zero-radius, with only the two confirmed exceptions (hotspot pin, `contato` pill buttons) — round forms otherwise belong to brass/hardware silhouettes in the 3D room.
-- **Do** route body copy through IM Fell English and system chrome through Share Tech Mono — **The Hand-Plus-Instrument Rule**. Reserve MedievalSharp for titles and the boot ritual only.
-- **Do** keep new 3D props and external assets CC0/credited (see `ASSETS_CREDITS.md`) and small — the whole model budget so far is under 300KB.
+- **Do** carry neon pink as glow/emissive, never as a flat fill — **The Glow-Not-Fill Rule**.
+- **Do** let each dossier panel's accent follow the screen that opens it, per **The Panel-Matches-the-Screen Rule**.
+- **Do** keep all DOM chrome flat and zero-radius, with only the `contato` pill-button exception.
+- **Do** route titles/chrome through JetBrains Mono and reading copy through Inter — **The One-Font-Two-Jobs Rule**.
+- **Do** ground every new 3D prop with its own contact-shadow decal and check its hotspot label's screen position doesn't collide with a neighbor's, especially on narrower/taller viewports.
 
 ### Don't:
 - **Don't** add a generic drop-shadow card-elevation system; DOM depth outside the dossier modal comes from glow only.
-- **Don't** add scanline, chromatic-aberration, or CRT-style post-processing — the atmosphere is candlelight (warm vignette, flicker, grain), not a screen. That identity was explicitly retired when the theme moved from a vault terminal to this tower.
-- **Don't** add border-radius to DOM UI chrome beyond the two confirmed exceptions.
-- **Don't** introduce new kicker/eyebrow micro-labels beyond the panel kicker already in use; it is a carried build detail, not a pattern to extend.
+- **Don't** reintroduce fantasy, CRT-scanline, or candlelight imagery — this build's whole identity is "a real room, lit by its own real fixtures."
+- **Don't** add border-radius to DOM UI chrome beyond the one confirmed `contato` exception.
+- **Don't** fabricate resume content to fill a prop (e.g. the corkboard's notes and the TV's "level" framing use only real skills/experience already in `content/data.js`).

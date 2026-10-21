@@ -284,12 +284,25 @@ export function buildRoom() {
   group.add(boardGroup)
   addContactShadow(-1.7, 1.2, 0.5, 0.9, 0.3)
 
+  // a floor cushion in the middle of the rug — without it that whole area read
+  // as dead space
+  const cushion = place(cylinder(0.3, 0.32, 0.1, 20, 0x5a3a52, { roughness: 0.9 }), 0.5, 0.05, -1.3)
+  group.add(cushion)
+  addContactShadow(0.5, -1.3, 0.9, 0.9, 0.35)
+
+  // a low wooden crate doubling as a coffee table, with a controller + mug
+  const crateTable = place(box(0.5, 0.32, 0.5, COLORS.cardboard, { roughness: 0.85 }), -0.6, 0.16, -1.9)
+  group.add(crateTable)
+  group.add(place(box(0.14, 0.03, 0.08, 0x1c1c1e, { roughness: 0.5 }), -0.68, 0.335, -1.85))
+  group.add(place(cylinder(0.03, 0.035, 0.07, 10, 0x2a2a2e), -0.48, 0.35, -1.95))
+  addContactShadow(-0.6, -1.9, 0.75, 0.75, 0.35)
+
   const hotspots = {}
   const glowSprites = [ledGlow]
 
   // ============== DESK + MONITOR + PC -> PROJETOS ==============
   const deskGroup = new THREE.Group()
-  deskGroup.position.set(-2.3, 0, 0.3)
+  deskGroup.position.set(-2.9, 0, 0.3)
   deskGroup.add(box(1.7, 0.08, 0.8, COLORS.desk))
   deskGroup.children[0].position.y = 0.78
   const legGeoPositions = [
@@ -354,42 +367,60 @@ export function buildRoom() {
   glowSprites.push(monitorGlowSprite)
 
   group.add(deskGroup)
-  addContactShadow(-2.3, 0.3, 1.9, 1.0, 0.4)
+  addContactShadow(-2.9, 0.3, 1.9, 1.0, 0.4)
 
   // office chair, pulled out at an angle — someone just got up
-  addOfficeChair(group, -2.0, 0.85, -0.5)
-  addContactShadow(-2.0, 0.85, 0.5, 0.5, 0.35)
+  addOfficeChair(group, -2.6, 0.85, -0.5)
+  addContactShadow(-2.6, 0.85, 0.5, 0.5, 0.35)
 
-  hotspots.projetos = new THREE.Vector3(-2.3, 1.22, 0.17)
-  const projetosHit = place(box(0.7, 0.6, 0.6, 0x000000), -2.3, 1.18, 0.1)
+  // a couple of framed prints on the wall above the desk, tucking it into its
+  // own corner instead of leaving the corner bare
+  ;[-0.1, 0.7].forEach((z, i) => {
+    const frame = place(box(0.32, 0.24, 0.02, 0x1c1c1e, { roughness: 0.5 }), -4.26, 2.1, z, Math.PI / 2)
+    group.add(frame)
+    group.add(place(box(0.26, 0.18, 0.012, [0xff8fe0, 0x4ad9ff][i], { roughness: 0.6 }), -4.25, 2.1, z, Math.PI / 2))
+  })
+
+  hotspots.projetos = new THREE.Vector3(-2.9, 1.22, 0.17)
+  const projetosHit = place(box(0.7, 0.6, 0.6, 0x000000), -2.9, 1.18, 0.1)
   projetosHit.visible = false
   projetosHit.userData.hotspot = 'projetos'
   group.add(projetosHit)
 
-  // ============== TV + RETRO CONSOLE -> EXPERIÊNCIA ==============
+  // ============== TV + RETRO CONSOLE -> EXPERIÊNCIA (wall-mounted, bigger —
+  // the room's main feature wall, like a real living-room/bedroom setup) ==============
   const tvGroup = new THREE.Group()
-  tvGroup.position.set(-1.35, 0, -3.1)
-  tvGroup.add(place(box(1.0, 0.5, 0.35, COLORS.bookshelf, { roughness: 0.75 }), 0, 0.25, 0))
-  tvGroup.add(place(box(0.58, 0.4, 0.04, COLORS.monitor, { metalness: 0.3, roughness: 0.4 }), 0, 0.68, 0.08))
+  tvGroup.position.set(-1.35, 0, -3.78)
+
+  // slim wall-mount bracket behind the panel
+  tvGroup.add(place(box(0.1, 0.34, 0.05, COLORS.ironDark, { metalness: 0.4, roughness: 0.5 }), 0, 1.32, 0.05))
+  // big flat bezel, flush to the wall
+  tvGroup.add(place(box(1.0, 0.6, 0.035, COLORS.monitor, { metalness: 0.3, roughness: 0.4 }), 0, 1.32, 0.09))
 
   const gameScreen = createGameScreen()
-  const tvScreen = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 0.32), gameScreen.material)
-  tvScreen.position.set(0, 0.68, 0.102)
+  const tvScreen = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.52), gameScreen.material)
+  tvScreen.position.set(0, 1.32, 0.109)
   tvGroup.add(tvScreen)
 
-  // a small retro console + controller on the stand
-  tvGroup.add(place(box(0.16, 0.03, 0.12, 0x1c1c1e, { roughness: 0.5 }), -0.3, 0.515, 0.12))
-  tvGroup.add(place(box(0.1, 0.02, 0.06, 0x2a2a2e, { roughness: 0.5 }), -0.12, 0.51, 0.14))
+  // a framed poster beside it — the "LEVEL UP" print every setup like this has
+  tvGroup.add(place(box(0.34, 0.46, 0.02, 0x1c1c1e, { roughness: 0.5 }), 0.84, 1.3, 0.05))
+  tvGroup.add(place(box(0.28, 0.4, 0.012, 0x7a3a5c, { roughness: 0.8 }), 0.84, 1.3, 0.062))
 
-  const tvGlowSprite = makeGlowSprite('#ff3ec9', 0.26)
-  tvGlowSprite.position.set(0, 0.68, 0.14)
+  // a floating shelf below the TV for the console + a couple of game cases
+  tvGroup.add(place(box(0.92, 0.04, 0.22, COLORS.bookshelf, { roughness: 0.8 }), 0, 0.78, 0.13))
+  ;[-0.4, 0.4].forEach((x) => tvGroup.add(place(box(0.03, 0.08, 0.03, COLORS.shelfTrim), x, 0.73, 0.15)))
+  tvGroup.add(place(box(0.16, 0.03, 0.12, 0x1c1c1e, { roughness: 0.5 }), -0.3, 0.815, 0.15))
+  tvGroup.add(place(box(0.1, 0.02, 0.06, 0x2a2a2e, { roughness: 0.5 }), -0.12, 0.81, 0.17))
+  ;[0.1, 0.17, 0.24].forEach((x, i) => tvGroup.add(place(box(0.02, 0.14, 0.1, BOOK_COLORS[i], { roughness: 0.75 }), x, 0.85, 0.15)))
+
+  const tvGlowSprite = makeGlowSprite('#ff3ec9', 0.3)
+  tvGlowSprite.position.set(0, 1.32, 0.16)
   tvGroup.add(tvGlowSprite)
   glowSprites.push(tvGlowSprite)
 
   group.add(tvGroup)
-  addContactShadow(-1.35, -3.1, 1.2, 0.55, 0.4)
-  hotspots.experiencia = new THREE.Vector3(-1.35, 1.0, -2.85)
-  const expHit = place(box(0.9, 1.6, 0.5, 0x000000), -1.35, 0.9, -2.9)
+  hotspots.experiencia = new THREE.Vector3(-1.35, 1.32, -3.65)
+  const expHit = place(box(1.0, 0.95, 0.4, 0x000000), -1.35, 1.3, -3.68)
   expHit.visible = false
   expHit.userData.hotspot = 'experiencia'
   group.add(expHit)
@@ -420,6 +451,21 @@ export function buildRoom() {
   corkGroup.add(clockFace)
   corkGroup.add(place(box(0.006, 0.06, 0.006, 0x0c0c0e), 0.02, 0.76, 0.045))
   corkGroup.add(place(box(0.05, 0.006, 0.006, 0x0c0c0e), -0.01, 0.72, 0.045))
+
+  // a small clip lamp clamped to the top of the frame, angled down at the
+  // notes — its own dedicated little light instead of relying on the room glow
+  const clipLamp = new THREE.Group()
+  clipLamp.position.set(-0.55, 0.58, 0.05)
+  clipLamp.add(place(cylinder(0.018, 0.018, 0.22, 8, COLORS.lamp, { metalness: 0.5 }), 0, 0.1, 0))
+  const clipHead = place(cylinder(0.035, 0.05, 0.07, 10, COLORS.lamp, { metalness: 0.5 }), 0.02, 0.2, 0.05)
+  clipHead.rotation.x = Math.PI / 2.4
+  clipLamp.add(clipHead)
+  corkGroup.add(clipLamp)
+  const corkLampGlow = makeGlowSprite('#ffe0b0', 0.3)
+  corkLampGlow.position.set(-0.3, 0.1, 0.1)
+  corkGroup.add(corkLampGlow)
+  glowSprites.push(corkLampGlow)
+
   group.add(corkGroup)
   hotspots.sobre = new THREE.Vector3(3.0, 1.8, -3.7)
   const sobreHit = place(box(1.5, 1.4, 0.4, 0x000000), 3.0, 1.8, -3.65)

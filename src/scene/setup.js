@@ -37,12 +37,12 @@ export const CAMERA_WIDE = {
 // one close anchor per hotspot, framing that object's own screen/board
 export const CAMERA_CLOSE_MAP = {
   projetos: {
-    position: new THREE.Vector3(-2.3, 1.27, 1.45),
-    target: new THREE.Vector3(-2.3, 1.2, 0.54),
+    position: new THREE.Vector3(-2.9, 1.27, 1.45),
+    target: new THREE.Vector3(-2.9, 1.2, 0.54),
   },
   experiencia: {
-    position: new THREE.Vector3(-1.35, 0.8, -1.55),
-    target: new THREE.Vector3(-1.35, 0.68, -2.78),
+    position: new THREE.Vector3(-1.35, 1.35, -1.4),
+    target: new THREE.Vector3(-1.35, 1.32, -3.6),
   },
   sobre: {
     position: new THREE.Vector3(2.55, 1.82, -2.1),
@@ -92,23 +92,30 @@ export function createLights(scene) {
 
   // the desk lamp's warm practical light
   const lampLight = new THREE.PointLight(0xffd9a0, 20, 3.2, 2)
-  lampLight.position.set(-2.82, 1.96, 0.42)
+  lampLight.position.set(-3.42, 1.96, 0.42)
   scene.add(lampLight)
 
   // monitor glow, cool blue-cyan
   const monitorLight = new THREE.PointLight(0x4ad9ff, 16, 3.5, 2)
-  monitorLight.position.set(-2.3, 1.78, 0.1)
+  monitorLight.position.set(-2.9, 1.78, 0.1)
   scene.add(monitorLight)
 
-  // TV glow, matching its screen
-  const tvLight = new THREE.PointLight(0xff3ec9, 14, 3.5, 2)
-  tvLight.position.set(-1.35, 0.68, -2.9)
+  // TV glow, matching its screen, now up at wall-mount height
+  const tvLight = new THREE.PointLight(0xff3ec9, 16, 3.8, 2)
+  tvLight.position.set(-1.35, 1.32, -3.5)
   scene.add(tvLight)
 
-  // fill for the corkboard, which otherwise only gets ambient/rim light
-  const corkLight = new THREE.PointLight(0xe8d9b8, 4.5, 3.6, 1.6)
+  // low ambient fill for the corkboard — most of its light now comes from
+  // the small clip lamp's own focused spot, not the room glow
+  const corkLight = new THREE.PointLight(0xe8d9b8, 2.2, 3.6, 1.6)
   corkLight.position.set(2.85, 1.75, -3.35)
   scene.add(corkLight)
+
+  // the clip lamp's own small, tightly focused pool of light on the notes
+  const corkSpot = new THREE.SpotLight(0xffe0b0, 16, 2.4, Math.PI / 7, 0.45, 1.8)
+  corkSpot.position.set(2.45, 2.38, -3.7)
+  corkSpot.target.position.set(2.85, 1.78, -3.75)
+  scene.add(corkSpot, corkSpot.target)
 
   const rim = new THREE.SpotLight(0x7a6898, 42, 13, Math.PI / 4.2, 0.5, 1.4)
   rim.position.set(2.5, 3.2, 3.5)
