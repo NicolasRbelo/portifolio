@@ -108,10 +108,11 @@ function addOfficeChair(group, x, z, ry = 0) {
     chair.add(leg)
     chair.add(place(cylinder(0.022, 0.022, 0.022, 8, 0x0c0c0e), Math.cos(a) * 0.2, 0.011, Math.sin(a) * 0.2))
   }
-  chair.add(place(box(0.42, 0.06, 0.42, 0x242424, { roughness: 0.7 }), 0, 0.44, 0))
-  const back = place(box(0.4, 0.5, 0.05, 0x2a2a30, { roughness: 0.6 }), 0, 0.72, -0.19)
+  chair.add(place(box(0.42, 0.06, 0.42, 0x44444e, { roughness: 0.65 }), 0, 0.44, 0))
+  const back = place(box(0.4, 0.5, 0.05, 0x4a4a56, { roughness: 0.55 }), 0, 0.72, -0.19)
   back.rotation.x = THREE.MathUtils.degToRad(-8)
   chair.add(back)
+  chair.add(place(box(0.4, 0.03, 0.012, COLORS.cyan, { emissive: COLORS.cyan, emissiveIntensity: 0.9 }), 0, 0.95, -0.21))
   group.add(chair)
 }
 
@@ -369,9 +370,10 @@ export function buildRoom() {
   group.add(deskGroup)
   addContactShadow(-2.9, 0.3, 1.9, 1.0, 0.4)
 
-  // office chair, pulled out at an angle — someone just got up
-  addOfficeChair(group, -2.6, 0.85, -0.5)
-  addContactShadow(-2.6, 0.85, 0.5, 0.5, 0.35)
+  // office chair, pulled out at an angle and clearly clear of the desk's own
+  // silhouette — someone just got up
+  addOfficeChair(group, -2.25, 1.05, -0.65)
+  addContactShadow(-2.25, 1.05, 0.55, 0.55, 0.35)
 
   // a couple of framed prints on the wall above the desk, tucking it into its
   // own corner instead of leaving the corner bare
@@ -419,7 +421,7 @@ export function buildRoom() {
   glowSprites.push(tvGlowSprite)
 
   group.add(tvGroup)
-  hotspots.experiencia = new THREE.Vector3(-1.35, 1.32, -3.65)
+  hotspots.experiencia = new THREE.Vector3(-1.35, 1.72, -3.65)
   const expHit = place(box(1.0, 0.95, 0.4, 0x000000), -1.35, 1.3, -3.68)
   expHit.visible = false
   expHit.userData.hotspot = 'experiencia'
@@ -484,6 +486,43 @@ export function buildRoom() {
   benchGroup.add(place(cone(0.06, 0.16, 8, 0x2a7a3a, { roughness: 0.7 }), 0.4, 0.56, 0))
   group.add(benchGroup)
   addContactShadow(3.0, -3.65, 1.4, 0.5, 0.35)
+
+  // ============== MID-ROOM FLOOR FILL — the open stretch between the rug and
+  // the corkboard read as dead space, so it gets a beanbag, a floor lamp and a
+  // tall plant: the same kind of in-between clutter the reference room has ==============
+  const beanbag = new THREE.Group()
+  beanbag.position.set(2.0, 0, -2.15)
+  const beanbagBody = place(cylinder(0.4, 0.46, 0.4, 16, 0x2a3a5a, { roughness: 0.9 }), 0, 0.2, 0)
+  beanbagBody.scale.y = 0.9
+  beanbag.add(beanbagBody)
+  beanbag.add(place(cylinder(0.3, 0.42, 0.14, 16, 0x24324e, { roughness: 0.9 }), 0, 0.42, 0))
+  group.add(beanbag)
+  addContactShadow(2.0, -2.15, 1.1, 1.1, 0.4)
+
+  const floorLampGroup = new THREE.Group()
+  floorLampGroup.position.set(1.35, 0, -1.55)
+  floorLampGroup.add(place(cylinder(0.12, 0.14, 0.03, 16, COLORS.ironDark, { metalness: 0.4 }), 0, 0.015, 0))
+  floorLampGroup.add(place(cylinder(0.014, 0.014, 1.5, 8, COLORS.ironDark, { metalness: 0.5 }), 0, 0.77, 0))
+  const lampShade = place(cylinder(0.1, 0.16, 0.22, 16, 0xe8d9b8, { roughness: 0.8 }), 0, 1.58, 0)
+  floorLampGroup.add(lampShade)
+  const floorLampGlow = makeGlowSprite('#ffd9a0', 0.34)
+  floorLampGlow.position.set(0, 1.55, 0)
+  floorLampGroup.add(floorLampGlow)
+  glowSprites.push(floorLampGlow)
+  group.add(floorLampGroup)
+  addContactShadow(1.35, -1.55, 0.6, 0.6, 0.35)
+
+  const tallPlantGroup = new THREE.Group()
+  tallPlantGroup.position.set(2.75, 0, -1.35)
+  tallPlantGroup.add(place(cylinder(0.14, 0.12, 0.32, 12, 0xb5651d, { roughness: 0.85 }), 0, 0.16, 0))
+  ;[0, 1, 2, 3, 4].forEach((i) => {
+    const leaf = place(cone(0.16, 0.5, 8, i % 2 === 0 ? 0x2a7a3a : 0x1f5c2c, { roughness: 0.75 }), 0, 0.55 + i * 0.16, 0)
+    leaf.rotation.z = (Math.random() - 0.5) * 0.5
+    leaf.rotation.x = (Math.random() - 0.5) * 0.5
+    tallPlantGroup.add(leaf)
+  })
+  group.add(tallPlantGroup)
+  addContactShadow(2.75, -1.35, 0.6, 0.6, 0.35)
 
   // ============== NIGHTSTAND + PHONE -> CONTATO (by the headboard, pulled a bit
   // toward the room's center so it stays in frame on narrower viewports) ==============

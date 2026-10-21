@@ -136,5 +136,10 @@ export function createLights(scene) {
   windowLight.position.set(3.7, 2.0, 0.6)
   scene.add(windowLight)
 
+  // the standing floor lamp's warm pool of light, filling the mid-room gap
+  const floorLampLight = new THREE.PointLight(0xffd9a0, 12, 4, 2)
+  floorLampLight.position.set(1.35, 1.55, -1.55)
+  scene.add(floorLampLight)
+
   return {}
 }
