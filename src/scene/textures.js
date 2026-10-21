@@ -1,13 +1,13 @@
 import * as THREE from 'three'
 
-/** All textures here are generated at runtime on a 2D canvas — no external image files,
- * consistent with the room's "geometry + procedural color" material approach. */
+/** All textures here are generated at runtime on a 2D canvas (or loaded from a
+ * small CC0 photo for the floor — see ASSETS_CREDITS.md) — no fabricated imagery. */
 
 const photoLoader = new THREE.TextureLoader()
 const assetBase = import.meta.env.BASE_URL
 
-/** Loads a real (CC0) photographed PBR color+normal pair — see ASSETS_CREDITS.md —
- * tiled to the given repeat count, for the room's big architectural surfaces. */
+/** Loads a real (CC0) photographed PBR color+normal pair tiled to the given repeat
+ * count, for the room's floor. */
 export function loadSurfaceTextures(colorFile, normalFile, repeatX, repeatY) {
   const map = photoLoader.load(`${assetBase}textures/${colorFile}`)
   map.wrapS = THREE.RepeatWrapping
@@ -34,278 +34,72 @@ function canvas(w, h, draw) {
   return texture
 }
 
-export function arcaneSealTexture(topLine, bottomLine) {
-  return canvas(512, 256, (ctx, w, h) => {
-    ctx.fillStyle = '#241c30'
+/** The view out the window: a real city skyline at night, lit windows, no
+ * fantasy skyline — this is an apartment a few floors up, nothing more. */
+export function cityNightTexture() {
+  return canvas(320, 384, (ctx, w, h) => {
+    const sky = ctx.createLinearGradient(0, 0, 0, h)
+    sky.addColorStop(0, '#0a0c1a')
+    sky.addColorStop(0.6, '#141a2e')
+    sky.addColorStop(1, '#1c2436')
+    ctx.fillStyle = sky
     ctx.fillRect(0, 0, w, h)
-    ctx.strokeStyle = '#8a6a2a'
-    ctx.lineWidth = 6
-    ctx.strokeRect(10, 10, w - 20, h - 20)
-    ctx.strokeStyle = '#9a7bff'
-    ctx.lineWidth = 2
-    ctx.strokeRect(20, 20, w - 40, h - 40)
-    ctx.fillStyle = '#d8ad5a'
-    ctx.textAlign = 'center'
-    ctx.textBaseline = 'middle'
-    const maxWidth = w - 60
-    let topSize = 78
-    ctx.font = `400 ${topSize}px "MedievalSharp", cursive`
-    while (ctx.measureText(topLine).width > maxWidth && topSize > 20) {
-      topSize -= 2
-      ctx.font = `400 ${topSize}px "MedievalSharp", cursive`
+
+    for (let i = 0; i < 60; i += 1) {
+      const x = Math.random() * w
+      const y = Math.random() * h * 0.45
+      ctx.fillStyle = `rgba(255,255,255,${0.2 + Math.random() * 0.5})`
+      ctx.fillRect(x, y, 1, 1)
     }
-    ctx.fillText(topLine, w / 2, h * 0.4)
-    ctx.fillStyle = '#b8a8d8'
-    let bottomSize = 28
-    ctx.font = `400 ${bottomSize}px "Share Tech Mono", monospace`
-    while (ctx.measureText(bottomLine).width > maxWidth && bottomSize > 12) {
-      bottomSize -= 2
-      ctx.font = `400 ${bottomSize}px "Share Tech Mono", monospace`
+
+    // a skyline of lit office/apartment towers, each with a scatter of lit windows
+    let x = 0
+    while (x < w) {
+      const bw = 24 + Math.random() * 30
+      const bh = 90 + Math.random() * 190
+      const by = h - bh
+      ctx.fillStyle = `rgb(${14 + Math.random() * 8},${16 + Math.random() * 8},${26 + Math.random() * 10})`
+      ctx.fillRect(x, by, bw, bh)
+      const cols = Math.max(2, Math.floor(bw / 7))
+      const rows = Math.max(3, Math.floor(bh / 10))
+      for (let r = 0; r < rows; r += 1) {
+        for (let c = 0; c < cols; c += 1) {
+          if (Math.random() < 0.35) {
+            ctx.fillStyle = Math.random() < 0.7 ? 'rgba(255,214,140,0.85)' : 'rgba(140,200,255,0.7)'
+            ctx.fillRect(x + 3 + c * 7, by + 6 + r * 10, 3, 4)
+          }
+        }
+      }
+      x += bw + 2
     }
-    ctx.fillText(bottomLine, w / 2, h * 0.76)
+
+    // a faint red aircraft-warning blink on the tallest tower would be too busy;
+    // keep it to one steady amber beacon instead
+    ctx.fillStyle = 'rgba(255,170,90,0.9)'
+    ctx.beginPath()
+    ctx.arc(w * 0.78, h * 0.28, 2.2, 0, Math.PI * 2)
+    ctx.fill()
   })
 }
 
-export function runeBorderTexture() {
-  return canvas(256, 64, (ctx, w, h) => {
-    ctx.fillStyle = '#1a1420'
-    ctx.fillRect(0, 0, w, h)
-    ctx.strokeStyle = '#4a3a8a'
-    ctx.lineWidth = 2
-    ctx.strokeRect(4, 4, w - 8, h - 8)
-    const glyphs = ['ᚠ', 'ᚱ', 'ᛇ', 'ᛒ', 'ᛚ', 'ᛦ']
-    ctx.fillStyle = '#c3a8ff'
-    ctx.font = '400 30px "Share Tech Mono", monospace'
-    ctx.textAlign = 'center'
-    ctx.textBaseline = 'middle'
-    for (let x = 22; x < w; x += 44) {
-      ctx.fillText(glyphs[Math.floor(Math.random() * glyphs.length)], x, h / 2)
-    }
-  })
-}
-
-export function starMapTexture() {
-  return canvas(256, 320, (ctx, w, h) => {
-    ctx.fillStyle = '#e8d9a8'
-    ctx.fillRect(0, 0, w, h)
-    ctx.globalAlpha = 0.12
-    for (let i = 0; i < 400; i += 1) {
-      ctx.fillStyle = Math.random() > 0.5 ? '#8a6a2a' : '#3a2a1c'
-      ctx.fillRect(Math.random() * w, Math.random() * h, 1, 1)
-    }
-    ctx.globalAlpha = 1
-    ctx.strokeStyle = '#4a3420'
-    ctx.lineWidth = 6
-    ctx.strokeRect(8, 8, w - 16, h - 16)
-
-    // a rough coastline silhouette for "Arton", with a few marked provinces
-    ctx.strokeStyle = '#5a3a20'
-    ctx.lineWidth = 2
-    ctx.beginPath()
-    ctx.moveTo(40, 60)
-    ctx.bezierCurveTo(30, 120, 70, 160, 60, 210)
-    ctx.bezierCurveTo(90, 240, 150, 230, 180, 180)
-    ctx.bezierCurveTo(220, 150, 210, 90, 170, 70)
-    ctx.bezierCurveTo(130, 40, 70, 40, 40, 60)
-    ctx.stroke()
-
-    ctx.fillStyle = '#8a2a2a'
-    ;[[80, 100], [130, 150], [110, 190]].forEach(([x, y]) => {
-      ctx.beginPath()
-      ctx.arc(x, y, 4, 0, Math.PI * 2)
-      ctx.fill()
-    })
-
-    // compass rose
-    const cx = w / 2
-    const cy = h * 0.82
-    ctx.strokeStyle = '#8a6a2a'
-    ctx.lineWidth = 1.5
-    ctx.beginPath()
-    ctx.arc(cx, cy, 24, 0, Math.PI * 2)
-    ctx.stroke()
-    ctx.beginPath()
-    ctx.moveTo(cx, cy - 24)
-    ctx.lineTo(cx, cy + 24)
-    ctx.moveTo(cx - 24, cy)
-    ctx.lineTo(cx + 24, cy)
-    ctx.stroke()
-
-    ctx.fillStyle = '#4a3420'
-    ctx.font = '400 20px "MedievalSharp", cursive'
-    ctx.textAlign = 'center'
-    ctx.fillText('ARTON', w / 2, h * 0.08)
-  })
-}
-
+/** The rug under the desk/rest area — a plain, modern area rug: dark plum field,
+ * lighter woven border. No fantasy pattern, just a rug someone actually bought. */
 export function rugTexture() {
   return canvas(256, 384, (ctx, w, h) => {
-    ctx.fillStyle = '#4a1430'
+    ctx.fillStyle = '#3a1830'
     ctx.fillRect(0, 0, w, h)
-    ctx.strokeStyle = '#2c0d1e'
+    ctx.strokeStyle = '#241020'
     ctx.lineWidth = 10
     ctx.strokeRect(14, 14, w - 28, h - 28)
-    ctx.strokeStyle = '#8a6a2a'
+    ctx.strokeStyle = '#8a6a5a'
     ctx.lineWidth = 3
     ctx.strokeRect(30, 30, w - 60, h - 60)
-    ctx.fillStyle = '#8a6a2a'
-    const cx = w / 2
-    const cy = h / 2
-    for (let i = 0; i < 6; i += 1) {
-      const a = (i / 6) * Math.PI * 2
-      ctx.beginPath()
-      ctx.arc(cx + Math.cos(a) * 46, cy + Math.sin(a) * 70, 16, 0, Math.PI * 2)
-      ctx.fill()
-    }
-    ctx.fillStyle = '#d8ad5a'
-    ctx.beginPath()
-    ctx.arc(cx, cy, 20, 0, Math.PI * 2)
-    ctx.fill()
-    ctx.globalAlpha = 0.18
+    ctx.globalAlpha = 0.15
     for (let y = 0; y < h; y += 4) {
       ctx.fillStyle = y % 8 === 0 ? '#000000' : '#ffffff'
       ctx.fillRect(0, y, w, 1)
     }
     ctx.globalAlpha = 1
-  })
-}
-
-export function bannerTexture() {
-  return canvas(200, 420, (ctx, w, h) => {
-    const cloth = ctx.createLinearGradient(0, 0, 0, h)
-    cloth.addColorStop(0, '#3a1a3a')
-    cloth.addColorStop(1, '#241026')
-    ctx.fillStyle = cloth
-    ctx.fillRect(0, 0, w, h - 36)
-    // scalloped fringe along the bottom edge
-    ctx.fillStyle = '#8a6a2a'
-    const scallops = 7
-    const sw = w / scallops
-    for (let i = 0; i < scallops; i += 1) {
-      ctx.beginPath()
-      ctx.arc(sw * i + sw / 2, h - 36, sw / 2, 0, Math.PI)
-      ctx.fill()
-    }
-    ctx.strokeStyle = '#8a6a2a'
-    ctx.lineWidth = 6
-    ctx.strokeRect(10, 10, w - 20, h - 56)
-
-    const cx = w / 2
-    const cy = h * 0.4
-    ctx.fillStyle = '#d8ad5a'
-    // a tower silhouette — this house's own mark, not borrowed heraldry
-    ctx.beginPath()
-    ctx.moveTo(cx - 26, cy + 70)
-    ctx.lineTo(cx - 22, cy - 10)
-    ctx.lineTo(cx - 34, cy - 10)
-    ctx.lineTo(cx - 34, cy - 30)
-    ctx.lineTo(cx - 18, cy - 30)
-    ctx.lineTo(cx - 18, cy - 55)
-    ctx.lineTo(cx + 18, cy - 55)
-    ctx.lineTo(cx + 18, cy - 30)
-    ctx.lineTo(cx + 34, cy - 30)
-    ctx.lineTo(cx + 34, cy - 10)
-    ctx.lineTo(cx + 22, cy - 10)
-    ctx.lineTo(cx + 26, cy + 70)
-    ctx.closePath()
-    ctx.fill()
-    // a radiant eight-point star crowning the tower
-    ctx.save()
-    ctx.translate(cx, cy - 92)
-    ctx.beginPath()
-    for (let i = 0; i < 8; i += 1) {
-      const a = (i / 8) * Math.PI * 2
-      const r = i % 2 === 0 ? 26 : 11
-      const px = Math.cos(a) * r
-      const py = Math.sin(a) * r
-      if (i === 0) ctx.moveTo(px, py)
-      else ctx.lineTo(px, py)
-    }
-    ctx.closePath()
-    ctx.fill()
-    ctx.restore()
-  })
-}
-
-export function nightSkyTexture() {
-  return canvas(320, 384, (ctx, w, h) => {
-    const sky = ctx.createLinearGradient(0, 0, 0, h)
-    sky.addColorStop(0, '#0a0a2a')
-    sky.addColorStop(0.55, '#241a3a')
-    sky.addColorStop(1, '#4a2a3a')
-    ctx.fillStyle = sky
-    ctx.fillRect(0, 0, w, h)
-
-    for (let i = 0; i < 140; i += 1) {
-      const x = Math.random() * w
-      const y = Math.random() * h * 0.7
-      const r = Math.random() * 1.4
-      ctx.fillStyle = `rgba(255,255,255,${0.3 + Math.random() * 0.6})`
-      ctx.beginPath()
-      ctx.arc(x, y, r, 0, Math.PI * 2)
-      ctx.fill()
-    }
-
-    const moonX = w * 0.72
-    const moonY = h * 0.22
-    const moonGlow = ctx.createRadialGradient(moonX, moonY, 0, moonX, moonY, 60)
-    moonGlow.addColorStop(0, 'rgba(216,217,180,0.35)')
-    moonGlow.addColorStop(1, 'rgba(216,217,180,0)')
-    ctx.fillStyle = moonGlow
-    ctx.fillRect(0, 0, w, h)
-    ctx.fillStyle = '#e8e9c8'
-    ctx.beginPath()
-    ctx.arc(moonX, moonY, 22, 0, Math.PI * 2)
-    ctx.fill()
-    ctx.fillStyle = sky
-    ctx.beginPath()
-    ctx.arc(moonX + 9, moonY - 5, 20, 0, Math.PI * 2)
-    ctx.fill()
-
-    // distant rooftops of the city below, a faint skyline silhouette
-    ctx.fillStyle = '#140a1c'
-    ctx.beginPath()
-    ctx.moveTo(0, h)
-    let x = 0
-    while (x < w) {
-      const bw = 18 + Math.random() * 26
-      const bh = 20 + Math.random() * 55
-      ctx.lineTo(x, h * 0.74 - bh * 0.35)
-      ctx.lineTo(x + bw, h * 0.74 - bh * 0.35)
-      x += bw
-    }
-    ctx.lineTo(w, h)
-    ctx.closePath()
-    ctx.fill()
-  })
-}
-
-export function lightShaftTexture() {
-  return canvas(64, 256, (ctx, w, h) => {
-    const grad = ctx.createLinearGradient(0, 0, 0, h)
-    grad.addColorStop(0, 'rgba(180,190,255,0.55)')
-    grad.addColorStop(0.6, 'rgba(180,190,255,0.14)')
-    grad.addColorStop(1, 'rgba(180,190,255,0)')
-    ctx.fillStyle = grad
-    ctx.fillRect(0, 0, w, h)
-    const mask = ctx.createLinearGradient(0, 0, w, 0)
-    mask.addColorStop(0, 'rgba(0,0,0,1)')
-    mask.addColorStop(0.5, 'rgba(0,0,0,0)')
-    mask.addColorStop(1, 'rgba(0,0,0,1)')
-    ctx.globalCompositeOperation = 'destination-out'
-    ctx.fillStyle = mask
-    ctx.fillRect(0, 0, w, h)
-    ctx.globalCompositeOperation = 'source-over'
-  })
-}
-
-export function dustTexture() {
-  return canvas(32, 32, (ctx, w, h) => {
-    const grad = ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2)
-    grad.addColorStop(0, 'rgba(255,245,220,0.9)')
-    grad.addColorStop(1, 'rgba(255,245,220,0)')
-    ctx.fillStyle = grad
-    ctx.fillRect(0, 0, w, h)
   })
 }
 

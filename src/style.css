@@ -1,21 +1,26 @@
-@import '@fontsource/medievalsharp';
-@import '@fontsource/im-fell-english';
-@import '@fontsource/share-tech-mono';
+@import '@fontsource/jetbrains-mono';
+@import '@fontsource/jetbrains-mono/500.css';
+@import '@fontsource/jetbrains-mono/700.css';
+@import '@fontsource/inter';
+@import '@fontsource/inter/600.css';
 
 :root {
-  --bg: #0b0914;
-  --bg-panel: #140f1d;
-  --arcane: #9a7bff;
-  --arcane-dim: #4a3a8a;
-  --arcane-bright: #cab8ff;
-  --gold: #d8ad5a;
-  --gold-dim: #8a6a2a;
-  --danger: #b5342a;
-  --ink: #ecdfc6;
-  --display: 'MedievalSharp', cursive;
-  --serif: 'IM Fell English', serif;
-  --mono: 'Share Tech Mono', monospace;
-  --focus-ring: 3px solid var(--gold);
+  --bg: #0a0b14;
+  --bg-panel: #10121e;
+  --neon: #ff3ec9;
+  --neon-dim: #7a2060;
+  --neon-bright: #ff8fe0;
+  --cyan: #4ad9ff;
+  --cyan-dim: #1f6a85;
+  --amber: #ffb347;
+  --amber-dim: #8a5a1f;
+  --green: #4ade80;
+  --green-dim: #1f6a42;
+  --ink: #e8e6f0;
+  --display: 'JetBrains Mono', monospace;
+  --body: 'Inter', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --focus-ring: 3px solid var(--neon);
 }
 
 * {
@@ -24,12 +29,14 @@
 
 h1 {
   font-family: var(--display);
+  font-weight: 700;
   font-size: 44px;
   margin: 0;
 }
 
 h2 {
   font-family: var(--display);
+  font-weight: 700;
   font-size: 30px;
   margin: 0;
 }
@@ -40,7 +47,7 @@ body {
   padding: 0;
   background: var(--bg);
   color: var(--ink);
-  font-family: var(--serif);
+  font-family: var(--body);
   overflow-x: hidden;
 }
 
@@ -49,8 +56,8 @@ body {
 }
 
 ::selection {
-  background: var(--arcane);
-  color: #140a24;
+  background: var(--neon);
+  color: #140a1c;
 }
 
 ::-webkit-scrollbar {
@@ -62,12 +69,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--arcane-dim);
+  background: var(--neon-dim);
   border: 3px solid var(--bg);
 }
 
 a {
-  color: var(--arcane-bright);
+  color: var(--neon-bright);
 }
 
 a:focus-visible,
@@ -122,12 +129,13 @@ button:focus-visible,
 }
 
 .boot-log {
-  font-family: var(--display);
-  font-size: clamp(16px, 2.3vw, 23px);
-  line-height: 1.55;
-  color: var(--arcane-bright);
-  text-shadow: 0 0 8px rgba(154, 123, 255, 0.55);
-  max-width: 46ch;
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: clamp(14px, 2vw, 19px);
+  line-height: 1.6;
+  color: var(--neon-bright);
+  text-shadow: 0 0 8px rgba(255, 62, 201, 0.45);
+  max-width: 48ch;
 }
 
 .boot-log p {
@@ -150,7 +158,7 @@ button:focus-visible,
   font-size: 11px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--arcane-dim);
+  color: var(--neon-dim);
 }
 
 @keyframes blink {
@@ -202,26 +210,26 @@ button:focus-visible,
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--arcane);
-  box-shadow: 0 0 8px 2px rgba(154, 123, 255, 0.8);
+  background: var(--neon);
+  box-shadow: 0 0 8px 2px rgba(255, 62, 201, 0.8);
 }
 
 .hotspot-label .tag {
   font-family: var(--mono);
   font-size: 13px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--arcane-bright);
-  background: rgba(12, 9, 18, 0.78);
-  border: 1px solid var(--arcane-dim);
+  color: var(--neon-bright);
+  background: rgba(10, 11, 20, 0.82);
+  border: 1px solid var(--neon-dim);
   padding: 4px 10px;
   white-space: nowrap;
 }
 
 .hotspot-label:hover .tag,
 .hotspot-label:focus-visible .tag {
-  border-color: var(--gold);
-  color: var(--gold);
+  border-color: var(--cyan);
+  color: var(--cyan);
 }
 
 /* ---------- Scene chrome (always-visible corner UI) ---------- */
@@ -237,8 +245,8 @@ button:focus-visible,
   position: absolute;
   font-family: var(--mono);
   font-size: 11px;
-  letter-spacing: 0.08em;
-  color: var(--arcane-dim);
+  letter-spacing: 0.04em;
+  color: var(--neon-dim);
   padding: 14px 18px;
 }
 
@@ -258,12 +266,12 @@ button:focus-visible,
 
 #scene-chrome .cv-link {
   pointer-events: auto;
-  color: var(--gold);
+  color: var(--cyan);
   text-decoration: none;
-  border-bottom: 1px dotted var(--gold-dim);
+  border-bottom: 1px dotted var(--cyan-dim);
 }
 
-/* ---------- Content panels (arcane pergaminhos) ---------- */
+/* ---------- Content panels ---------- */
 
 #panel-root {
   position: absolute;
@@ -278,7 +286,7 @@ button:focus-visible,
 .panel-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(6, 4, 10, 0.8);
+  background: rgba(4, 4, 10, 0.8);
   opacity: 0;
   transition: opacity 0.25s ease-out;
   pointer-events: none;
@@ -289,10 +297,10 @@ button:focus-visible,
   width: min(760px, 92vw);
   max-height: min(78vh, 720px);
   overflow-y: auto;
-  background: linear-gradient(180deg, #1a1322, #0e0a16);
-  border: 1px solid var(--arcane-dim);
+  background: linear-gradient(180deg, #16111f, #0c0a14);
+  border: 1px solid var(--neon-dim);
   box-shadow:
-    0 0 0 1px rgba(154, 123, 255, 0.1),
+    0 0 0 1px rgba(255, 62, 201, 0.1),
     0 24px 60px rgba(0, 0, 0, 0.6);
   padding: 26px 28px 30px;
   opacity: 0;
@@ -318,7 +326,7 @@ button:focus-visible,
   align-items: baseline;
   justify-content: space-between;
   gap: 16px;
-  border-bottom: 1px solid var(--arcane-dim);
+  border-bottom: 1px solid var(--neon-dim);
   padding-bottom: 10px;
   margin-bottom: 16px;
 }
@@ -326,36 +334,37 @@ button:focus-visible,
 .panel-head .panel-kicker {
   font-family: var(--mono);
   font-size: 11px;
-  letter-spacing: 0.25em;
-  color: var(--arcane-dim);
+  letter-spacing: 0.2em;
+  color: var(--neon-dim);
   text-transform: uppercase;
 }
 
 .panel-head h2 {
   font-family: var(--display);
-  font-size: 34px;
-  font-size: clamp(1.8rem, 4vw, 2.4rem);
-  color: var(--arcane-bright);
+  font-weight: 700;
+  font-size: clamp(1.6rem, 4vw, 2.1rem);
+  color: var(--neon-bright);
   margin: 2px 0 0;
-  letter-spacing: 0.02em;
+  letter-spacing: -0.01em;
 }
 
 .panel-close {
   font-family: var(--mono);
   background: transparent;
-  border: 1px solid var(--arcane-dim);
-  color: var(--arcane-bright);
+  border: 1px solid var(--neon-dim);
+  color: var(--neon-bright);
   padding: 6px 12px;
   cursor: pointer;
   flex: none;
 }
 
 .panel-close:hover {
-  border-color: var(--gold);
-  color: var(--gold);
+  border-color: var(--cyan);
+  color: var(--cyan);
 }
 
 .panel-body p {
+  font-family: var(--body);
   line-height: 1.6;
   color: var(--ink);
   margin: 0 0 14px;
@@ -363,10 +372,10 @@ button:focus-visible,
 
 .panel-body h3 {
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: 12px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--cyan);
   margin: 20px 0 8px;
 }
 
@@ -376,6 +385,7 @@ button:focus-visible,
 }
 
 .panel-body li {
+  font-family: var(--body);
   line-height: 1.55;
   margin-bottom: 6px;
 }
@@ -390,34 +400,36 @@ button:focus-visible,
 .tag-chip {
   font-family: var(--mono);
   font-size: 11px;
-  letter-spacing: 0.04em;
-  border: 1px solid var(--arcane-dim);
-  color: var(--arcane-bright);
+  letter-spacing: 0.02em;
+  border: 1px solid var(--neon-dim);
+  color: var(--neon-bright);
   padding: 3px 8px;
 }
 
 .entry {
-  border-left: 1px solid var(--arcane-dim);
+  border-left: 1px solid var(--neon-dim);
   padding-left: 14px;
   margin-bottom: 20px;
 }
 
 .entry .entry-title {
+  font-family: var(--display);
   font-weight: 700;
-  color: var(--arcane-bright);
+  color: var(--neon-bright);
 }
 
 .entry .entry-meta {
+  font-family: var(--mono);
   font-size: 12px;
-  color: var(--gold);
+  color: var(--cyan);
   margin: 2px 0 8px;
 }
 
 .status-public {
-  color: var(--arcane-bright);
+  color: var(--neon-bright);
 }
 .status-confidential {
-  color: var(--gold);
+  color: var(--cyan);
 }
 
 .btn {
@@ -426,17 +438,17 @@ button:focus-visible,
   gap: 8px;
   font-family: var(--mono);
   font-size: 13px;
-  letter-spacing: 0.04em;
-  color: var(--arcane-bright);
-  border: 1px solid var(--arcane-dim);
+  letter-spacing: 0.02em;
+  color: var(--neon-bright);
+  border: 1px solid var(--neon-dim);
   padding: 9px 14px;
   text-decoration: none;
   margin: 4px 8px 4px 0;
 }
 
 .btn:hover {
-  border-color: var(--gold);
-  color: var(--gold);
+  border-color: var(--cyan);
+  color: var(--cyan);
 }
 
 .contact-grid {
@@ -448,111 +460,118 @@ button:focus-visible,
 /* ---------- Per-hotspot panel skins (match the object that opened them) ---------- */
 
 .panel[data-theme='projetos'] {
-  background: radial-gradient(120% 90% at 50% -10%, #2a1a4a 0%, #1a1322 55%, #0e0a16 100%);
+  background: radial-gradient(120% 90% at 50% -10%, #3a1230 0%, #16111f 55%, #0c0a14 100%);
 }
 
 .panel[data-theme='experiencia'] {
-  background: linear-gradient(180deg, #16222e, #0b131c);
-  border-color: #4a7a9a;
+  background: linear-gradient(180deg, #0e1f2a, #0a1118);
+  border-color: var(--cyan-dim);
 }
 .panel[data-theme='experiencia'] .panel-head {
-  border-bottom-color: #3a6a8a;
+  border-bottom-color: var(--cyan-dim);
 }
 .panel[data-theme='experiencia'] .panel-head h2 {
-  color: #bcdcff;
+  color: var(--cyan);
 }
 .panel[data-theme='experiencia'] .entry {
-  border-left-color: #3a6a8a;
+  border-left-color: var(--cyan-dim);
 }
 .panel[data-theme='experiencia'] .entry .entry-title {
-  color: #bcdcff;
+  color: #bfeeff;
 }
 .panel[data-theme='experiencia'] .entry .entry-meta,
 .panel[data-theme='experiencia'] .panel-body h3 {
-  color: #7fb0ff;
+  color: var(--cyan);
 }
 .panel[data-theme='experiencia'] .tag-chip,
 .panel[data-theme='experiencia'] .btn {
-  border-color: #3a6a8a;
-  color: #bcdcff;
+  border-color: var(--cyan-dim);
+  color: #bfeeff;
 }
 .panel[data-theme='experiencia'] .tag-chip:hover,
 .panel[data-theme='experiencia'] .btn:hover {
-  border-color: #7fb0ff;
-  color: #7fb0ff;
+  border-color: var(--cyan);
+  color: var(--cyan);
 }
 .panel[data-theme='experiencia'] .panel-close {
-  border-color: #3a6a8a;
-  color: #bcdcff;
+  border-color: var(--cyan-dim);
+  color: #bfeeff;
 }
 
 .panel[data-theme='sobre'] {
-  background: linear-gradient(180deg, #241c14, #14100a);
-  border-color: #8a6a2a;
+  background: linear-gradient(180deg, #241a10, #140e08);
+  border-color: var(--amber-dim);
 }
 .panel[data-theme='sobre'] .panel-head {
-  border-bottom-color: #6a4e22;
+  border-bottom-color: var(--amber-dim);
 }
 .panel[data-theme='sobre'] .panel-head h2 {
-  color: #e8c888;
+  color: var(--amber);
 }
 .panel[data-theme='sobre'] .panel-head .panel-kicker {
-  color: #8a6a2a;
+  color: var(--amber-dim);
 }
 .panel[data-theme='sobre'] .tag-chip {
   border: none;
-  color: #2a2015;
-  font-family: var(--serif);
+  color: #2a2010;
+  font-family: var(--body);
+  font-weight: 600;
   font-size: 12.5px;
   padding: 5px 10px;
   box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.4);
   display: inline-block;
 }
 .panel[data-theme='sobre'] .tag-row .tag-chip:nth-child(6n + 1) {
-  background: #e8d9a8;
+  background: #ffd866;
   transform: rotate(-2deg);
 }
 .panel[data-theme='sobre'] .tag-row .tag-chip:nth-child(6n + 2) {
-  background: #d8c998;
+  background: #ff9e6d;
   transform: rotate(1.5deg);
 }
 .panel[data-theme='sobre'] .tag-row .tag-chip:nth-child(6n + 3) {
-  background: #c9b888;
+  background: #8fe0c9;
   transform: rotate(-1deg);
 }
 .panel[data-theme='sobre'] .tag-row .tag-chip:nth-child(6n + 4) {
-  background: #e3d4a0;
+  background: #ffb3d6;
   transform: rotate(2deg);
 }
 .panel[data-theme='sobre'] .tag-row .tag-chip:nth-child(6n + 5) {
-  background: #d0c190;
+  background: #a8d4ff;
   transform: rotate(-1.5deg);
 }
 .panel[data-theme='sobre'] .tag-row .tag-chip:nth-child(6n) {
-  background: #e8d9a8;
+  background: #ffd866;
   transform: rotate(1deg);
 }
 .panel[data-theme='sobre'] .panel-close {
-  border-color: #8a6a2a;
-  color: #e8c888;
+  border-color: var(--amber-dim);
+  color: var(--amber);
 }
 
 .panel[data-theme='contato'] {
-  background: linear-gradient(180deg, #2a1f30, #150f1c);
-  border-color: var(--gold);
+  background: linear-gradient(180deg, #0f2318, #0a140e);
+  border-color: var(--green-dim);
+}
+.panel[data-theme='contato'] .panel-head h2 {
+  color: var(--green);
+}
+.panel[data-theme='contato'] .panel-head {
+  border-bottom-color: var(--green-dim);
 }
 .panel[data-theme='contato'] .btn {
   border-radius: 999px;
-  border-color: var(--gold-dim);
-  color: var(--gold);
+  border-color: var(--green-dim);
+  color: var(--green);
 }
 .panel[data-theme='contato'] .btn:hover {
-  border-color: var(--gold);
-  background: rgba(216, 173, 90, 0.1);
+  border-color: var(--green);
+  background: rgba(74, 222, 128, 0.1);
 }
 .panel[data-theme='contato'] .panel-close {
-  border-color: var(--gold-dim);
-  color: var(--gold);
+  border-color: var(--green-dim);
+  color: var(--green);
 }
 
 /* ---------- Reduced motion ---------- */

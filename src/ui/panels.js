@@ -1,10 +1,10 @@
 import { profile, contact, skills, experience, projects, education, certifications, languages } from '../content/data.js'
 
 const LABELS = {
-  projetos: 'Pergaminho 01',
-  experiencia: 'Pergaminho 02',
-  sobre: 'Pergaminho 03',
-  contato: 'Pergaminho 04',
+  projetos: '~/projetos',
+  experiencia: 'HISTÓRICO.EXE',
+  sobre: 'QUADRO DE AVISOS',
+  contato: 'NOVA MENSAGEM',
 }
 
 function projectEntry(p) {

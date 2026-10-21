@@ -56,7 +56,7 @@ export const compositeFragment = /* glsl */ `
     vec3 bloom = texture2D(tBloom, uv).rgb;
     color += bloom * 0.62;
 
-    // gentle candle flicker
+    // gentle screen-glow flicker
     float flicker = 1.0 + sin(time * 3.1) * 0.012 + sin(time * 7.7) * 0.006;
     color *= flicker;
 

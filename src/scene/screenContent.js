@@ -1,8 +1,9 @@
 import * as THREE from 'three'
 
-/** Canvas-driven "live" magical surfaces: a swirling crystal orb, a scrying mirror,
- * a glowing grimoire page — instead of a flat emissive color. MeshBasicMaterial +
- * toneMapped:false keeps these legible regardless of room exposure. */
+/** Canvas-driven "live" screens: scrolling code on the monitor, a retro loading
+ * screen on the TV, a chat mockup on the phone — real pixels instead of a flat
+ * emissive color. MeshBasicMaterial + toneMapped:false keeps these legible
+ * regardless of room exposure. */
 
 function makeCanvas(w, h) {
   const canvas = document.createElement('canvas')
@@ -14,111 +15,63 @@ function makeCanvas(w, h) {
 function makeMaterial(canvas) {
   const texture = new THREE.CanvasTexture(canvas)
   texture.colorSpace = THREE.SRGBColorSpace
+  texture.magFilter = THREE.NearestFilter
+  texture.minFilter = THREE.NearestFilter
   return { texture, material: new THREE.MeshBasicMaterial({ map: texture, toneMapped: false }) }
 }
 
-const RUNES = ['ᚠ', 'ᚱ', 'ᛁ', 'ᛇ', 'ᛒ', 'ᛚ', 'ᛦ', '᛫']
+const CODE_LINES = [
+  "$ cd ~/erp && npm run dev",
+  "VITE ready in 312 ms",
+  "> http://localhost:5173",
+  "def handle_pedido(req):",
+  "    return jsonify(ok=True)",
+  "SELECT * FROM estoque",
+  "  WHERE qtd < 10;",
+  "git commit -m 'fix: auth'",
+  "pytest -v tests/ ......",
+  "12 passed in 2.31s",
+  "docker compose up -d",
+  "class ERP(db.Model):",
+  "  id = Column(Integer)",
+  "async def get_clientes():",
+  "useEffect(() => {",
+  "  fetchDados()",
+  "}, [])",
+  "# TODO: refatorar service",
+  "CREATE INDEX idx_user",
+  "deploy -> hostinger OK",
+]
 
-export function createOrbVision(width = 260, height = 260) {
+export function createCodeScreen(width = 300, height = 220) {
   const { canvas, ctx } = makeCanvas(width, height)
   const { texture, material } = makeMaterial(canvas)
-  const cx = width / 2
-  const cy = height / 2
-  const r = width / 2 - 4
-  let phase = 0
+  const lineHeight = 15
+  const maxLines = Math.floor(height / lineHeight)
+  let lines = Array.from({ length: maxLines }, () => CODE_LINES[Math.floor(Math.random() * CODE_LINES.length)])
 
   function draw(active) {
-    ctx.clearRect(0, 0, width, height)
-    ctx.save()
-    ctx.beginPath()
-    ctx.arc(cx, cy, r, 0, Math.PI * 2)
-    ctx.clip()
-
-    const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r)
-    grad.addColorStop(0, active ? '#2a1a4a' : '#160c2a')
-    grad.addColorStop(1, '#05030a')
-    ctx.fillStyle = grad
+    ctx.fillStyle = active ? '#0c1f24' : '#081216'
     ctx.fillRect(0, 0, width, height)
-
-    for (let i = 0; i < 4; i += 1) {
-      const a = phase * 0.02 + (i / 4) * Math.PI * 2
-      const mx = cx + Math.cos(a) * r * 0.5
-      const my = cy + Math.sin(a * 1.3) * r * 0.5
-      const mg = ctx.createRadialGradient(mx, my, 0, mx, my, r * 0.45)
-      const alpha = active ? 0.5 : 0.28
-      mg.addColorStop(0, `rgba(154,123,255,${alpha})`)
-      mg.addColorStop(1, 'rgba(154,123,255,0)')
-      ctx.fillStyle = mg
-      ctx.fillRect(0, 0, width, height)
-    }
-
-    ctx.fillStyle = active ? 'rgba(216,173,90,0.9)' : 'rgba(216,173,90,0.5)'
-    ctx.font = '400 16px "Share Tech Mono", monospace'
-    ctx.textAlign = 'center'
-    ctx.textBaseline = 'middle'
-    for (let i = 0; i < 6; i += 1) {
-      const a = phase * 0.015 + (i / 6) * Math.PI * 2
-      const rx = cx + Math.cos(a) * r * 0.72
-      const ry = cy + Math.sin(a) * r * 0.72
-      ctx.fillText(RUNES[(i + Math.floor(phase / 40)) % RUNES.length], rx, ry)
-    }
-
-    ctx.restore()
-    ctx.strokeStyle = active ? '#d8ad5a' : '#8a6a2a'
-    ctx.lineWidth = 3
-    ctx.beginPath()
-    ctx.arc(cx, cy, r - 1, 0, Math.PI * 2)
-    ctx.stroke()
-    texture.needsUpdate = true
-  }
-
-  function tick(active) {
-    phase += 1
-    draw(active)
-  }
-
-  draw(false)
-  return { texture, material, tick }
-}
-
-export function createMirrorVision(width = 220, height = 320) {
-  const { canvas, ctx } = makeCanvas(width, height)
-  const { texture, material } = makeMaterial(canvas)
-  let phase = 0
-
-  function draw(active) {
-    const grad = ctx.createLinearGradient(0, 0, 0, height)
-    grad.addColorStop(0, active ? '#1c2a3a' : '#0e1620')
-    grad.addColorStop(1, active ? '#0a1420' : '#050a12')
-    ctx.fillStyle = grad
-    ctx.fillRect(0, 0, width, height)
-
-    for (let i = 0; i < 3; i += 1) {
-      const t = (phase * 0.01 + i / 3) % 1
-      const y = height * t
-      const mg = ctx.createRadialGradient(width / 2, y, 0, width / 2, y, width * 0.6)
-      mg.addColorStop(0, active ? 'rgba(150,200,255,0.35)' : 'rgba(150,200,255,0.18)')
-      mg.addColorStop(1, 'rgba(150,200,255,0)')
-      ctx.fillStyle = mg
-      ctx.fillRect(0, 0, width, height)
-    }
-
-    ctx.fillStyle = active ? 'rgba(220,235,255,0.95)' : 'rgba(180,200,220,0.6)'
-    ctx.font = '400 22px "MedievalSharp", cursive'
-    ctx.textAlign = 'center'
+    ctx.font = '700 13px "JetBrains Mono", monospace'
+    ctx.textBaseline = 'top'
+    lines.forEach((line, i) => {
+      const fade = 0.55 + (i / lines.length) * 0.45
+      ctx.fillStyle = active ? `rgba(160,235,255,${fade})` : `rgba(74,217,255,${fade * 0.85})`
+      ctx.fillText(line, 8, 6 + i * lineHeight)
+    })
     if (active) {
-      ctx.fillText('VISÃO', width / 2, height * 0.38)
-      ctx.font = '400 14px "Share Tech Mono", monospace'
-      ctx.fillText('> buscando no éter...', width / 2, height * 0.46)
-    } else {
-      ctx.font = '400 14px "Share Tech Mono", monospace'
-      ctx.fillText('toque para revelar', width / 2, height * 0.9)
+      ctx.fillStyle = 'rgba(160,235,255,0.9)'
+      ctx.fillRect(6, height - lineHeight + 4, 8, 11)
     }
     texture.needsUpdate = true
   }
 
   function tick(active) {
-    phase += 1
+    if (Math.random() < 0.5) {
+      lines.shift()
+      lines.push(CODE_LINES[Math.floor(Math.random() * CODE_LINES.length)])
+    }
     draw(active)
   }
 
@@ -126,33 +79,110 @@ export function createMirrorVision(width = 220, height = 320) {
   return { texture, material, tick }
 }
 
-export function createGrimoireVision(width = 320, height = 220) {
+export function createGameScreen(width = 300, height = 220) {
   const { canvas, ctx } = makeCanvas(width, height)
   const { texture, material } = makeMaterial(canvas)
   let phase = 0
 
   function draw(active) {
-    ctx.fillStyle = '#ead9b0'
+    ctx.fillStyle = active ? '#1a0a1e' : '#120814'
     ctx.fillRect(0, 0, width, height)
-    ctx.strokeStyle = '#8a6a2a'
-    ctx.lineWidth = 2
+    ctx.strokeStyle = '#ff3ec9'
+    ctx.lineWidth = 6
     ctx.strokeRect(10, 10, width - 20, height - 20)
 
-    ctx.fillStyle = '#2a1a3a'
-    ctx.font = '400 20px "MedievalSharp", cursive'
+    ctx.fillStyle = '#ff3ec9'
+    ctx.font = '700 22px "JetBrains Mono", monospace'
     ctx.textAlign = 'center'
-    ctx.fillText('CONTATO', width / 2, 36)
+    ctx.fillText('HISTÓRICO.EXE', width / 2, 56)
+    ctx.font = '700 15px "JetBrains Mono", monospace'
+    ctx.fillStyle = '#ff8fe0'
+    ctx.fillText('NÍVEL: FULL STACK', width / 2, 82)
 
-    ctx.font = '400 13px "Share Tech Mono", monospace'
-    ctx.fillStyle = active ? '#4a2a8a' : '#6a5a3a'
+    // a little XP bar, genre-flavored "progress" readout
+    const barW = width - 60
+    ctx.strokeStyle = '#ff8fe0'
+    ctx.lineWidth = 2
+    ctx.strokeRect(30, 108, barW, 14)
+    ctx.fillStyle = '#4ad9ff'
+    ctx.fillRect(32, 110, barW * 0.72, 10)
+
+    const blocks = [0xff3ec9, 0x4ad9ff, 0xffb347, 0x4ade80, 0xff3ec9]
+    const bw = 18
+    const startX = width / 2 - (blocks.length * bw) / 2
+    blocks.forEach((c, i) => {
+      ctx.fillStyle = `#${c.toString(16).padStart(6, '0')}`
+      ctx.fillRect(startX + i * bw, 138, bw - 4, bw - 4)
+    })
+
+    if (Math.floor(phase / 20) % 2 === 0 || active) {
+      ctx.fillStyle = active ? '#bfeeff' : '#4ad9ff'
+      ctx.font = '600 15px "JetBrains Mono", monospace'
+      ctx.fillText(active ? '> CARREGANDO...' : 'PRESSIONE START', width / 2, 182)
+    }
     ctx.textAlign = 'left'
-    const lines = ['Pergaminho pronto', 'para mensagem', active ? '> selo rompido' : '> selo intacto']
-    lines.forEach((l, i) => ctx.fillText(l, 22, 70 + i * 20))
+    texture.needsUpdate = true
+  }
 
-    for (let i = 0; i < 5; i += 1) {
-      const lit = active && i <= (phase / 8) % 5
-      ctx.fillStyle = lit ? '#9a7bff' : 'rgba(138,106,42,0.35)'
-      ctx.fillRect(22 + i * 26, height - 40, 18, 18)
+  function tick(active) {
+    phase += 1
+    draw(active)
+  }
+
+  draw(false)
+  return { texture, material, tick }
+}
+
+export function createPhoneScreen(width = 200, height = 340) {
+  const { canvas, ctx } = makeCanvas(width, height)
+  const { texture, material } = makeMaterial(canvas)
+  let phase = 0
+
+  function draw(active) {
+    ctx.fillStyle = active ? '#0a1f14' : '#06120c'
+    ctx.fillRect(0, 0, width, height)
+
+    // status bar
+    ctx.fillStyle = active ? '#9df5c0' : '#4ade80'
+    ctx.font = '600 11px "JetBrains Mono", monospace'
+    ctx.textAlign = 'left'
+    ctx.fillText('09:41', 10, 16)
+    ctx.textAlign = 'right'
+    ctx.fillText('100%', width - 10, 16)
+    ctx.textAlign = 'left'
+
+    ctx.strokeStyle = active ? '#9df5c0' : '#4ade80'
+    ctx.lineWidth = 2
+    ctx.beginPath()
+    ctx.moveTo(0, 30)
+    ctx.lineTo(width, 30)
+    ctx.stroke()
+
+    ctx.font = '700 14px "JetBrains Mono", monospace'
+    ctx.fillText('Mensagens', 12, 48)
+
+    const bubbles = [
+      { text: 'oi! vi seu projeto', mine: false },
+      { text: 'disponível pra bater um papo?', mine: false },
+      { text: active ? '> digitando...' : 'claro, me chama!', mine: true },
+    ]
+    let y = 74
+    bubbles.forEach((b) => {
+      const bw = width - 50
+      const bx = b.mine ? 40 : 10
+      ctx.fillStyle = b.mine ? 'rgba(74,222,128,0.85)' : 'rgba(255,255,255,0.1)'
+      ctx.fillRect(bx, y, bw, 26)
+      ctx.fillStyle = b.mine ? '#06120c' : '#9df5c0'
+      ctx.font = '500 11px "JetBrains Mono", monospace'
+      ctx.fillText(b.text, bx + 8, y + 16)
+      y += 34
+    })
+
+    if (Math.floor(phase / 15) % 2 === 0 || active) {
+      ctx.fillStyle = active ? '#9df5c0' : '#4ade80'
+      ctx.beginPath()
+      ctx.arc(width / 2, height - 24, 4, 0, Math.PI * 2)
+      ctx.fill()
     }
     texture.needsUpdate = true
   }

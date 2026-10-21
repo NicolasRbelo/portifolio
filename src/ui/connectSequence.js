@@ -1,13 +1,13 @@
 const LINES = [
-  { text: 'GRIMÓRIO DE NICOLAS — RITO DE ABERTURA', pause: 260 },
-  { text: 'DESPERTANDO O SELO ARCANO...', pause: 420 },
-  { text: '> Alinhando os cristais de foco....... OK', pause: 240 },
-  { text: '> Acordando os espíritos da torre..... OK', pause: 240 },
-  { text: '> Decifrando as runas de acesso....... OK', pause: 240 },
-  { text: '> Tecendo o fio de maná............... OK', pause: 240 },
-  { text: '> Reconhecendo o visitante............ OK', pause: 340 },
-  { text: 'O SELO SE ABRE', pause: 260 },
-  { text: 'SEJA BEM-VINDO À TORRE, VIAJANTE', pause: 900 },
+  { text: 'nicolas@portfolio ~ % ./entrar.sh', pause: 260 },
+  { text: 'VERIFICANDO CREDENCIAIS...', pause: 420 },
+  { text: '> Autenticando visitante.............. OK', pause: 240 },
+  { text: '> Carregando o quarto................. OK', pause: 240 },
+  { text: '> Ligando o monitor................... OK', pause: 240 },
+  { text: '> Acordando os projetos............... OK', pause: 240 },
+  { text: '> Reconhecendo quem bateu na porta.... OK', pause: 340 },
+  { text: 'ACESSO LIBERADO', pause: 260 },
+  { text: 'BEM-VINDO, A PORTA JÁ ESTÁ ABRINDO', pause: 900 },
 ]
 
 const CHAR_DELAY = 16

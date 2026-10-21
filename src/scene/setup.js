@@ -9,7 +9,7 @@ export function createRenderer(canvas) {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
   renderer.outputColorSpace = THREE.SRGBColorSpace
   renderer.toneMapping = THREE.ReinhardToneMapping
-  renderer.toneMappingExposure = 2.7
+  renderer.toneMappingExposure = 3.1
   return renderer
 }
 
@@ -49,8 +49,8 @@ export const CAMERA_CLOSE_MAP = {
     target: new THREE.Vector3(2.95, 1.78, -3.6),
   },
   contato: {
-    position: new THREE.Vector3(2.78, 1.5, 1.85),
-    target: new THREE.Vector3(2.93, 1.28, 1.0),
+    position: new THREE.Vector3(-1.9, 1.05, 0.6),
+    target: new THREE.Vector3(-2.7, 0.72, 0.9),
   },
 }
 
@@ -72,61 +72,62 @@ export function createCamera(aspect) {
 }
 
 export function createLights(scene) {
-  const ambient = new THREE.AmbientLight(0x6a5a4c, 4.3)
+  const ambient = new THREE.AmbientLight(0x4a4258, 4.6)
   scene.add(ambient)
 
-  const fill = new THREE.HemisphereLight(0x8d6c5c, 0x1a1414, 2.8)
+  const fill = new THREE.HemisphereLight(0x6a5878, 0x14141e, 2.8)
   scene.add(fill)
 
-  // chandelier candlelight, warm and slightly flickering in feel via a high color temp
-  const overhead = new THREE.PointLight(0xffd9a0, 58, 11, 2)
-  overhead.position.set(-0.4, 2.85, 0.8)
-  scene.add(overhead)
+  // the neon strip along the back wall — the room's main ambient light source,
+  // cool magenta instead of a warm overhead fixture
+  const ledLight = new THREE.PointLight(0xff3ec9, 26, 9, 2)
+  ledLight.position.set(0, 3.2, -3.3)
+  scene.add(ledLight)
+  const ledLight2 = new THREE.PointLight(0xff3ec9, 20, 8, 2)
+  ledLight2.position.set(-2.8, 2.8, -3.0)
+  scene.add(ledLight2)
+  const ledLight3 = new THREE.PointLight(0xff3ec9, 18, 8, 2)
+  ledLight3.position.set(2.8, 2.8, -3.0)
+  scene.add(ledLight3)
 
-  // crystal orb glow — the room's one cool, arcane light source
-  const orbGlow = new THREE.PointLight(0x9a7bff, 38, 6.5, 2)
-  orbGlow.position.set(-2.3, 1.6, 0.55)
-  scene.add(orbGlow)
+  // the desk lamp's warm practical light
+  const lampLight = new THREE.PointLight(0xffd9a0, 20, 3.2, 2)
+  lampLight.position.set(-2.82, 1.96, 0.42)
+  scene.add(lampLight)
 
-  const mirrorGlow = new THREE.PointLight(0x7fb0ff, 14, 4.2, 2)
-  mirrorGlow.position.set(0.3, 1.3, -2.75)
-  scene.add(mirrorGlow)
+  // monitor glow, cool blue-cyan
+  const monitorLight = new THREE.PointLight(0x4ad9ff, 16, 3.5, 2)
+  monitorLight.position.set(-2.3, 1.78, 0.1)
+  scene.add(monitorLight)
 
-  // lights the grimoire-on-lectern prop (position matches the prop's x=2.0)
-  const grimoireGlow = new THREE.PointLight(0xd8ad5a, 24, 5, 2)
-  grimoireGlow.position.set(2.0, 1.3, 1.5)
-  scene.add(grimoireGlow)
+  // TV glow, matching its screen
+  const tvLight = new THREE.PointLight(0xff3ec9, 14, 3.5, 2)
+  tvLight.position.set(-1.35, 0.68, -2.9)
+  scene.add(tvLight)
 
-  // dedicated fill for the adventure map, which otherwise gets only ambient/rim light
-  const mapLight = new THREE.PointLight(0xe8d9b8, 3.2, 3.6, 1.6)
-  mapLight.position.set(2.85, 1.75, -3.35)
-  scene.add(mapLight)
+  // fill for the corkboard, which otherwise only gets ambient/rim light
+  const corkLight = new THREE.PointLight(0xe8d9b8, 4.5, 3.6, 1.6)
+  corkLight.position.set(2.85, 1.75, -3.35)
+  scene.add(corkLight)
 
-  const rim = new THREE.SpotLight(0xb89868, 55, 13, Math.PI / 4.2, 0.5, 1.4)
+  const rim = new THREE.SpotLight(0x7a6898, 42, 13, Math.PI / 4.2, 0.5, 1.4)
   rim.position.set(2.5, 3.2, 3.5)
   rim.target.position.set(0, 1, -1)
   scene.add(rim, rim.target)
 
   // the bed / nightstand corner sits far from every other light, so it needs its own
-  const bedLight = new THREE.PointLight(0xe8d4b8, 11, 6.5, 2)
+  const bedLight = new THREE.PointLight(0xb8a8d8, 8, 6.5, 2)
   bedLight.position.set(-3.2, 2.2, 1.8)
   scene.add(bedLight)
 
-  const candleLight = new THREE.PointLight(0xffb84d, 9, 2.6, 2)
-  candleLight.position.set(-3.6, 0.95, 2.9)
-  scene.add(candleLight)
+  const phoneLight = new THREE.PointLight(0x4ade80, 4, 1.8, 2)
+  phoneLight.position.set(-3.6, 0.75, 2.9)
+  scene.add(phoneLight)
 
-  // cool moonlight pouring through the window — the one cold light against all
-  // the warm candle glow, what actually sells "high up, night air, not a cellar"
-  const moonlight = new THREE.PointLight(0xb4c8ff, 10, 8, 2)
-  moonlight.position.set(2.4, 2.0, 0.6)
-  scene.add(moonlight)
-
-  // dedicated light right at the window frame so its brass bezel actually reads,
-  // without relying on the single room-wide moonlight to reach that far corner
-  const windowLight = new THREE.PointLight(0xd8e4ff, 2.2, 2.8, 2)
-  windowLight.position.set(3.6, 2.1, 0.6)
+  // cool city light through the window
+  const windowLight = new THREE.PointLight(0x7aa0d8, 7, 3.5, 2)
+  windowLight.position.set(3.7, 2.0, 0.6)
   scene.add(windowLight)
 
-  return { overhead }
+  return {}
 }

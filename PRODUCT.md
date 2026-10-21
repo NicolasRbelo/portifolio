@@ -34,7 +34,7 @@ Desenvolvedor full stack que é o único responsável por um ERP interno constru
 ## Brand Commitments
 - Nome: Nicolas Rabelo de Melo.
 - Tagline do currículo: "Desenvolvedor Full Stack | Python · React · React Native | Pós-graduando em Cibersegurança (Blue Team)".
-- [Decidido pelo usuário, revisão] Direção visual trocada de Fallout para **Tormenta 20 / Arton** (torre de um arcanista: pedra, madeira, latão, luz de vela e magia arcana — orbe de cristal, espelho de clarividência, grimório em um atril), mantendo o mesmo mecanismo de navegação 3D ponto-e-clique do site de referência (tadao.dev) — câmera fixa, hotspots clicáveis em objetos de uma cena 3D. O overlay de pós-processamento deixou de simular uma tela CRT (sem scanlines/aberração cromática) e passou a simular ambiência de luz de vela (vinheta quente, leve cintilação, grão sutil).
+- [Decidido pelo usuário, revisão 2] Direção visual trocada de Tormenta 20/fantasia para um **quarto/home-office de programador atual e realista**, seguindo de perto o site de referência original (tadao.dev) em conteúdo e organização espacial, não só em mecânica: mesa com monitor, torre de PC, teclado, luminária articulada e caneca (Projetos); TV/console retrô como canto de hobby, cuja tela mostra o conteúdo de experiência (Experiência); quadro de avisos com post-its, relógio de parede e prateleira com livros/planta (Sobre mim); um objeto realista separado para contato (celular carregando na mesa de cabeceira). Paleta trocada de roxo-arcano/dourado-vela para fita de LED neon rosa/magenta + luz quentede luminária + brilho verde/azul de tela, tipografia trocada de MedievalSharp/IM Fell English para JetBrains Mono (títulos/labels) + Inter (corpo de texto). Mantém o mesmo mecanismo de navegação 3D ponto-e-clique (câmera fixa, hotspots clicáveis) e a entrada com a câmera olhando pra porta que abre.
 
 ## Evidence on Hand
 - Currículo completo (real, não inventado) extraído em `scratchpad/resume_text.txt`: resumo profissional, habilidades técnicas, experiência, 3 projetos, formação, certificações, idiomas.
@@ -44,5 +44,5 @@ Desenvolvedor full stack que é o único responsável por um ERP interno constru
 1. Prova de entrega real acima de promessa — destacar o ERP em produção (90 usuários, 3x mais rápido) como prova central, não apenas listar tecnologias.
 2. Projetos confidenciais (Bibliopedia, Lookly) são descritos com honestidade sobre a confidencialidade — nunca fingir que há link público.
 3. Contato deve ser de fricção mínima — no máximo 1-2 cliques até WhatsApp/e-mail/LinkedIn/GitHub/download do CV.
-4. A identidade Fallout/terminal é um requisito de briefing confirmado, não uma sugestão estética — deve ser mantida mesmo que não seja o padrão "seguro" de portfólio dev.
+4. A direção visual é um requisito de briefing confirmado pelo usuário, não uma sugestão estética livre — atualmente um quarto de programador realista e atual, inspirado de perto no site de referência (tadao.dev).
 5. O conteúdo vive apenas na experiência 3D (dossiês dos objetos); o download do CV em PDF é o único atalho fora da cena — decisão explícita do usuário, substituindo a hipótese inicial de um fallback textual completo.
