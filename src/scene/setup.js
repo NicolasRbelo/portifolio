@@ -16,10 +16,16 @@ export function createRenderer(canvas) {
 const BASE_VERTICAL_FOV = 34
 const MIN_HORIZONTAL_FOV = 72
 const MAX_VERTICAL_FOV = 72
+// tall screens (phones, tablets upright) get their own calmer framing: a
+// steeper ¾ view that shows one part of the room at a time
+export const PORTRAIT_ASPECT = 0.8
+const PORTRAIT_VERTICAL_FOV = 58
 
-/** Keeps the room's horizontal extent visible even on tall/narrow viewports by
- * widening the vertical FOV until the implied horizontal FOV clears the floor. */
+/** Keeps the room's horizontal extent visible on landscape viewports by
+ * widening the vertical FOV until the implied horizontal FOV clears the floor;
+ * portrait screens use a fixed, narrower FOV instead of a fish-eyed 72°. */
 export function fovForAspect(aspect) {
+  if (aspect < PORTRAIT_ASPECT) return PORTRAIT_VERTICAL_FOV
   const baseRad = THREE.MathUtils.degToRad(BASE_VERTICAL_FOV)
   const horizontalRad = 2 * Math.atan(Math.tan(baseRad / 2) * aspect)
   const horizontalDeg = THREE.MathUtils.radToDeg(horizontalRad)
@@ -47,8 +53,8 @@ export const CAMERA_CLOSE_MAP = {
     target: new THREE.Vector3(-1.3, 1.38, -3.7),
   },
   sobre: {
-    position: new THREE.Vector3(2.9, 1.95, -0.9),
-    target: new THREE.Vector3(3.0, 1.92, -3.75),
+    position: new THREE.Vector3(1.55, 2.22, -2.5),
+    target: new THREE.Vector3(4.25, 2.2, -2.55),
   },
   contato: {
     position: new THREE.Vector3(-2.9, 1.08, -1.65),
@@ -123,11 +129,11 @@ export function createLights(scene) {
   add(new THREE.PointLight(0xffd9a0, 7, 4, 2), 'lamp').position.set(4.05, 1.2, -1.43)
   add(new THREE.PointLight(0xe8c8b8, 7, 3.6, 2), 'lamp').position.set(3.3, 2.4, 0.9)
 
-  // corkboard: a far, even fill plus the clip lamp's small pool on the notes
-  add(new THREE.PointLight(0xe8d9b8, 2.0, 4.5, 1.6), 'lamp').position.set(3.0, 2.0, -2.2)
+  // corkboard (right wall): a far, even fill plus the clip lamp's small pool
+  add(new THREE.PointLight(0xe8d9b8, 2.0, 4.5, 1.6), 'lamp').position.set(2.9, 2.2, -2.55)
   const corkSpot = add(new THREE.SpotLight(0xffe0b0, 2.2, 2.6, Math.PI / 5, 0.8, 1.6), 'lamp')
-  corkSpot.position.set(2.53, 2.5, -3.6)
-  corkSpot.target.position.set(3.0, 1.7, -3.75)
+  corkSpot.position.set(4.0, 2.68, -3.0)
+  corkSpot.target.position.set(4.25, 1.9, -2.55)
 
   add(new THREE.PointLight(0x4ad9ff, 12, 3.2, 2), 'screen').position.set(-3.4, 1.3, -2.95)
   add(new THREE.PointLight(0xff3ec9, 14, 3.6, 2), 'screen').position.set(-1.3, 1.32, -3.4)

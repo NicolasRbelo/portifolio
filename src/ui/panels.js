@@ -1,4 +1,5 @@
 import { profile, contact, skills, experience, projects, education, certifications, languages } from '../content/data.js'
+import { contactFormHtml, mountContactForm } from './contactForm.js'
 
 const LABELS = {
   projetos: '~/projetos',
@@ -82,8 +83,12 @@ export function buildPanelContent(key) {
     return {
       kicker: LABELS.contato,
       title: 'Contato',
+      // wires the message form once the panel's HTML is in the page
+      mount: mountContactForm,
       html: `
-        <p>Resposta rápida por WhatsApp ou e-mail. Currículo completo disponível em PDF.</p>
+        <p>Me mande uma mensagem por aqui — chega direto no meu e-mail.</p>
+        ${contactFormHtml()}
+        <h3>Ou fale direto</h3>
         <div class="contact-grid">
           <a class="btn" href="${contact.whatsapp.url}" target="_blank" rel="noopener noreferrer">WhatsApp — ${contact.whatsapp.label}</a>
           <a class="btn" href="mailto:${contact.email}">E-mail — ${contact.email}</a>

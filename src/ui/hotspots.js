@@ -28,6 +28,7 @@ export class HotspotLabels {
   }
 
   update(camera, width, height) {
+    const pinned = { left: [], right: [] }
     Object.values(this.elements).forEach((entry) => {
       const { el, position } = entry
       this.projected.copy(position).project(camera)
@@ -36,17 +37,33 @@ export class HotspotLabels {
         el.classList.remove('is-visible')
         return
       }
-      // on narrow (portrait) screens some objects fall outside the frame; the
-      // label stays reachable, pinned to the edge with an arrow toward its object
+      // when an object falls outside the frame its label stays reachable,
+      // pinned to the edge with an arrow toward it
+      const rawX = (this.projected.x * 0.5 + 0.5) * width
+      const side = rawX < 0 ? 'left' : rawX > width ? 'right' : ''
+      if (el.dataset.side !== side) {
+        el.dataset.side = side
+        entry.halfWidth = 0 // the pinned style is smaller — re-measure
+      }
       entry.halfWidth = entry.halfWidth || el.offsetWidth / 2
       const edge = (entry.halfWidth || 60) + 10
-      const rawX = (this.projected.x * 0.5 + 0.5) * width
-      const x = THREE.MathUtils.clamp(rawX, edge, width - edge)
-      const y = THREE.MathUtils.clamp((-this.projected.y * 0.5 + 0.5) * height, 70, height - 24)
-      el.dataset.side = rawX < edge ? 'left' : rawX > width - edge ? 'right' : ''
+      entry.x = THREE.MathUtils.clamp(rawX, edge, width - edge)
+      // stays clear of the corner chrome (title/clock above, CV link/toggle below)
+      entry.y = THREE.MathUtils.clamp((-this.projected.y * 0.5 + 0.5) * height, 70, height - 90)
+      if (side) pinned[side].push(entry)
+      el.classList.add('is-visible')
+    })
+    // two labels pinned to the same edge stack instead of overlapping
+    Object.values(pinned).forEach((entries) => {
+      entries.sort((a, b) => a.y - b.y)
+      entries.forEach((entry, i) => {
+        if (i > 0) entry.y = Math.max(entry.y, entries[i - 1].y + 30)
+      })
+    })
+    Object.values(this.elements).forEach(({ el, x, y }) => {
+      if (!el.classList.contains('is-visible')) return
       el.style.left = `${x}px`
       el.style.top = `${y - 16}px`
-      el.classList.add('is-visible')
     })
   }
 }

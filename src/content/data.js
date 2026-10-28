@@ -20,6 +20,9 @@ export const contact = {
     url: 'https://wa.me/5511994673016',
   },
   cv: { label: 'Nicolas_Rabelo_Curriculo.pdf', url: `${import.meta.env.BASE_URL}cv/Nicolas_Rabelo_Curriculo.pdf` },
+  // Web3Forms access key (web3forms.com) — public by design, safe in client
+  // code. While empty, the contact form falls back to opening a pre-filled e-mail.
+  formAccessKey: '362906cd-a66b-4315-894c-0611e37113d8',
 }
 
 export const skills = [

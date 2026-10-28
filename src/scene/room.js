@@ -273,7 +273,9 @@ export function buildRoom() {
   group.add(place(box(0.2, 3.6, 5.12, COLORS.wall, { roughness: 0.95 }), RIGHT + 0.1, 1.7, -2.44))
   group.add(place(box(0.2, 3.6, 1.32, COLORS.wall, { roughness: 0.95 }), RIGHT + 0.1, 1.7, 2.34))
   group.add(place(box(0.2, 0.88, 1.56, COLORS.wall, { roughness: 0.95 }), RIGHT + 0.1, 3.06, 0.9))
-  group.add(place(box(9, 0.15, 8, COLORS.ironDark), 0, 3.5, -1))
+  // ceilings are hidden whenever the camera rises above them (overhead view)
+  const ceilings = [place(box(9, 0.15, 8, COLORS.ironDark), 0, 3.5, -1)]
+  group.add(ceilings[0])
 
   // lamps' emissive materials, dimmed by the day/night system with their lights
   const lampMaterials = []
@@ -490,9 +492,12 @@ export function buildRoom() {
   group.add(tallPlantGroup)
   addContactShadow(2.0, BACK + 0.35, 0.6, 0.6, 0.35)
 
-  // ============== BACK WALL, RIGHT: CORKBOARD -> SOBRE MIM ==============
+  // ============== RIGHT WALL, toward the back: CORKBOARD -> SOBRE MIM ==============
+  // (built facing local +z, turned to face into the room from the right wall)
+  const CORK_Z = -2.55
   const corkGroup = new THREE.Group()
-  corkGroup.position.set(3.0, 1.8, BACK + 0.05)
+  corkGroup.position.set(RIGHT - 0.05, 1.98, CORK_Z)
+  corkGroup.rotation.y = -Math.PI / 2
   corkGroup.add(place(box(1.42, 1.12, 0.04, COLORS.corkboardFrame, { roughness: 0.85 }), 0, 0, -0.01))
   // the cork sits proud of the frame so their faces never share a plane
   corkGroup.add(place(box(1.3, 1.0, 0.04, COLORS.corkboardSurface, { roughness: 0.95, metalness: 0 }), 0, 0, 0.012))
@@ -544,13 +549,21 @@ export function buildRoom() {
   tagGlow(corkLampGlow, 'lamp', glowSprites)
   group.add(corkGroup)
 
-  hotspots.sobre = new THREE.Vector3(3.0, 2.28, BACK + 0.1)
-  const sobreHit = place(box(1.5, 1.4, 0.4, 0x000000), 3.0, 1.8, BACK + 0.15)
+  hotspots.sobre = new THREE.Vector3(RIGHT - 0.1, 2.46, CORK_Z)
+  const sobreHit = place(box(0.4, 1.4, 1.5, 0x000000), RIGHT - 0.15, 1.98, CORK_Z)
   sobreHit.visible = false
   sobreHit.userData.hotspot = 'sobre'
   group.add(sobreHit)
 
-  // low bench under the corkboard
+  // the back wall's right end: a city print over a low bench
+  addPoster(group, {
+    x: 3.0,
+    y: 1.78,
+    z: BACK + 0.01,
+    w: 0.52,
+    h: 0.72,
+    texture: posterTexture({ bg: '#0c1220', accent: '#4ad9ff', title: 'SÃO PAULO', subtitle: '23°S 46°O' }),
+  })
   const benchGroup = new THREE.Group()
   benchGroup.position.set(3.0, 0, BACK + 0.17)
   benchGroup.add(place(box(1.3, 0.06, 0.32, COLORS.bookshelf, { roughness: 0.8 }), 0, 0.42, 0))
@@ -777,7 +790,8 @@ export function buildRoom() {
   const HALL_X = RIGHT + 0.2
   const hallWall = 0x1c1e2a
   group.add(place(box(3.0, 0.2, 3.6, 0x2a2420, { roughness: 0.8 }), HALL_X + 1.5, -0.1, 0.9))
-  group.add(place(box(3.0, 0.1, 3.6, 0x16161c), HALL_X + 1.5, 2.9, 0.9))
+  ceilings.push(place(box(3.0, 0.1, 3.6, 0x16161c), HALL_X + 1.5, 2.9, 0.9))
+  group.add(ceilings[1])
   group.add(place(box(0.2, 3.2, 3.6, hallWall, { roughness: 0.95 }), HALL_X + 3.1, 1.45, 0.9))
   ;[-1.0, 2.8].forEach((z) => group.add(place(box(3.0, 3.2, 0.2, hallWall, { roughness: 0.95 }), HALL_X + 1.5, 1.45, z)))
   group.add(place(box(0.5, 0.012, 0.9, 0x3a2a22, { roughness: 0.95 }), HALL_X + 0.55, 0.006, 0.9))
@@ -903,6 +917,7 @@ export function buildRoom() {
     hitboxes,
     glowSprites,
     doorHinge,
+    ceilings,
     screenContent: { projetos: codeScreen, experiencia: gameScreen, contato: phoneScreenContent },
     ambience: { windowView, sunPatch, sunShafts, lampMaterials, doorLeak, clock: { hourHand, minuteHand } },
   }

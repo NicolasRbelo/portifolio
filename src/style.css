@@ -105,7 +105,13 @@ button:focus-visible,
 }
 
 #scene-canvas.is-interactive {
-  cursor: pointer;
+  cursor: grab;
+  /* drags orbit the room instead of scrolling/zooming the page on touch */
+  touch-action: none;
+}
+
+#scene-canvas.is-dragging {
+  cursor: grabbing;
 }
 
 /* ---------- Boot screen ---------- */
@@ -194,6 +200,12 @@ button:focus-visible,
   flex-direction: column;
   align-items: center;
   gap: 4px;
+  /* it's a <button>: drop the browser's default gray box around the tag */
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
   pointer-events: auto;
   cursor: pointer;
   opacity: 0;
@@ -240,6 +252,31 @@ button:focus-visible,
   content: ' →';
 }
 
+/* a label pinned to the screen edge (its object is out of view) is a quiet
+   pointer toward it, not a full label competing with what's on screen */
+.hotspot-label.is-visible[data-side='left'],
+.hotspot-label.is-visible[data-side='right'] {
+  opacity: 0.6;
+}
+
+.hotspot-label.is-visible[data-side='left']:hover,
+.hotspot-label.is-visible[data-side='right']:hover,
+.hotspot-label.is-visible[data-side='left']:focus-visible,
+.hotspot-label.is-visible[data-side='right']:focus-visible {
+  opacity: 1;
+}
+
+.hotspot-label[data-side='left'] .pin,
+.hotspot-label[data-side='right'] .pin {
+  display: none;
+}
+
+.hotspot-label[data-side='left'] .tag,
+.hotspot-label[data-side='right'] .tag {
+  font-size: 11px;
+  padding: 3px 7px;
+}
+
 /* ---------- Scene chrome (always-visible corner UI) ---------- */
 
 #scene-chrome {
@@ -277,6 +314,74 @@ button:focus-visible,
   color: var(--cyan);
   text-decoration: none;
   border-bottom: 1px dotted var(--cyan-dim);
+}
+
+#scene-chrome .corner.br {
+  bottom: 0;
+  right: 0;
+  padding: 10px 14px;
+}
+
+/* explore controls only show while the room is free to look around */
+.view-toggle,
+.drag-hint {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease-out;
+}
+
+#stage.is-exploring .view-toggle {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#stage.is-exploring .drag-hint:not(.is-dismissed) {
+  opacity: 1;
+}
+
+.view-toggle {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--neon-bright);
+  background: rgba(10, 11, 20, 0.82);
+  border: 1px solid var(--neon-dim);
+  padding: 7px 12px;
+  cursor: pointer;
+}
+
+.view-toggle:hover,
+.view-toggle:focus-visible {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+.view-toggle:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
+
+#scene-chrome .drag-hint {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--neon-dim);
+  white-space: nowrap;
+}
+
+/* on phones the CV link and the view button take the bottom corners, and the
+   clock drops a line so it doesn't run into the title */
+@media (max-width: 640px) {
+  #scene-chrome .drag-hint {
+    bottom: 56px;
+  }
+  #scene-chrome .corner.tr {
+    top: 18px;
+  }
 }
 
 /* ---------- Content panels ---------- */
@@ -580,6 +685,99 @@ button:focus-visible,
 .panel[data-theme='contato'] .panel-close {
   border-color: var(--green-dim);
   color: var(--green);
+}
+.panel[data-theme='contato'] .panel-body h3 {
+  color: var(--green);
+}
+
+/* ---------- Contact form (a message typed on the phone) ---------- */
+
+.message-form {
+  position: relative;
+  display: grid;
+  gap: 12px;
+  margin: 4px 0 8px;
+}
+
+.message-form .field {
+  display: grid;
+  gap: 6px;
+}
+
+.message-form label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--green);
+}
+
+/* rounded like chat bubbles — part of the contato panel's messaging-app skin */
+.message-form input,
+.message-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: var(--body);
+  /* 16px keeps iOS from zooming the page when a field gets focus */
+  font-size: 16px;
+  color: var(--ink);
+  background: rgba(8, 20, 13, 0.85);
+  border: 1px solid var(--green-dim);
+  border-radius: 14px;
+  padding: 10px 14px;
+}
+
+.message-form textarea {
+  min-height: 104px;
+  resize: vertical;
+}
+
+.message-form input:focus-visible,
+.message-form textarea:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 1px;
+  border-color: var(--green);
+}
+
+.message-form [aria-invalid='true'] {
+  border-color: #ff7a7a;
+}
+
+/* honeypot: invisible to people, irresistible to bots */
+.message-form .hp-field {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.message-form .form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+}
+
+.message-form button.btn {
+  background: transparent;
+  cursor: pointer;
+}
+
+.message-form button.btn:disabled {
+  opacity: 0.5;
+  cursor: progress;
+}
+
+.panel-body .form-status {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--green);
+}
+
+.panel-body .form-status[data-state='error'] {
+  color: #ff9a9a;
 }
 
 /* ---------- Reduced motion ---------- */
