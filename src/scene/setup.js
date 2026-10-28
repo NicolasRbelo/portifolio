@@ -29,117 +29,124 @@ export function fovForAspect(aspect) {
   return Math.min(THREE.MathUtils.radToDeg(neededVerticalRad), MAX_VERTICAL_FOV)
 }
 
+// elevated and pitched down, like looking into the room from its doorway-less
+// fourth wall: the floor carries the composition, the ceiling is only a sliver
 export const CAMERA_WIDE = {
-  position: new THREE.Vector3(0.1, 1.86, 6.6),
-  target: new THREE.Vector3(0, 1.5, -1.2),
+  position: new THREE.Vector3(-0.45, 2.75, 4.9),
+  target: new THREE.Vector3(-0.3, 1.25, -1.8),
 }
 
 // one close anchor per hotspot, framing that object's own screen/board
 export const CAMERA_CLOSE_MAP = {
   projetos: {
-    position: new THREE.Vector3(-2.9, 1.27, 1.45),
-    target: new THREE.Vector3(-2.9, 1.2, 0.54),
+    position: new THREE.Vector3(-3.2, 1.5, -1.45),
+    target: new THREE.Vector3(-3.4, 0.98, -3.45),
   },
   experiencia: {
-    position: new THREE.Vector3(-1.35, 1.35, -1.4),
-    target: new THREE.Vector3(-1.35, 1.32, -3.6),
+    position: new THREE.Vector3(-1.3, 1.4, -1.15),
+    target: new THREE.Vector3(-1.3, 1.38, -3.7),
   },
   sobre: {
-    position: new THREE.Vector3(2.55, 1.82, -2.1),
-    target: new THREE.Vector3(2.95, 1.78, -3.6),
+    position: new THREE.Vector3(2.9, 1.95, -0.9),
+    target: new THREE.Vector3(3.0, 1.92, -3.75),
   },
   contato: {
-    position: new THREE.Vector3(-1.9, 1.05, 0.6),
-    target: new THREE.Vector3(-2.7, 0.72, 0.9),
+    position: new THREE.Vector3(-2.9, 1.08, -1.65),
+    target: new THREE.Vector3(-3.96, 0.62, -1.3),
   },
 }
 
-// the intro opens on the door, closed, before the recognition reveal
-export const CAMERA_DOOR = {
-  position: new THREE.Vector3(0.6, 1.55, -1.1),
-  target: new THREE.Vector3(0.6, 1.35, -3.74),
+// the intro: the visitor stands in the hallway facing the closed door, the door
+// swings into the room, and the camera walks through the doorway, turns toward
+// the room and backs out to the wide framing. Position and target are sampled
+// along these two curves with the same eased progress.
+export const INTRO_PATH = {
+  fov: 50,
+  positions: [
+    new THREE.Vector3(6.4, 1.62, 0.9),
+    new THREE.Vector3(4.4, 1.64, 0.9),
+    new THREE.Vector3(2.85, 1.85, 0.72),
+    new THREE.Vector3(1.2, 2.4, 2.9),
+    CAMERA_WIDE.position,
+  ],
+  targets: [
+    new THREE.Vector3(4.3, 1.45, 0.9),
+    new THREE.Vector3(2.0, 1.45, 0.6),
+    new THREE.Vector3(-1.6, 1.4, -2.4),
+    new THREE.Vector3(-0.7, 1.3, -2.1),
+    CAMERA_WIDE.target,
+  ],
 }
 
-export const CLOSE_FOV = 32
 export const ZOOM_FOV = 32
 
 export function createCamera(aspect) {
-  const camera = new THREE.PerspectiveCamera(CLOSE_FOV, aspect, 0.1, 50)
-  camera.position.copy(CAMERA_DOOR.position)
-  camera.lookAt(CAMERA_DOOR.target)
+  const camera = new THREE.PerspectiveCamera(INTRO_PATH.fov, aspect, 0.05, 50)
+  camera.position.copy(INTRO_PATH.positions[0])
+  camera.lookAt(INTRO_PATH.targets[0])
   camera.userData.wideFov = fovForAspect(aspect)
   return camera
 }
 
+/** Every light is tagged with its role so the day/night system can drive it:
+ *  lamp   — practical room lights (LED strip, lamps): on at night, off by day
+ *  screen — monitor/TV/phone glow: always on, less dominant in daylight
+ *  window — city glow at night, sunlight by day
+ *  fill   — artistic night fill, eased down by day
+ *  hall   — the hallway ceiling light, always on */
 export function createLights(scene) {
+  const lights = []
+  const add = (light, role) => {
+    light.userData.role = role
+    light.userData.base = light.intensity
+    scene.add(light)
+    if (light.target) scene.add(light.target)
+    lights.push(light)
+    return light
+  }
+
   const ambient = new THREE.AmbientLight(0x4a4258, 4.6)
   scene.add(ambient)
-
   const fill = new THREE.HemisphereLight(0x6a5878, 0x14141e, 2.8)
   scene.add(fill)
 
-  // the neon strip along the back wall — the room's main ambient light source,
-  // cool magenta instead of a warm overhead fixture
-  const ledLight = new THREE.PointLight(0xff3ec9, 26, 9, 2)
-  ledLight.position.set(0, 3.2, -3.3)
-  scene.add(ledLight)
-  const ledLight2 = new THREE.PointLight(0xff3ec9, 20, 8, 2)
-  ledLight2.position.set(-2.8, 2.8, -3.0)
-  scene.add(ledLight2)
-  const ledLight3 = new THREE.PointLight(0xff3ec9, 18, 8, 2)
-  ledLight3.position.set(2.8, 2.8, -3.0)
-  scene.add(ledLight3)
+  // the neon strip along the back wall — the room's main night light source
+  add(new THREE.PointLight(0xff3ec9, 26, 9, 2), 'lamp').position.set(0, 3.2, -3.3)
+  add(new THREE.PointLight(0xff3ec9, 20, 8, 2), 'lamp').position.set(-2.8, 2.8, -3.0)
+  // kept off the corkboard: right above it, it bleached the paper notes
+  add(new THREE.PointLight(0xff3ec9, 14, 8, 2), 'lamp').position.set(1.4, 3.0, -2.6)
 
-  // the desk lamp's warm practical light
-  const lampLight = new THREE.PointLight(0xffd9a0, 20, 3.2, 2)
-  lampLight.position.set(-3.42, 1.96, 0.42)
-  scene.add(lampLight)
+  // desk lamp, standing lamp, dresser lamp (inside its shade, so it lights the
+  // room and not the shade's own surface), the light by the door
+  add(new THREE.PointLight(0xffd9a0, 16, 3.2, 2), 'lamp').position.set(-3.85, 1.35, -3.1)
+  add(new THREE.PointLight(0xffd9a0, 10, 4, 2), 'lamp').position.set(-0.42, 1.55, -3.35)
+  add(new THREE.PointLight(0xffd9a0, 7, 4, 2), 'lamp').position.set(4.05, 1.2, -1.43)
+  add(new THREE.PointLight(0xe8c8b8, 7, 3.6, 2), 'lamp').position.set(3.3, 2.4, 0.9)
 
-  // monitor glow, cool blue-cyan
-  const monitorLight = new THREE.PointLight(0x4ad9ff, 16, 3.5, 2)
-  monitorLight.position.set(-2.9, 1.78, 0.1)
-  scene.add(monitorLight)
+  // corkboard: a far, even fill plus the clip lamp's small pool on the notes
+  add(new THREE.PointLight(0xe8d9b8, 2.0, 4.5, 1.6), 'lamp').position.set(3.0, 2.0, -2.2)
+  const corkSpot = add(new THREE.SpotLight(0xffe0b0, 2.2, 2.6, Math.PI / 5, 0.8, 1.6), 'lamp')
+  corkSpot.position.set(2.53, 2.5, -3.6)
+  corkSpot.target.position.set(3.0, 1.7, -3.75)
 
-  // TV glow, matching its screen, now up at wall-mount height
-  const tvLight = new THREE.PointLight(0xff3ec9, 16, 3.8, 2)
-  tvLight.position.set(-1.35, 1.32, -3.5)
-  scene.add(tvLight)
+  add(new THREE.PointLight(0x4ad9ff, 12, 3.2, 2), 'screen').position.set(-3.4, 1.3, -2.95)
+  add(new THREE.PointLight(0xff3ec9, 14, 3.6, 2), 'screen').position.set(-1.3, 1.32, -3.4)
+  add(new THREE.PointLight(0x4ade80, 4, 1.8, 2), 'screen').position.set(-3.72, 0.8, -1.3)
 
-  // low ambient fill for the corkboard — most of its light now comes from
-  // the small clip lamp's own focused spot, not the room glow
-  const corkLight = new THREE.PointLight(0xe8d9b8, 2.2, 3.6, 1.6)
-  corkLight.position.set(2.85, 1.75, -3.35)
-  scene.add(corkLight)
-
-  // the clip lamp's own small, tightly focused pool of light on the notes
-  const corkSpot = new THREE.SpotLight(0xffe0b0, 16, 2.4, Math.PI / 7, 0.45, 1.8)
-  corkSpot.position.set(2.45, 2.38, -3.7)
-  corkSpot.target.position.set(2.85, 1.78, -3.75)
-  scene.add(corkSpot, corkSpot.target)
-
-  const rim = new THREE.SpotLight(0x7a6898, 42, 13, Math.PI / 4.2, 0.5, 1.4)
+  const rim = add(new THREE.SpotLight(0x7a6898, 42, 13, Math.PI / 4.2, 0.5, 1.4), 'fill')
   rim.position.set(2.5, 3.2, 3.5)
   rim.target.position.set(0, 1, -1)
-  scene.add(rim, rim.target)
+  // the bed / bookshelf wall sits far from the desk and TV lights
+  add(new THREE.PointLight(0xb8a8d8, 8, 6.5, 2), 'fill').position.set(-3.0, 2.3, 0.4)
 
-  // the bed / nightstand corner sits far from every other light, so it needs its own
-  const bedLight = new THREE.PointLight(0xb8a8d8, 8, 6.5, 2)
-  bedLight.position.set(-3.2, 2.2, 1.8)
-  scene.add(bedLight)
+  const windowLight = add(new THREE.PointLight(0x7aa0d8, 8, 4, 2), 'window')
+  windowLight.position.set(0.8, 1.9, -3.2)
 
-  const phoneLight = new THREE.PointLight(0x4ade80, 4, 1.8, 2)
-  phoneLight.position.set(-3.6, 0.75, 2.9)
-  scene.add(phoneLight)
+  // hallway ceiling light, coned onto the door so it doesn't bleed through the
+  // wall — once the door opens, its beam spills into the room like a real one
+  const hallLight = add(new THREE.SpotLight(0xffe0b0, 30, 5, Math.PI / 5.5, 0.6, 1.6), 'hall')
+  hallLight.position.set(6.8, 2.7, 0.9)
+  hallLight.target.position.set(4.4, 1.2, 0.9)
 
-  // cool city light through the window
-  const windowLight = new THREE.PointLight(0x7aa0d8, 7, 3.5, 2)
-  windowLight.position.set(3.7, 2.0, 0.6)
-  scene.add(windowLight)
-
-  // the standing floor lamp's warm pool of light, filling the mid-room gap
-  const floorLampLight = new THREE.PointLight(0xffd9a0, 12, 4, 2)
-  floorLampLight.position.set(1.35, 1.55, -1.55)
-  scene.add(floorLampLight)
-
-  return {}
+  return { ambient, fill, windowLight, lights }
 }

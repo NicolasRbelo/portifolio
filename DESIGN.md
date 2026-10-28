@@ -74,7 +74,7 @@ components:
 
 **Creative North Star: "The Setup, After Hours"**
 
-The build is a fixed-camera Three.js bedroom-office — a real desk with a modern monitor, PC tower and an articulated desk lamp; a TV and retro console in a hobby corner; a corkboard thick with real sticky notes; a phone charging on the nightstand — rendered through a hand-rolled post-process composer (bright-pass + two-pass Gaussian blur bloom, cool vignette, gentle screen-glow flicker, film grain). The DOM overlay (terminal-style boot log, hotspot labels, dossier panels, corner chrome) reads as an extension of the room's own screens, not a costume. Hot-pink neon is the committed interaction color, sourced directly from the room's own LED strip rather than invented for the UI; cyan stands in for monitor/TV glow, warm amber for sticky notes and practical lamp light, green for the phone's messaging glow. This is a direct, studied homage to tadao.dev's "Dev Room" — same point-and-click mechanic, same category of objects (desk/TV/corkboard), re-populated with Nicolas's own real content and his own room's layout.
+The build is a fixed-camera Three.js bedroom-office — a desk tucked into the back-left corner with a modern monitor, PC tower and an articulated desk lamp; a wall-mounted TV over a floating console shelf; a city window; a corkboard thick with real sticky notes under its own clip lamp; a phone charging on the nightstand beside the bed; a rug-and-beanbag gaming spot, bookshelf, dresser, guitar and everyday clutter so no part of the frame reads as empty — rendered through a hand-rolled post-process composer (bright-pass + two-pass Gaussian blur bloom, cool vignette, gentle screen-glow flicker, film grain). The DOM overlay (terminal-style boot log, hotspot labels, dossier panels, corner chrome) reads as an extension of the room's own screens, not a costume. Hot-pink neon is the committed interaction color, sourced directly from the room's own LED strip rather than invented for the UI; cyan stands in for monitor/TV glow, warm amber for sticky notes and practical lamp light, green for the phone's messaging glow. This is a direct, studied homage to tadao.dev's "Dev Room" — same point-and-click mechanic, same category of objects (desk/TV/corkboard), re-populated with Nicolas's own real content and his own room's layout.
 
 This is a code-led, near-zero external-asset build: procedural canvas textures and Three.js primitives for every prop (office chair, skateboard, cardboard boxes, plant, Rubik's-cube-style desk clutter) except one CC0 wood-floor photograph (see `ASSETS_CREDITS.md`) — not a visual comp.
 
@@ -83,7 +83,8 @@ This is a code-led, near-zero external-asset build: procedural canvas textures a
 - Each dossier panel's accent color matches the screen that opened it: pink for the monitor (Projetos), cyan for the TV (Experiência), warm sticky-note tones for the corkboard (Sobre mim), green for the phone (Contato)
 - Flat, zero-radius rectangular UI chrome as the default register, with the contato panel's pill buttons as the one confirmed exception (a messaging-app visual cue)
 - A terminal/code type pairing (JetBrains Mono for titles and system chrome, Inter for anything a visitor actually reads) — the pairing reads as "a working dev's portfolio," not a gimmick
-- The intro is one authored moment: the camera opens on the closed door, holds a beat, then the door swings open on its hinge as the camera pulls back to reveal the room and its hotspots
+- The intro is one authored moment: the visitor stands in the hallway facing the closed door ("NICOLAS — bata antes"), holds a beat, the door swings into the room, and the camera walks through the doorway, turns toward the room and backs out to the wide framing
+- The room keeps São Paulo's real clock: at night the LED strip and lamps are on and the window shows the lit city under a moon; by day the lamps are off, the sun crosses the window and throws a patch of light on the floor; dawn and dusk go golden with the lamps half on. The wall clock and the `SÃO PAULO-SP · hh:mm` corner show the same time (`?hora=14` pins any hour for previews)
 
 ## Colors
 
@@ -142,7 +143,7 @@ Depth comes from real scene lighting (emissive materials, contact-shadow decals 
 
 ## Shapes
 
-Zero border-radius is the DOM default. One confirmed exception: the `contato` panel's buttons (`border-radius: 999px`), a deliberate pill shape tied to its messaging-app character — not a system-wide button shape. In the 3D room, box geometry dominates (desk, TV stand, bookshelf, bed, nightstand); round forms (wheels, the clock face, the lamp's cylindrical joints, the office chair's star base) appear only where the real object they represent is actually round.
+Zero border-radius is the DOM default. One confirmed exception: the `contato` panel's buttons (`border-radius: 999px`), a deliberate pill shape tied to its messaging-app character — not a system-wide button shape. In the 3D room, box geometry dominates (desk, TV shelf, bookshelf, bed, nightstand, dresser); round forms (wheels, the clock face, the lamp's cylindrical joints, the office chair's star base) appear only where the real object they represent is actually round.
 
 ## Components
 
@@ -162,11 +163,11 @@ Zero border-radius is the DOM default. One confirmed exception: the `contato` pa
 - **Internal Padding:** panel `26px 28px 30px` (18–20px on ≤640px); entries `14px` left padding.
 
 ### Navigation (hotspot labels)
-- **Style:** a glowing neon pin dot plus an uppercase mono tag in a semi-transparent dark pill with a `neon-dim` border; screen-projected every frame, fades in once the door-opening reveal completes.
+- **Style:** a glowing neon pin dot plus an uppercase mono tag in a semi-transparent dark pill with a `neon-dim` border; screen-projected every frame, fades in once the door-opening reveal completes. On narrow (portrait) screens a label whose object falls outside the frame is pinned to the nearest edge with a `←`/`→` arrow, so every hotspot stays reachable.
 - **Hover/Focus:** tag border and text shift to cyan.
 
 ### Boot / Recognition Screen (signature component)
-Full-viewport overlay that gates the 3D scene: a JetBrains Mono terminal log (`nicolas@portfolio ~ % ./entrar.sh` … `ACESSO LIBERADO` … `BEM-VINDO, A PORTA JÁ ESTÁ ABRINDO`) typed out via `requestAnimationFrame`. On completion the overlay fades and the camera — which opened looking at the room's closed door — holds a beat, then the door swings open on its hinge in step with the camera's reveal dolly, ending at the wide idle framing with hotspot labels fading in.
+Full-viewport overlay that gates the 3D scene: a JetBrains Mono terminal log (`nicolas@portfolio ~ % ./entrar.sh` … `ACESSO LIBERADO` … `BEM-VINDO, A PORTA JÁ ESTÁ ABRINDO`) typed out via `requestAnimationFrame`. One log line reflects the hour (`Acendendo as luzes` at night, `Abrindo as cortinas` by day). On completion the overlay fades onto the hallway, the camera holds a beat on the closed door, the door swings into the room, and the camera walks in along a curved path, ending at the wide idle framing with hotspot labels fading in. With `prefers-reduced-motion`, the walk is skipped and the room opens directly on the wide framing.
 
 ## Do's and Don'ts
 

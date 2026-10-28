@@ -28,15 +28,22 @@ export class HotspotLabels {
   }
 
   update(camera, width, height) {
-    Object.values(this.elements).forEach(({ el, position }) => {
+    Object.values(this.elements).forEach((entry) => {
+      const { el, position } = entry
       this.projected.copy(position).project(camera)
       const visible = this.projected.z < 1
       if (!visible) {
         el.classList.remove('is-visible')
         return
       }
-      const x = (this.projected.x * 0.5 + 0.5) * width
-      const y = (-this.projected.y * 0.5 + 0.5) * height
+      // on narrow (portrait) screens some objects fall outside the frame; the
+      // label stays reachable, pinned to the edge with an arrow toward its object
+      entry.halfWidth = entry.halfWidth || el.offsetWidth / 2
+      const edge = (entry.halfWidth || 60) + 10
+      const rawX = (this.projected.x * 0.5 + 0.5) * width
+      const x = THREE.MathUtils.clamp(rawX, edge, width - edge)
+      const y = THREE.MathUtils.clamp((-this.projected.y * 0.5 + 0.5) * height, 70, height - 24)
+      el.dataset.side = rawX < edge ? 'left' : rawX > width - edge ? 'right' : ''
       el.style.left = `${x}px`
       el.style.top = `${y - 16}px`
       el.classList.add('is-visible')

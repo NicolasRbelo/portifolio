@@ -232,6 +232,14 @@ button:focus-visible,
   color: var(--cyan);
 }
 
+.hotspot-label[data-side='left'] .tag::before {
+  content: '← ';
+}
+
+.hotspot-label[data-side='right'] .tag::after {
+  content: ' →';
+}
+
 /* ---------- Scene chrome (always-visible corner UI) ---------- */
 
 #scene-chrome {
